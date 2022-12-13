@@ -54,8 +54,8 @@
         android:layout_height="wrap_content"
         android:onClick="sendMessage"
         android:text="@string/button_send"
-        tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="203dp" />
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

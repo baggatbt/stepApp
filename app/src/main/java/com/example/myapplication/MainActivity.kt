@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // Implement all the members in the class com.example.myapplication.MainActivity
     // after adding SensorEventListener
 
-    // we have assigned sensorManger to nullable
+    // assigned sensorManger to nullable
     private var sensorManager: SensorManager? = null
 
     // Creating a variable which will give the running status
@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // Creating a variable  which counts previous total
     // steps and it has also been given the value of 0 float
     private var previousTotalSteps = 0f
+
+    // Current steps are calculated by taking the difference of total steps
+    // and previous steps
+    var currentSteps = totalSteps.toInt() - previousTotalSteps.toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,37 +71,41 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         // Calling the TextView that we made in activity_main.xml
         // by the id given to that TextView
-        var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+        var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
 
         if (running) {
             totalSteps = event!!.values[0]
 
             // Current steps are calculated by taking the difference of total steps
             // and previous steps
-            val currentSteps = totalSteps.toInt() - previousTotalSteps.toInt()
+             currentSteps = totalSteps.toInt() - previousTotalSteps.toInt()
 
             // It will show the current steps to the user
-            tv_stepsTaken.text = ("$currentSteps")
+            stepsTaken.text = ("$currentSteps")
+
+
         }
     }
 
     fun resetSteps() {
-        var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
-        tv_stepsTaken.setOnClickListener {
+        var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+        stepsTaken.setOnClickListener {
             // This will give a toast message if the user want to reset the steps
             Toast.makeText(this, "Long tap to reset steps", Toast.LENGTH_SHORT).show()
         }
 
-        tv_stepsTaken.setOnLongClickListener {
+        stepsTaken.setOnLongClickListener {
 
             previousTotalSteps = totalSteps
 
             // When the user will click long tap on the screen,
             // the steps will be reset to 0
-            tv_stepsTaken.text = 0.toString()
+            stepsTaken.text = 0.toString()
 
             // This will save the data
             saveData()
+
+
 
             true
         }
@@ -105,9 +113,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private fun saveData() {
 
-        // Shared Preferences will allow us to save
+        // Shared Preferences will allow saving
         // and retrieve data in the form of key,value pair.
-        // In this function we will save data
+        // In this function save data
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
 
         val editor = sharedPreferences.edit()
@@ -117,18 +125,26 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private fun loadData() {
 
-        // In this function we will retrieve data
+
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
         val savedNumber = sharedPreferences.getFloat("key1", 0f)
-
-        // Log.d is used for debugging purposes
-        Log.d("com.example.myapplication.MainActivity", "$savedNumber")
 
         previousTotalSteps = savedNumber
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // We do not have to write anything in this function for this app
+    }
+
+    fun useSteps(view: View) {
+        if (currentSteps - 20 >= 0) {
+            currentSteps -= 20;
+            totalSteps -= 20;
+            println(currentSteps);
+            println("20 steps deducted");
+            var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+            stepsTaken.text = ("$currentSteps")
+            //TODO: get rid of the hard coded values, make a quest class with these parameters to pass
+        }
     }
 
 

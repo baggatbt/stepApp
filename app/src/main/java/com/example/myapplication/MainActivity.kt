@@ -148,6 +148,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
+    //Saves step data on closing the app
     override fun onPause() {
         super.onPause()
         saveData()

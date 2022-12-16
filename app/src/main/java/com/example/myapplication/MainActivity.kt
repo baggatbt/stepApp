@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     // Current steps are calculated by taking the difference of total steps
     // and previous steps
-    var currentSteps = totalSteps.toInt() - previousTotalSteps.toInt()
+    var currentSteps = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +78,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
             // Current steps are calculated by taking the difference of total steps
             // and previous steps
-             currentSteps = totalSteps.toInt() - previousTotalSteps.toInt()
+         var stepCountDifference = totalSteps.toInt() - previousTotalSteps.toInt()
+            currentSteps++
 
             // It will show the current steps to the user
             stepsTaken.text = ("$currentSteps")
@@ -101,6 +102,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             // When the user will click long tap on the screen,
             // the steps will be reset to 0
             stepsTaken.text = 0.toString()
+            println(totalSteps)
+            println(previousTotalSteps)
+            println(currentSteps)
 
             // This will save the data
             saveData()
@@ -117,19 +121,19 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // and retrieve data in the form of key,value pair.
         // In this function save data
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-
         val editor = sharedPreferences.edit()
-        editor.putFloat("key1", previousTotalSteps)
+        editor.putInt("key1", currentSteps)
         editor.apply()
+        println("saved")
     }
 
     private fun loadData() {
 
 
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        val savedNumber = sharedPreferences.getFloat("key1", 0f)
+        val savedNumber = sharedPreferences.getInt("key1", -1)
 
-        previousTotalSteps = savedNumber
+        currentSteps = savedNumber
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -138,14 +142,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     fun useSteps(view: View) {
         if (currentSteps - 20 >= 0) {
             currentSteps -= 20;
-            totalSteps -= 20;
-            println(currentSteps);
-            println("20 steps deducted");
             var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
             stepsTaken.text = ("$currentSteps")
             //TODO: get rid of the hard coded values, make a quest class with these parameters to pass
         }
     }
 
-
+    override fun onPause() {
+        super.onPause()
+        saveData()
+    }
 }

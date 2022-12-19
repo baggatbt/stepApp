@@ -1,17 +1,18 @@
 package com.example.myapplication
 
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.example.myapplication.R
+import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.ui.main.Quest
+
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
     // Added SensorEventListener the com.example.myapplication.MainActivity class
@@ -37,12 +38,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // and previous steps
     var currentSteps = 0
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        title = "Step App"
+
 
         loadData()
-        resetSteps()
+
 
         // Adding a context of SENSOR_SERVICE as Sensor Manager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -78,7 +82,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
             // Current steps are calculated by taking the difference of total steps
             // and previous steps
-         var stepCountDifference = totalSteps.toInt() - previousTotalSteps.toInt()
+             var stepCountDifference = totalSteps.toInt() - previousTotalSteps.toInt()
             currentSteps++
 
             // It will show the current steps to the user
@@ -88,7 +92,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-    fun resetSteps() {
+   /** fun resetSteps() {
         var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
         stepsTaken.setOnClickListener {
             // This will give a toast message if the user want to reset the steps
@@ -109,11 +113,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             // This will save the data
             saveData()
 
-
-
             true
         }
     }
+   **/
 
     private fun saveData() {
 
@@ -139,14 +142,32 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    fun useSteps(view: View) {
-        if (currentSteps - 20 >= 0) {
-            currentSteps -= 20;
-            var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+    // Allows the user to spend steps based on the quest they click and changes the step counter view
+    /**fun useSteps(view: View) {
+        val quest = Quest("First Quest", 10)
+        if (currentSteps - quest.stepCost >= 0) {
+            currentSteps -= quest.stepCost;
+
+          /**  var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
             stepsTaken.text = ("$currentSteps")
-            //TODO: get rid of the hard coded values, make a quest class with these parameters to pass
+          **/
+
         }
     }
+    **/
+
+  /**  fun switchToQuests(view: View){
+
+        setContentView(R.layout.activity_quest)
+    }
+  **/
+
+    fun switchToQuests(view: View?) {
+        val intent = Intent(this@MainActivity, QuestActivity::class.java)
+        startActivity(intent)
+
+    }
+
 
     //Saves step data on closing the app
     override fun onPause() {

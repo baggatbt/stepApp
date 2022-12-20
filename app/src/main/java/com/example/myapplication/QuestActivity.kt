@@ -13,11 +13,13 @@ import com.example.myapplication.ui.main.Quest
 class QuestActivity : AppCompatActivity()   {
 
 
-    var currentSteps = 0;
+     var currentSteps = MainActivity.currentSteps
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quest)
+        println(currentSteps)
+
 
 
     }
@@ -25,12 +27,15 @@ class QuestActivity : AppCompatActivity()   {
     fun backToMain(view: View?) {
         val intent = Intent(this@QuestActivity, MainActivity::class.java)
         startActivity(intent)
+        MainActivity.currentSteps = currentSteps
+
     }
 
     fun useSteps(view: View) {
         val quest = Quest("First Quest", 10)
         if (currentSteps - quest.stepCost >= 0) {
             currentSteps -= quest.stepCost;
+            println(currentSteps)
 
             /**  var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
             stepsTaken.text = ("$currentSteps")
@@ -38,4 +43,21 @@ class QuestActivity : AppCompatActivity()   {
 
         }
     }
+
+    private fun saveData(){
+        val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("key1", MainActivity.currentSteps)
+        editor.apply()
+
+    }
+
+    override fun onPause(){
+        super.onPause()
+        println("paused")
+        println(currentSteps)
+        saveData()
+    }
+
+
 }

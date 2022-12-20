@@ -36,15 +36,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     // Current steps are calculated by taking the difference of total steps
     // and previous steps
-    var currentSteps = 0
+    companion object{
+        var currentSteps = 0
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Step App"
-
-
         loadData()
 
 
@@ -118,49 +118,30 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
    **/
 
-    private fun saveData() {
+       fun saveData() {
 
-        // Shared Preferences will allow saving
-        // and retrieve data in the form of key,value pair.
-        // In this function save data
-        val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt("key1", currentSteps)
-        editor.apply()
-        println("saved")
-    }
+           // Shared Preferences will allow saving
+           // and retrieve data in the form of key,value pair.
+           // In this function save data
+           val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+           val editor = sharedPreferences.edit()
+           editor.putInt("key1", currentSteps)
+           editor.apply()
+           println("saved")
+       }
+
 
     private fun loadData() {
 
 
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        val savedNumber = sharedPreferences.getInt("key1", -1)
-
-        currentSteps = savedNumber
+        currentSteps = sharedPreferences.getInt("key1", -1)
     }
+
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    // Allows the user to spend steps based on the quest they click and changes the step counter view
-    /**fun useSteps(view: View) {
-        val quest = Quest("First Quest", 10)
-        if (currentSteps - quest.stepCost >= 0) {
-            currentSteps -= quest.stepCost;
-
-          /**  var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
-            stepsTaken.text = ("$currentSteps")
-          **/
-
-        }
-    }
-    **/
-
-  /**  fun switchToQuests(view: View){
-
-        setContentView(R.layout.activity_quest)
-    }
-  **/
 
     fun switchToQuests(view: View?) {
         val intent = Intent(this@MainActivity, QuestActivity::class.java)
@@ -170,8 +151,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
 
     //Saves step data on closing the app
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         saveData()
     }
 }

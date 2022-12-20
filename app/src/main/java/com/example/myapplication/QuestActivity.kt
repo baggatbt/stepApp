@@ -32,7 +32,7 @@ class QuestActivity : AppCompatActivity()   {
     }
 
     fun useSteps(view: View) {
-        val quest = Quest("First Quest", 10)
+        val quest = Quest("First Quest", 10, experienceGained = 3, goldGained = 1)
         if (currentSteps - quest.stepCost >= 0) {
             currentSteps -= quest.stepCost;
             println(currentSteps)

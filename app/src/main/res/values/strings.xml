@@ -2,5 +2,10 @@
     <string name="app_name">My Application</string>
     <string name="button_send">Something text</string>
     <string name="steps">Steps</string>
-    <string name="level">Level:</string>
+
+    <string name="exp">Exp:</string>
+    <string name="gold">Gold:</string>
+    <string name="lv">level</string>
+    <string name="level">Lv:</string>
+
 </resources>

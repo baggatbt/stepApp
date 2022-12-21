@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.ui.main.Quest
+import com.example.myapplication.ui.main.Player
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -38,6 +39,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // and previous steps
     companion object{
         var currentSteps = 0
+
+        val player = Player("Test",1,0,0)
+
     }
 
 
@@ -77,6 +81,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // by the id given to that TextView
         var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
 
+        var levelDisplay = findViewById<TextView>(R.id.level)
+
         if (running) {
             totalSteps = event!!.values[0]
 
@@ -87,6 +93,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
             // It will show the current steps to the user
             stepsTaken.text = ("$currentSteps")
+            levelDisplay.text = ("${player.level}")
 
 
         }
@@ -126,6 +133,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
            val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
            val editor = sharedPreferences.edit()
            editor.putInt("key1", currentSteps)
+           editor.putInt("playerLevel", player.level)
+           editor.putInt("playerExp",player.experience)
+           editor.putInt("playerGold", player.gold)
            editor.apply()
            println("saved")
        }
@@ -136,6 +146,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
         currentSteps = sharedPreferences.getInt("key1", -1)
+        player.level = sharedPreferences.getInt("playerLevel",1)
+        player.experience = sharedPreferences.getInt("playerExp",0)
+        player.gold  = sharedPreferences.getInt("playerGold",0)
     }
 
 
@@ -148,6 +161,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         startActivity(intent)
 
     }
+
+
 
 
     //Saves step data on closing the app

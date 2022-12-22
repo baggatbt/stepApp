@@ -83,6 +83,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         var levelDisplay = findViewById<TextView>(R.id.level)
 
+        var expDisplay = findViewById<TextView>(R.id.exp)
+
+        var goldDisplay = findViewById<TextView>(R.id.gold)
+
         if (running) {
             totalSteps = event!!.values[0]
 
@@ -94,6 +98,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             // It will show the current steps to the user
             stepsTaken.text = ("$currentSteps")
             levelDisplay.text = ("${player.level}")
+            expDisplay.text = ("${player.experience}")
+            goldDisplay.text = ("${player.gold}")
+
 
 
         }

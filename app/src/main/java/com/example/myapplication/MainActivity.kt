@@ -38,9 +38,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // Current steps are calculated by taking the difference of total steps
     // and previous steps
     companion object{
+
         var currentSteps = 0
 
         val player = Player("Test",1,0,0)
+
 
     }
 
@@ -168,6 +170,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         startActivity(intent)
 
     }
+
+
 
 
 

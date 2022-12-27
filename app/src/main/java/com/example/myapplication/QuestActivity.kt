@@ -19,8 +19,6 @@ class QuestActivity : AppCompatActivity()   {
 
      var player = MainActivity.player
 
-    var expToLevel = player.level * 10
-
     // TODO: pass all this to the use Steps so you dont copy and past the function for each new quest
     //  var questOne = Quest("First Quest", 10, experienceGained = 3, goldGained = 1)
 
@@ -67,15 +65,29 @@ class QuestActivity : AppCompatActivity()   {
         editor.putInt("playerExp", MainActivity.player.experience)
         editor.putInt("playerGold", MainActivity.player.gold)
         editor.apply()
-        println("saved")
+
     }
 
-    fun checkIfPlayerLevelUp(){
+  /**  fun checkIfPlayerLevelUp(){
         if (player.experience > expToLevel ){
             player.level +=1
             Toast.makeText(this, "You are now level " + player.level,Toast.LENGTH_SHORT).show()
         }
     }
+  **/
+
+    fun calculateExpToLevel(currentLevel: Int): Int {
+      return currentLevel * 10 + Math.pow(currentLevel.toDouble(), 1.5).toInt()
+    }
+
+    fun checkIfPlayerLevelUp() {
+        val expToLevel = calculateExpToLevel(player.level)
+        if (player.experience > expToLevel) {
+            player.level += 1
+            Toast.makeText(this, "You are now level " + player.level, Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
 
 

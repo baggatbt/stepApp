@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         loadData()
 
 
+
         // Adding a context of SENSOR_SERVICE as Sensor Manager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
     }
@@ -73,12 +74,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             Toast.makeText(this, "No sensor detected on this device", Toast.LENGTH_SHORT).show()
         } else {
             // Rate suitable for the user interface
-            sensorManager?.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
+            sensorManager?.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_GAME)
         }
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-
         // Calling the TextView that we made in activity_main.xml
         // by the id given to that TextView
         var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
@@ -92,10 +92,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (running) {
             totalSteps = event!!.values[0]
 
+
             // Current steps are calculated by taking the difference of total steps
             // and previous steps
              var stepCountDifference = totalSteps.toInt() - previousTotalSteps.toInt()
-            currentSteps++
+            currentSteps ++
 
             // It will show the current steps to the user
             stepsTaken.text = ("$currentSteps")
@@ -104,11 +105,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             goldDisplay.text = ("${player.gold}")
 
 
-
         }
     }
 
-   /** fun resetSteps() {
+   /**fun resetSteps() {
         var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
         stepsTaken.setOnClickListener {
             // This will give a toast message if the user want to reset the steps
@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
    **/
+
 
        fun saveData() {
 

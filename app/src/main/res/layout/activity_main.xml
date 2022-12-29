@@ -133,5 +133,13 @@
         app:layout_constraintStart_toStartOf="@+id/steps"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:layout_width="168dp"
+        android:layout_height="215dp"
+        app:srcCompat="@drawable/BasicKnight"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="169dp"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

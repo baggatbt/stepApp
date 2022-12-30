@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.ui.main.Quest
 import com.example.myapplication.ui.main.Player
 
 
@@ -166,10 +165,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
 
-    fun switchToQuests(view: View?) {
-        val intent = Intent(this@MainActivity, QuestActivity::class.java)
-        startActivity(intent)
 
+    fun switchToMap(view: View?) {
+        val intent = Intent(this@MainActivity, MapActivity::class.java)
+        startActivity((intent))
     }
 
 

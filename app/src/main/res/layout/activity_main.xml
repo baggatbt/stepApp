@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <!--Text View for the "Steps" text displayed-->
     <TextView
         android:id="@+id/steps"
         android:layout_width="117dp"
         android:layout_height="0dp"
         android:layout_marginBottom="2dp"
+        android:onClick="resetSteps"
         android:text="@string/steps"
         android:textColor="@color/black"
         android:textSize="35sp"
-        android:onClick="resetSteps"
         app:layout_constraintBottom_toTopOf="@+id/tv_stepsTaken"
         app:layout_constraintEnd_toEndOf="@+id/tv_stepsTaken"
         app:layout_constraintStart_toEndOf="@+id/tv_stepsTaken"
@@ -29,12 +30,13 @@
         android:id="@+id/expText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="162dp"
         android:text="@string/exp"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintEnd_toEndOf="@+id/goldText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,13 +44,12 @@
         android:id="@+id/exp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="19dp"
         android:text="0"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@+id/expText"
-        app:layout_constraintStart_toStartOf="@+id/expText"
         app:layout_constraintEnd_toEndOf="@+id/expText"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintTop_toBottomOf="@+id/expText" />
     <!-- Text View for the "Level" text displayed -->
 
     <!-- Text View for the "Level Points" displayed -->
@@ -57,12 +58,11 @@
         android:id="@+id/levelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
         android:layout_marginTop="40dp"
         android:text="@string/level"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.069"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,13 +70,12 @@
         android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="9dp"
         android:text="0"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@+id/levelText"
-        app:layout_constraintStart_toStartOf="@+id/levelText"
         app:layout_constraintEnd_toEndOf="@+id/levelText"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintTop_toBottomOf="@+id/levelText" />
 
     <!-- Text View for the "Gold" text displayed -->
 
@@ -87,38 +86,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="33dp"
         android:text="@string/gold"
         android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.903"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/gold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
         android:text="0"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@+id/goldText"
         app:layout_constraintStart_toStartOf="@+id/goldText"
-        app:layout_constraintEnd_toEndOf="@+id/goldText"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintTop_toBottomOf="@+id/goldText" />
 
     <TextView
         android:id="@+id/tv_stepsTaken"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="18dp"
         android:text="0"
         android:textColor="@color/black"
         android:textSize="37sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/steps" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!--The to quests button-->
     <Button
@@ -126,20 +122,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="396dp"
-        android:onClick="switchToQuests"
-        android:text="To Quests"
-        app:layout_constraintBottom_toTopOf="@+id/steps"
-        app:layout_constraintStart_toStartOf="@+id/steps"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="91dp"
+        android:onClick="switchToMap"
+        android:text="To Map"
+        app:layout_constraintBottom_toTopOf="@+id/tv_stepsTaken"
+        app:layout_constraintStart_toStartOf="@+id/steps" />
 
     <ImageView
-        android:layout_width="168dp"
-        android:layout_height="215dp"
-        app:srcCompat="@drawable/BasicKnight"
-        tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="169dp"
+        android:id="@+id/imageView"
+        android:layout_width="155dp"
+        android:layout_height="209dp"
 
-        />
+        android:layout_marginTop="77dp"
+        android:layout_marginBottom="78dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/exp"
+        app:srcCompat="@drawable/basicknight" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

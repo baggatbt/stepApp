@@ -28,7 +28,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="148dp"
         android:layout_marginBottom="49dp"
-        android:onClick="backToMain"
+        android:onClick="backToMap"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

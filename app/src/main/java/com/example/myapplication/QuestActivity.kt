@@ -31,8 +31,8 @@ class QuestActivity : AppCompatActivity()   {
 
     }
 
-    fun backToMain(view: View?) {
-        val intent = Intent(this@QuestActivity, MainActivity::class.java)
+    fun backToMap(view: View?) {
+        val intent = Intent(this@QuestActivity, MapActivity::class.java)
         startActivity(intent)
         MainActivity.currentSteps = currentSteps
 

@@ -4,30 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/FantasyWorldMap">
+    tools:context=".MapActivity">
+
+    <ImageView
+        android:id="@+id/map_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/map1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/Town1Btn"
-
         android:layout_width="28dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="250dp"
+        android:layout_height="32dp"
         android:background="@drawable/circle_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        android:onClick="switchToQuests"
+        app:layout_constraintBottom_toBottomOf="@+id/map_image_view"
+        app:layout_constraintEnd_toEndOf="@+id/map_image_view"
+        app:layout_constraintHorizontal_bias="0.755"
+        app:layout_constraintStart_toStartOf="@+id/map_image_view"
+        app:layout_constraintTop_toTopOf="@+id/map_image_view"
+        app:layout_constraintVertical_bias="0.625"
+        app:srcCompat="@drawable/circle_button"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="63dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="304dp"
-        android:layout_marginEnd="107dp"
-        android:text="Town One"
-        app:layout_constraintBottom_toTopOf="@+id/Town1Btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="41dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="32dp"
+        android:text="Town"
+        app:layout_constraintEnd_toEndOf="@+id/Town1Btn"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="@+id/Town1Btn"
+        app:layout_constraintTop_toTopOf="@+id/Town1Btn"></TextView>
+
+    <Button
+        android:id="@id/backToMainBtn"
+        android:text="Back"
+        android:textSize="6dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="31dp"
+        android:onClick="backToMain"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></Button>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,9 +9,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.example.myapplication.MainActivity.Companion.enemy
-
-import com.example.myapplication.ui.main.Enemy
 import com.example.myapplication.ui.main.Quest
 import com.example.myapplication.ui.main.Player
 
@@ -43,7 +40,7 @@ class QuestActivity : AppCompatActivity()   {
 
     }
 
-    fun startBattle(view: View?) {
+    fun battleOneStart(view: View?) {
         // Create an intent to launch the BattleActivity
         val intent = Intent(this@QuestActivity, BattleActivity::class.java)
         startActivity(intent)

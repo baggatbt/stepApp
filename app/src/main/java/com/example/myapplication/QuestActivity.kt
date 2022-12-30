@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import com.example.myapplication.MainActivity
 import android.os.Bundle
 import android.view.View
 import android.content.Intent
@@ -9,6 +8,10 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.example.myapplication.MainActivity.Companion.enemy
+
+import com.example.myapplication.ui.main.Enemy
 import com.example.myapplication.ui.main.Quest
 import com.example.myapplication.ui.main.Player
 
@@ -18,6 +21,8 @@ class QuestActivity : AppCompatActivity()   {
      var currentSteps = MainActivity.currentSteps
 
      var player = MainActivity.player
+
+
 
     // TODO: pass all this to the use Steps so you dont copy and past the function for each new quest
     //  var questOne = Quest("First Quest", 10, experienceGained = 3, goldGained = 1)
@@ -37,6 +42,18 @@ class QuestActivity : AppCompatActivity()   {
         MainActivity.currentSteps = currentSteps
 
     }
+
+    fun startBattle(view: View?) {
+        // Create an intent to launch the BattleActivity
+        val intent = Intent(this@QuestActivity, BattleActivity::class.java)
+        startActivity(intent)
+    }
+
+
+
+
+
+
 
     fun useSteps(view: View) {
         val quest = Quest("First Quest", 10, experienceGained = 3, goldGained = 1)
@@ -88,18 +105,16 @@ class QuestActivity : AppCompatActivity()   {
         }
     }
 
-
-
-
-
-
-
     override fun onPause(){
         super.onPause()
         println("paused")
         println(currentSteps)
         saveData()
     }
+
+
+
+
 
 
 }

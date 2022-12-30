@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.ui.main.Enemy
 import com.example.myapplication.ui.main.Player
 
 
@@ -40,8 +41,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         var currentSteps = 0
 
-        val player = Player("Test",1,0,0)
+        val player = Player("Test",1,0,1, defense = 0, health = 10, experience = 0)
 
+        var enemy = Enemy("PlaceHolder",1,0,5)
 
     }
 
@@ -181,4 +183,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         super.onStop()
         saveData()
     }
+
+
+
+
+
+
 }

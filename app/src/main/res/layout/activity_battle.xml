@@ -33,5 +33,18 @@
         app:srcCompat="@drawable/goblin"
         android:visibility="invisible"/>
 
+    <ImageView
+        android:id="@+id/slimeImage"
+        android:layout_width="155dp"
+        android:layout_height="209dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="140dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/slime"
+        android:visibility="invisible"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

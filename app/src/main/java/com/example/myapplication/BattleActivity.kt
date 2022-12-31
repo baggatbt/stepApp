@@ -24,6 +24,7 @@ class BattleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_battle)
 
         var goblinImageView: ImageView = findViewById(R.id.goblinImage)
+        var slimeImageView: ImageView = findViewById(R.id.slimeImage)
 
         attackButton = findViewById(R.id.attackButton)
 
@@ -41,6 +42,10 @@ class BattleActivity : AppCompatActivity() {
 
         if (enemy.name == "Goblin"){
             goblinImageView.visibility = View.VISIBLE
+        }
+
+        else if ( enemy.name == "Slime"){
+            slimeImageView.visibility = View.VISIBLE
         }
 
         println("You've been attacked by a ${enemy.name}")

@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.ui.main.Player
+import com.example.myapplication.ui.main.Skill
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -40,8 +41,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         var currentSteps = 0
 
-        val player = Player(1,1,1,0, health = 10, experience = 0)
 
+        val player = Player(1,1,1,0, health = 10, experience = 0)
 
     }
 
@@ -49,13 +50,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        title = "Step App"
         loadData()
-
-
-
         // Adding a context of SENSOR_SERVICE as Sensor Manager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
     }
 
     override fun onResume() {

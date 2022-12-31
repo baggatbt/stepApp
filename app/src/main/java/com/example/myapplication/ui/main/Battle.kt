@@ -9,13 +9,17 @@ import com.example.myapplication.QuestActivity
 
 
 class Battle {
+
+
     fun start(player: Player, enemy: Enemy, context: Context) {
         println("You've been attack by a ${enemy.name}")
 
         // Start the battle loop
         while (player.health > 0 && enemy.health > 0) {
             // Player's turn
-            enemy.health -= player.attack
+            println("Choose your attack!")
+            //the ?.attack ?: 0 is a null check
+            enemy.health -= player.skills["basic attack"]?.attack ?: 0
             println("You attack the ${enemy.name} for ${player.attack} damage!")
 
             // Check if the enemy is defeated

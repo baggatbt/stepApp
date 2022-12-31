@@ -24,7 +24,7 @@ class BattleActivity : AppCompatActivity() {
         attackButton = findViewById(R.id.attackButton)
 
         // Initialize the player
-        player = Player(player.level,player.gold,player.attack,player.defense,player.health,player.experience)
+        player = Player(player.level,player.gold,player.attack,player.defense,player.health,player.experience,player.skills)
 
         //Initialize the battle
         battle = Battle()

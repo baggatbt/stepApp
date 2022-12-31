@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         var currentSteps = 0
 
-        val player = Player(1,1,0,1, health = 10, experience = 0)
+        val player = Player(1,1,1,0, health = 10, experience = 0)
 
 
     }

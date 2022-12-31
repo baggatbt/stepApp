@@ -9,13 +9,14 @@
 
     <Button
 
-        android:layout_width="200dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="279dp"
         android:id="@+id/attackButton"
+        android:layout_width="197dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="560dp"
         android:onClick="playerAttack"
         android:text="Attack!"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

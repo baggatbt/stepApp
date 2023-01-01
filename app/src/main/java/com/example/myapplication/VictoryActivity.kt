@@ -17,6 +17,7 @@ class VictoryActivity: AppCompatActivity() {
 
     private lateinit var backButton: Button
     var expGained = Battle.expGained
+    var goldGained = Battle.goldGained
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,9 @@ class VictoryActivity: AppCompatActivity() {
         expGainedView.text = ("$expGained")
         println(expGainedView.text)
 
-        var goldGained: TextView = findViewById(R.id.goldGained)
+        var goldGainedView: TextView = findViewById(R.id.goldGained)
+        goldGainedView.text = ("$goldGained")
+        println(goldGainedView.text)
 
         val backButton: Button = findViewById(R.id.backButton)
 

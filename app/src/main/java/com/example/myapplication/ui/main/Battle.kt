@@ -1,56 +1,96 @@
 package com.example.myapplication.ui.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.view.View
+
 import android.widget.Button
-import com.example.myapplication.BattleActivity
-import com.example.myapplication.MainActivity
-import com.example.myapplication.QuestActivity
-import com.example.myapplication.VictoryActivity
+import android.widget.TextView
+import com.example.myapplication.*
 
 
 class Battle {
     companion object {
         var expGained = 0
+        var goldGained = 0
     }
+    lateinit var battleTextView: TextView
+    lateinit var attackButton: Button
+    lateinit var defendButton: Button
+    lateinit var enemy: Enemy
+    lateinit var player: Player
+    lateinit var context: Context
 
-    fun start(player: Player, enemy: Enemy, context: Context) {
-        println("You've been attack by a ${enemy.name}")
-        var victoryActivity = VictoryActivity()
-        // Start the battle loop
-        while (player.health > 0 && enemy.health > 0) {
-            // Player's turn
-            println("Choose your attack!")
-            //the ?.attack ?: 0 is a null check
-            enemy.health -= player.skills["basic attack"]?.attack ?: 0
-            println("You attack the ${enemy.name} for ${player.attack} damage!")
+    fun checkVictory() {
+        val victoryActivity = VictoryActivity()
+        // Check if the enemy is defeated
+        if (enemy.health <= 0) {
+            battleTextView.text = "${battleTextView.text}\nYou have defeated the ${enemy.name}!"
 
-            // Check if the enemy is defeated
-            if (enemy.health <= 0) {
-                println("You have defeated the ${enemy.name}!")
-                //Updates player exp
-                MainActivity.player.experience += enemy.experienceReward
+            //Updates player exp and gold
+            MainActivity.player.experience += enemy.experienceReward
+            MainActivity.player.gold += enemy.goldReward
 
-                // Passing value to companion object so that it can be passed to victoryactivity
-                expGained = enemy.experienceReward
+            // Passing values to companion object so that it can be passed to victory activity
+            expGained = enemy.experienceReward
+            goldGained = enemy.goldReward
 
-                //Sends exp gained to victory screen for display
-                victoryActivity.expGained = enemy.experienceReward
+            //Sends exp gained to victory screen for display
+            victoryActivity.expGained = enemy.experienceReward
 
-                val victoryIntent = Intent(context, VictoryActivity::class.java) //
+
+
+            // Use View.postDelayed to delay the transition to the rewards screen
+            battleTextView.postDelayed({
+                //Moves to the rewards screen
+                val victoryIntent = Intent(context, VictoryActivity::class.java)
                 context.startActivity(victoryIntent)
-            }
-
-            // Enemy's turn
-            player.health -= enemy.attack
-            println("The ${enemy.name} attacks you for ${enemy.attack} damage!")
-
-            // Check if the player is defeated
-            if (player.health <= 0) {
-                println("You have been defeated by the ${enemy.name}!")
-                break
-            }
+            }, 2000) // Delay for 2 seconds (2000 milliseconds)
+        }
+        // Check if the player is defeated
+        if (player.health <= 0) {
+            battleTextView.text = "${battleTextView.text}\nYou have been defeated by the ${enemy.name}!"
+            attackButton.isEnabled = false
+            defendButton.isEnabled = false
         }
     }
-}
+
+    fun start(player: Player, enemy: Enemy, context: Context, action: String) {
+        this.player = player
+        this.enemy = enemy
+        this.context = context
+        battleTextView = (context as Activity).findViewById(R.id.battle_text)
+        attackButton = (context as Activity).findViewById(R.id.attackButton)
+        defendButton = (context as Activity).findViewById(R.id.defenseButton)
+        when (action) {
+            "attack" -> {
+                // Player's turn
+                enemy.health -= player.skills["basic attack"]?.attack ?: 0
+
+                battleTextView.text = "You attack the ${enemy.name} for ${player.attack} damage!"
+
+                checkVictory()
+
+                // Enemy's turn
+                player.health -= enemy.attack
+                battleTextView.text = "${battleTextView.text}\nThe ${enemy.name} attacks you for ${enemy.attack} damage!"
+                checkVictory()
+            }
+            "defend" -> {
+                //add defense to the player
+                player.defense += 1
+                battleTextView.text = "You prepare for an attack, +1 Defense!"
+
+                // Enemy's turn
+                player.health -= (enemy.attack - player.defense)
+                battleTextView.text = "${battleTextView.text}\nThe ${enemy.name} attacks you for ${enemy.attack - player.defense} damage!"
+
+                //Take away the temporary defense increase
+                player.defense -= 1
+            }
+    }
+
+
+
+}}
+

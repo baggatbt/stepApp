@@ -53,7 +53,12 @@ class BattleActivity : AppCompatActivity() {
 
     fun playerAttack(view: View) {
         val context = view.context
-        battle.start(player, enemy, context)
+        battle.start(player, enemy, context, "attack")
+    }
+
+    fun playerDefend(view: View) {
+        val context = view.context
+        battle.start(player, enemy, context, "defend")
     }
 }
 

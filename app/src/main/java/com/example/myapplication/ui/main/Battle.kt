@@ -5,15 +5,19 @@ import android.content.Intent
 import android.view.View
 import android.widget.Button
 import com.example.myapplication.BattleActivity
+import com.example.myapplication.MainActivity
 import com.example.myapplication.QuestActivity
+import com.example.myapplication.VictoryActivity
 
 
 class Battle {
-
+    companion object {
+        var expGained = 0
+    }
 
     fun start(player: Player, enemy: Enemy, context: Context) {
         println("You've been attack by a ${enemy.name}")
-
+        var victoryActivity = VictoryActivity()
         // Start the battle loop
         while (player.health > 0 && enemy.health > 0) {
             // Player's turn
@@ -25,7 +29,16 @@ class Battle {
             // Check if the enemy is defeated
             if (enemy.health <= 0) {
                 println("You have defeated the ${enemy.name}!")
-                val victoryIntent = Intent(context, QuestActivity::class.java) //TODO: Change this line to go to a victory activity screen that shows rewards and gains, and then updates player object
+                //Updates player exp
+                MainActivity.player.experience += enemy.experienceReward
+
+                // Passing value to companion object so that it can be passed to victoryactivity
+                expGained = enemy.experienceReward
+
+                //Sends exp gained to victory screen for display
+                victoryActivity.expGained = enemy.experienceReward
+
+                val victoryIntent = Intent(context, VictoryActivity::class.java) //
                 context.startActivity(victoryIntent)
             }
 

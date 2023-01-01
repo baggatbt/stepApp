@@ -44,6 +44,10 @@
         <activity
             android:name=".BattleActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".VictoryActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

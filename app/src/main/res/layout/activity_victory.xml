@@ -14,12 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="87dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="310dp"
         android:text="@string/exp_gained"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintEnd_toStartOf="@+id/expGained"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,46 +25,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="152dp"
         android:text="@string/gold_gained"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/goldGained"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/expGained"
-        android:layout_width="0dp"
+        android:layout_width="22dp"
         android:layout_height="44dp"
-        android:layout_marginEnd="176dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginStart="214dp"
+        android:layout_marginTop="82dp"
         android:text="@string/_0"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="@+id/expGainedText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/expGainedText" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/goldGained"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
+        android:layout_marginStart="214dp"
+        android:layout_marginTop="152dp"
         android:text="@string/_0"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="@+id/expGained"
-        app:layout_constraintTop_toBottomOf="@+id/expGained" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/backButton"
         android:layout_width="94dp"
         android:layout_height="80dp"
-        android:layout_marginBottom="182dp"
+        android:layout_marginStart="159dp"
+        android:layout_marginTop="261dp"
         android:text="Back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="backToQuestScreen"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/expGainedText" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

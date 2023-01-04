@@ -1,12 +1,18 @@
 package com.example.myapplication.ui.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.CountDownTimer
+import android.view.MotionEvent
+import android.view.View
 
 import android.widget.Button
 import android.widget.TextView
 import com.example.myapplication.*
+import java.util.*
+import kotlin.properties.Delegates
 
 
 class Battle {
@@ -21,11 +27,14 @@ class Battle {
     lateinit var player: Player
     lateinit var context: Context
 
+
+
     fun checkVictory() {
         val victoryActivity = VictoryActivity()
         // Check if the enemy is defeated
         if (enemy.health <= 0) {
             battleTextView.text = "${battleTextView.text}\nYou have defeated the ${enemy.name}!"
+            attackButton.isEnabled = false
 
             //Updates player exp and gold
             MainActivity.player.experience += enemy.experienceReward
@@ -37,8 +46,6 @@ class Battle {
 
             //Sends exp gained to victory screen for display
             victoryActivity.expGained = enemy.experienceReward
-
-
 
             // Use View.postDelayed to delay the transition to the rewards screen
             battleTextView.postDelayed({
@@ -62,21 +69,24 @@ class Battle {
         battleTextView = (context as Activity).findViewById(R.id.battle_text)
         attackButton = (context as Activity).findViewById(R.id.attackButton)
         defendButton = (context as Activity).findViewById(R.id.defenseButton)
+        val rootView = (context as Activity).findViewById<View>(R.id.root)
+
         when (action) {
             "attack" -> {
+                attackButton.isEnabled = false
+
                 // Player's turn
                 enemy.health -= player.skills["basic attack"]?.attack ?: 0
-
                 battleTextView.text = "You attack the ${enemy.name} for ${player.attack} damage!"
-
                 checkVictory()
 
                 // Enemy's turn
                 player.health -= enemy.attack
                 battleTextView.text = "${battleTextView.text}\nThe ${enemy.name} attacks you for ${enemy.attack} damage!"
                 checkVictory()
+
             }
-            "defend" -> {
+                "defend" -> {
                 //add defense to the player
                 player.defense += 1
                 battleTextView.text = "You prepare for an attack, +1 Defense!"

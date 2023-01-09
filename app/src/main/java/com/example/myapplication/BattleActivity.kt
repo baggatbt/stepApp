@@ -71,7 +71,7 @@ class BattleActivity : AppCompatActivity() {
         })
     }
 
-    fun playerAttack(view: View) {
+  /**  fun playerAttack(view: View) {
         animateKnight()
 
         val context = view.context
@@ -84,6 +84,7 @@ class BattleActivity : AppCompatActivity() {
         val context = view.context
         battle.start(player, enemy, context, "defend")
     }
+  */
 }
 
 

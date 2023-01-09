@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.example.myapplication.*
+import kotlinx.coroutines.NonCancellable.cancel
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -29,12 +30,13 @@ class Battle {
 
 
 
+
     fun checkVictory() {
         val victoryActivity = VictoryActivity()
         // Check if the enemy is defeated
         if (enemy.health <= 0) {
             battleTextView.text = "${battleTextView.text}\nYou have defeated the ${enemy.name}!"
-            attackButton.isEnabled = false
+
 
             //Updates player exp and gold
             MainActivity.player.experience += enemy.experienceReward
@@ -62,6 +64,7 @@ class Battle {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun start(player: Player, enemy: Enemy, context: Context, action: String) {
         this.player = player
         this.enemy = enemy
@@ -70,15 +73,65 @@ class Battle {
         attackButton = (context as Activity).findViewById(R.id.attackButton)
         defendButton = (context as Activity).findViewById(R.id.defenseButton)
         val rootView = (context as Activity).findViewById<View>(R.id.root)
+        var countDownTimer: CountDownTimer? = null
+        var timerRunning = false
 
-        when (action) {
+
+      /**  when (action) {
             "attack" -> {
                 attackButton.isEnabled = false
 
+                // Only start the timer if it is not already running
+                if (!timerRunning) {
+                    countDownTimer = object : CountDownTimer(3000,1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            //Checks to see time is between the range given.
+                            if ((millisUntilFinished >= 500 && millisUntilFinished <= 1500)) {
+                                // Attach the touch listener to the root view
+                                rootView.setOnTouchListener { view, motionEvent ->
+                                    when (motionEvent.action) {
+                                        MotionEvent.ACTION_DOWN -> {
+                                            // The root view has been tapped
+                                            battleTextView.text = "bonus damage!"
+                                            enemy.health -= player.skills["basic attack"]?.attack ?: 0
+                                            checkVictory()
+                                            rootView.setOnTouchListener(null)
+
+                                            //Cancel the timer
+                                            countDownTimer?.cancel()
+                                            timerRunning = false
+                                            attackButton.isEnabled = true
+                                        }
+                                    }
+                                    true
+                                }
+                            } else {
+                                // Remove the touch listener from the root view
+                                rootView.setOnTouchListener(null)
+                            }
+                        }
+
+                        override fun onFinish() {
+                            // The timer has finished
+                            timerRunning = false
+                            countDownTimer?.cancel()
+                            attackButton.isEnabled = true
+                        }
+                    }
+
+                    // Set the timerRunning flag to true
+
+                    countDownTimer.start()
+                }
+
                 // Player's turn
                 enemy.health -= player.skills["basic attack"]?.attack ?: 0
+
+
                 battleTextView.text = "You attack the ${enemy.name} for ${player.attack} damage!"
                 checkVictory()
+
+
 
                 // Enemy's turn
                 player.health -= enemy.attack
@@ -99,6 +152,7 @@ class Battle {
                 player.defense -= 1
             }
     }
+      */
 
 
 

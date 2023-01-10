@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -10,6 +11,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.ui.main.*
 import com.example.myapplication.MainActivity
+
 
 import kotlin.random.Random
 
@@ -51,40 +53,13 @@ class BattleActivity : AppCompatActivity() {
         }
 
         println("You've been attacked by a ${enemy.name}")
+
+
+
+        battle.start(this.player,this.enemy, this)
     }
 
-    private fun animateKnight() {
-        // Create an ObjectAnimator to animate the x position of the basicKnight image
-        var basicKnight: ImageView = findViewById(R.id.basicKnight)
-        val animator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x + 50f)
-        animator.duration = 500
-        animator.start()
 
-        // Add a listener to the animator to reverse the animation when it's finished
-        animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                val reverseAnimator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x - 50f)
-                reverseAnimator.duration = 500
-                reverseAnimator.start()
-            }
-        })
-    }
-
-  /**  fun playerAttack(view: View) {
-        animateKnight()
-
-        val context = view.context
-        battle.start(player, enemy, context, "attack")
-
-
-    }
-
-    fun playerDefend(view: View) {
-        val context = view.context
-        battle.start(player, enemy, context, "defend")
-    }
-  */
 }
 
 

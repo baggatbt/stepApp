@@ -93,7 +93,7 @@ class QuestActivity : AppCompatActivity()   {
     fun calculateExpToLevel(currentLevel: Int): Int {
       return currentLevel * 10 + Math.pow(currentLevel.toDouble(), 1.5).toInt()
     }
-
+    //TODO: change this to handle if a player levels more than once.
     fun checkIfPlayerLevelUp() {
         val expToLevel = calculateExpToLevel(player.level)
         if (player.experience > expToLevel) {

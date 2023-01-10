@@ -14,7 +14,6 @@
         android:layout_width="135dp"
         android:layout_height="53dp"
         android:layout_marginTop="568dp"
-        android:onClick="playerAttack"
         android:text="Attack!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.148"
@@ -92,12 +91,34 @@
         app:layout_constraintVertical_bias="0.978">
 
         <TextView
-            android:id="@+id/battle_text"
+            android:id="@+id/battlePlayerText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="18sp" />
     </ScrollView>
+
+    <ScrollView
+        android:layout_width="408dp"
+        android:layout_height="107dp"
+        app:layout_constraintBottom_toTopOf="@id/attackButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.744">
+
+        <TextView
+            android:id="@+id/battleEnemyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textSize="18sp" />
+
+
+        </ScrollView>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

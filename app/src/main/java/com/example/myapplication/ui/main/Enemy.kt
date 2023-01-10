@@ -1,6 +1,10 @@
 package com.example.myapplication.ui.main
 
 
+import android.media.Image
+import com.example.myapplication.R
+
+
 
 open class Enemy(
     open var name: String,
@@ -14,7 +18,7 @@ open class Enemy(
 
 class Goblin(
     attackModifier: Int,
-    defenseModifier: Int
+    defenseModifier: Int,
 ) : Enemy("Goblin", 1, 1 + attackModifier, 0 + defenseModifier, 3, 5, 3)
 
 class Slime(

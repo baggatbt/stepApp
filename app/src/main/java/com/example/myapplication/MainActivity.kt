@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.ui.main.Job
 import com.example.myapplication.ui.main.Player
 import com.example.myapplication.ui.main.Skill
 
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         var currentSteps = 0
 
 
-        val player = Player(1,1,1,0, health = 10, experience = 0)
+        val player = Player(1,1,1,"knight",0,10,0)
 
     }
 

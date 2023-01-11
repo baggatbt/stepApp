@@ -3,19 +3,21 @@ package com.example.myapplication.ui.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.CountDownTimer
-import android.view.MotionEvent
 import android.view.View
 import kotlinx.coroutines.Runnable
 
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.myapplication.*
+import com.example.myapplication.ui.main.Skill.Companion.defend
+import com.example.myapplication.ui.main.Skill.Companion.setInterval
 import kotlinx.coroutines.NonCancellable.cancel
 import org.w3c.dom.Text
 import java.util.*
@@ -38,8 +40,9 @@ class Battle {
     lateinit var basicKnight : ImageView
     lateinit var goblinPicture : ImageView
     lateinit var rootView: View
+    lateinit var enemyAttackProgressBar: ProgressBar
     var runnable: Runnable = Runnable {}
-
+    private var isBattleOver = false
 
 
     fun checkVictoryAndDefeat(rootView: View) {
@@ -47,6 +50,7 @@ class Battle {
         // Check if the enemy is defeated
         if (enemy.health <= 0) {
             battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.name}!"
+            isBattleOver = true
 
 
             //Updates player exp and gold
@@ -91,6 +95,14 @@ class Battle {
         basicKnight = (context as Activity).findViewById(R.id.basicKnight)
         goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
         rootView = (context as Activity).findViewById<View>(R.id.root)
+        enemyAttackProgressBar = (context as Activity).findViewById(R.id.enemyAttackTimerProgressBar)
+        enemyAttackProgressBar.max = 100
+        val animator = ValueAnimator.ofInt(0, 100).setDuration(3000)
+        animator.addUpdateListener { valueAnimator ->
+            enemyAttackProgressBar.progress = valueAnimator.animatedValue as Int
+        }
+        animator.start()
+
         var countDownTimer: CountDownTimer? = null
         var timerRunning = false
 
@@ -98,10 +110,17 @@ class Battle {
             attack()
         }
 
+        defendButton.setOnClickListener {
+            defend()
+        }
+
         //This runs the enemy attack every 3 seconds as long as the player is above 0
         runnable = Runnable {
             if (player.health > 0) {
+                //This controls the progress bar that indicates when an enemy attacks
+                animator.start()
                 enemyAttack()
+                enemyAttackProgressBar.progress = 0
                 rootView.postDelayed(runnable, 3000)
 
             }
@@ -122,25 +141,53 @@ class Battle {
     //this allows a almost active combat with possibilities for reactive play. EX: player use shield right before enemy hits
     //Allow player to make macros for autocombat, such as use ability A/B/C off cooldown
     //function, isBattleRunning() to keep allowing inputs and cooldowns
+
+    //Change this to Ability 1 (will handle calling abilities in this function)
+    //For now it will be coded to be attack
     private fun attack() {
         // code to handle the player's attack
-        animateKnight()
-        battlePlayerTextView.text = "You attack ${enemy.name} for ${player.attack} damage"
-        enemy.health -= player.attack
-        checkVictoryAndDefeat(rootView)
+        if (!isBattleOver) {
+            animateKnight()
+            battlePlayerTextView.text = "You attack ${enemy.name} for ${player.attack} damage"
+            Skill.basicAttack(enemy)
+            checkVictoryAndDefeat(rootView)
+            //start cooldown
+            attackOnCooldown = true
+            attackButton.isEnabled = false
+            attackButton.text = "Cooldown"
+            attackButton.postDelayed({
+                attackOnCooldown = false
+                attackButton.isEnabled = true
+                attackButton.text = "Attack"
+            }, cooldownPeriod)
+        }
+    }
+    //change this to Ability2
+    private fun defend() {
+        // code to use defend ability
+        if (!isBattleOver) {
+            battlePlayerTextView.text = "You increase your defense by ${Skill.defend(player)}"
+            Skill.defend(player)
+            println(player.defense)
+            checkVictoryAndDefeat(rootView)
 
-        //start cooldown
-        attackOnCooldown = true
-        attackButton.isEnabled = false
-        attackButton.text = "Cooldown"
-        attackButton.postDelayed({
-            attackOnCooldown = false
-            attackButton.isEnabled = true
-            attackButton.text = "Attack" }, cooldownPeriod)
+            //start cooldown
+            attackOnCooldown = true
+            defendButton.isEnabled = false
+            defendButton.text = "Cooldown"
+            defendButton.postDelayed({
+
+                attackOnCooldown = false
+                defendButton.isEnabled = true
+                defendButton.text = "Defend"
+            }, cooldownPeriod)
+            println(player.defense)
+        }
     }
 
+
     private fun enemyAttack(){
-        player.health -= enemy.attack
+        player.health -= (player.defense - enemy.attack)
         battleEnemyTextView.text = "The ${enemy.name} attacks you for ${enemy.attack} damage"
     }
 

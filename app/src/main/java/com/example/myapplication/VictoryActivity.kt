@@ -7,7 +7,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.MainActivity.Companion.player
 import com.example.myapplication.ui.main.Battle
 import com.example.myapplication.ui.main.Goblin
 import org.w3c.dom.Text
@@ -31,6 +33,21 @@ class VictoryActivity: AppCompatActivity() {
         var goldGainedView: TextView = findViewById(R.id.goldGained)
         goldGainedView.text = ("$goldGained")
         println(goldGainedView.text)
+
+
+
+        fun calculateExpToLevel(currentLevel: Int): Int {
+            return currentLevel * 10 + Math.pow(currentLevel.toDouble(), 1.5).toInt()
+        }
+        //TODO: change this to handle if a player levels more than once.
+        fun checkIfPlayerLevelUp() {
+            val expToLevel = calculateExpToLevel(player.level)
+            if (player.experience > expToLevel) {
+                player.level += 1
+                Toast.makeText(this, "You are now level " + player.level, Toast.LENGTH_SHORT).show()
+            }
+        }
+        checkIfPlayerLevelUp()
 
         val backButton: Button = findViewById(R.id.backButton)
 

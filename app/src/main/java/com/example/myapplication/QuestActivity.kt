@@ -82,14 +82,6 @@ class QuestActivity : AppCompatActivity()   {
 
     }
 
-  /**  fun checkIfPlayerLevelUp(){
-        if (player.experience > expToLevel ){
-            player.level +=1
-            Toast.makeText(this, "You are now level " + player.level,Toast.LENGTH_SHORT).show()
-        }
-    }
-  **/
-
     fun calculateExpToLevel(currentLevel: Int): Int {
       return currentLevel * 10 + Math.pow(currentLevel.toDouble(), 1.5).toInt()
     }

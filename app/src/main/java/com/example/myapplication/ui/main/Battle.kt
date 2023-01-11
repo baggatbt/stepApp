@@ -17,7 +17,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.myapplication.*
 import com.example.myapplication.ui.main.Skill.Companion.defend
-import com.example.myapplication.ui.main.Skill.Companion.setInterval
 import kotlinx.coroutines.NonCancellable.cancel
 import org.w3c.dom.Text
 import java.util.*

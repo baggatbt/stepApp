@@ -18,22 +18,5 @@ class Player(var level:Int, var attack:Int, var defense:Int, var playerJob:Strin
     }
 }
 
-class Skill() {
-    companion object {
-
-        fun basicAttack(enemy: Enemy){
-             enemy.health  -= player.attack
-        }
-
-        fun defend(player: Player) {
-            player.defense++
-            GlobalScope.launch {
-                delay(2000L)
-                player.defense--
-            }
-        }
-    }
-
-}
 
 

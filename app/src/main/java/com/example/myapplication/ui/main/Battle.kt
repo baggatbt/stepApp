@@ -190,10 +190,14 @@ class Battle {
     }
 
 
-    private fun enemyAttack(){
+    private fun enemyAttack() {
         var damageDealt = (enemy.attack - player.defense)
-        playerHealthBar.progress -= damageDealt
-        battleEnemyTextView.text = "The ${enemy.name} attacks you for ${damageDealt} damage"
+        if (damageDealt >= 0) {
+            playerHealthBar.progress -= damageDealt
+            battleEnemyTextView.text = "The ${enemy.name} attacks you for ${damageDealt} damage"
+        } else {
+            "The ${enemy.name} attacks you for 0 damage"
+        }
     }
 
 

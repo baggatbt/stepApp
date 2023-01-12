@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         var currentSteps = 0
 
 
-        val player = Player(1,1,1,"knight",0,10,0)
+        val player = Player(1,1,0,"knight",0,10,0)
 
     }
 

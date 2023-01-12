@@ -28,6 +28,7 @@ class QuestActivity : AppCompatActivity()   {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quest)
         println(currentSteps)
+        println(player.defense)
 
 
 

@@ -54,7 +54,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         loadData()
         // Adding a context of SENSOR_SERVICE as Sensor Manager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        println(player.experience)
+
+        println(player.defense)
 
     }
 

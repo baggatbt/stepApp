@@ -40,6 +40,7 @@ class Battle {
     lateinit var goblinPicture : ImageView
     lateinit var rootView: View
     lateinit var enemyAttackProgressBar: ProgressBar
+    lateinit var playerHealthBar: ProgressBar
     var runnable: Runnable = Runnable {}
     private var isBattleOver = false
 
@@ -96,6 +97,10 @@ class Battle {
         rootView = (context as Activity).findViewById<View>(R.id.root)
         enemyAttackProgressBar = (context as Activity).findViewById(R.id.enemyAttackTimerProgressBar)
         enemyAttackProgressBar.max = 100
+        playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
+        playerHealthBar.max = player.health
+        playerHealthBar.progress = player.health
+        println(player.defense)
         val animator = ValueAnimator.ofInt(0, 100).setDuration(3000)
         animator.addUpdateListener { valueAnimator ->
             enemyAttackProgressBar.progress = valueAnimator.animatedValue as Int
@@ -186,8 +191,9 @@ class Battle {
 
 
     private fun enemyAttack(){
-        player.health -= (player.defense - enemy.attack)
-        battleEnemyTextView.text = "The ${enemy.name} attacks you for ${enemy.attack} damage"
+        var damageDealt = (enemy.attack - player.defense)
+        playerHealthBar.progress -= damageDealt
+        battleEnemyTextView.text = "The ${enemy.name} attacks you for ${damageDealt} damage"
     }
 
 

@@ -177,7 +177,8 @@ class Battle {
     private fun defend() {
         // code to use defend ability
         if (!isBattleOver) {
-            battlePlayerTextView.text = "You increase your defense by ${Skill.defend(player)}"
+
+            battlePlayerTextView.text = "You increase your defense by 1"
             Skill.defend(player)
             println(player.defense)
             checkVictoryAndDefeat(rootView)

@@ -41,6 +41,7 @@ class Battle {
     lateinit var rootView: View
     lateinit var enemyAttackProgressBar: ProgressBar
     lateinit var playerHealthBar: ProgressBar
+    lateinit var enemyHealthBar: ProgressBar
     var runnable: Runnable = Runnable {}
     private var isBattleOver = false
 
@@ -100,6 +101,10 @@ class Battle {
         playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
         playerHealthBar.max = player.health
         playerHealthBar.progress = player.health
+        enemyHealthBar =  (context as Activity).findViewById(R.id.enemyHealthBar)
+        enemyHealthBar.max = enemy.health
+        enemyHealthBar.progress = enemy.health
+
         println(player.defense)
         val animator = ValueAnimator.ofInt(0, 100).setDuration(3000)
         animator.addUpdateListener { valueAnimator ->
@@ -153,6 +158,8 @@ class Battle {
         if (!isBattleOver) {
             animateKnight()
             battlePlayerTextView.text = "You attack ${enemy.name} for ${player.attack} damage"
+            var damageDealt = (player.attack - enemy.defense)
+            enemyHealthBar.progress -= damageDealt
             Skill.basicAttack(enemy)
             checkVictoryAndDefeat(rootView)
             //start cooldown

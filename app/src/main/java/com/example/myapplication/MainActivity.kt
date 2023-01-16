@@ -8,6 +8,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // steps and it has also been given the value of 0 float
     private var previousTotalSteps = 0f
 
+
     // Current steps are calculated by taking the difference of total steps
     // and previous steps
     companion object{
@@ -55,9 +58,19 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Adding a context of SENSOR_SERVICE as Sensor Manager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-        println(player.defense)
+        val button = findViewById<Button>(R.id.button_menu)
+        button.setOnClickListener {
+            showMenu(it)
+        }
 
     }
+
+    fun showMenu(view: View) {
+        val popup = PopupMenu(this, view)
+        popup.menuInflater.inflate(R.menu.menu_main, popup.menu)
+        popup.show()
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -107,6 +120,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         }
     }
+
+
 
    /**fun resetSteps() {
         var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)

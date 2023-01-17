@@ -16,7 +16,7 @@ class Skill() {
         fun defend(player: Player) {
             player.defense++
             GlobalScope.launch {
-                delay(2000L)
+                delay(500L)
                 player.defense--
             }
         }

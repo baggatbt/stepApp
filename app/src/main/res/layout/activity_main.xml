@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/mainbackground">
 
 
     <!--Text View for the "Steps" text displayed-->
@@ -28,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="508dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginEnd="304dp"
         android:layout_marginBottom="103dp"
         android:onClick="showMenu"
         android:text="Menu"
@@ -134,8 +135,8 @@
         android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="304dp"
+        android:layout_marginBottom="24dp"
         android:onClick="switchToMap"
         android:text="To Map"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -143,25 +144,18 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="155dp"
-        android:layout_height="209dp"
+        android:layout_width="122dp"
+        android:layout_height="103dp"
 
         android:layout_marginTop="77dp"
         android:layout_marginBottom="78dp"
         app:layout_constraintBottom_toBottomOf="@+id/button_send"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/exp"
+        app:layout_constraintVertical_bias="0.57"
         app:srcCompat="@drawable/basicknight" />
 
-    <ImageView
-        android:id="@+id/basicAttackSkillIcon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="506dp"
-        android:layout_marginEnd="283dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicattackicon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

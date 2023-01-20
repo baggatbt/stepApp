@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
@@ -7,6 +8,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.PopupMenu
@@ -16,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.ui.main.Job
 import com.example.myapplication.ui.main.Player
 import com.example.myapplication.ui.main.Skill
+
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -122,34 +125,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
 
-
-   /**fun resetSteps() {
-        var stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
-        stepsTaken.setOnClickListener {
-            // This will give a toast message if the user want to reset the steps
-            Toast.makeText(this, "Long tap to reset steps", Toast.LENGTH_SHORT).show()
-        }
-
-        stepsTaken.setOnLongClickListener {
-
-            previousTotalSteps = totalSteps
-
-            // When the user will click long tap on the screen,
-            // the steps will be reset to 0
-            stepsTaken.text = 0.toString()
-            println(totalSteps)
-            println(previousTotalSteps)
-            println(currentSteps)
-
-            // This will save the data
-            saveData()
-
-            true
-        }
-    }
-   **/
-
-
        fun saveData() {
 
            // Shared Preferences will allow saving
@@ -182,25 +157,28 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
 
 
-    fun switchToMap(view: View?) {
-        val intent = Intent(this@MainActivity, MapActivity::class.java)
-        startActivity((intent))
-    }
-
-
-
-
-
-
     //Saves step data on closing the app
     override fun onStop() {
         super.onStop()
         saveData()
     }
 
+    fun switchToMap(item: MenuItem) {
+        val intent = Intent(this@MainActivity, MapActivity::class.java)
+        startActivity((intent))
+    }
 
+    fun startRandomBattle(item:MenuItem){
+        // Create an intent to launch the BattleActivity
+        val intent = Intent(this@MainActivity, BattleActivity::class.java)
+        startActivity(intent)
+    }
 
-
+    fun switchToWarriorBuilding(view: View?) {
+        // Create an intent to launch the BattleActivity
+        val intent = Intent(this@MainActivity, WarriorBuildingTownOneActivity::class.java)
+        startActivity(intent)
+    }
 
 
 }

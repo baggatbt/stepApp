@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/mainbackground">
+    android:background="@drawable/mainbackground"
+    tools:context=".MainActivity">
 
 
     <!--Text View for the "Steps" text displayed-->
@@ -14,29 +14,24 @@
         android:layout_width="117dp"
         android:layout_height="0dp"
         android:layout_marginBottom="2dp"
-        android:onClick="resetSteps"
         android:text="@string/steps"
         android:textColor="@color/black"
         android:textSize="35sp"
         app:layout_constraintBottom_toTopOf="@+id/tv_stepsTaken"
         app:layout_constraintEnd_toEndOf="@+id/tv_stepsTaken"
-        app:layout_constraintStart_toEndOf="@+id/tv_stepsTaken"
-        app:layout_constraintTop_toBottomOf="@+id/button_send" />
+        app:layout_constraintStart_toEndOf="@+id/tv_stepsTaken" />
 
 
     <Button
         android:id="@+id/button_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="508dp"
-        android:layout_marginEnd="304dp"
-        android:layout_marginBottom="103dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="17dp"
         android:onClick="showMenu"
         android:text="Menu"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/expText"
@@ -129,33 +124,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!--The to quests button-->
-
-    <Button
-        android:id="@+id/button_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="304dp"
-        android:layout_marginBottom="24dp"
-        android:onClick="switchToMap"
-        android:text="To Map"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="122dp"
         android:layout_height="103dp"
 
-        android:layout_marginTop="77dp"
-        android:layout_marginBottom="78dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_send"
+        android:layout_marginStart="145dp"
+        android:layout_marginTop="328dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.104"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/exp"
-        app:layout_constraintVertical_bias="0.57"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/basicknight" />
+
+    <Button
+        android:id="@+id/buildingOneClickBox"
+        android:layout_width="112dp"
+        android:layout_height="167dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="338dp"
+        android:layout_marginBottom="171dp"
+        android:onClick="switchToWarriorBuilding"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

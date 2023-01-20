@@ -4,15 +4,11 @@ import android.os.Bundle
 import android.view.View
 import android.content.Intent
 import android.content.Context
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.example.myapplication.ui.main.Quest
-import com.example.myapplication.ui.main.Player
 
-class QuestActivity : AppCompatActivity()   {
+class TownOneActivity : AppCompatActivity()   {
 
 
      var currentSteps = MainActivity.currentSteps
@@ -26,7 +22,7 @@ class QuestActivity : AppCompatActivity()   {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_quest)
+        setContentView(R.layout.activity_townone)
         println(currentSteps)
         println(player.defense)
 
@@ -35,7 +31,7 @@ class QuestActivity : AppCompatActivity()   {
     }
 
     fun backToMap(view: View?) {
-        val intent = Intent(this@QuestActivity, MapActivity::class.java)
+        val intent = Intent(this@TownOneActivity, MapActivity::class.java)
         startActivity(intent)
         MainActivity.currentSteps = currentSteps
 
@@ -43,7 +39,7 @@ class QuestActivity : AppCompatActivity()   {
 
     fun battleOneStart(view: View?) {
         // Create an intent to launch the BattleActivity
-        val intent = Intent(this@QuestActivity, BattleActivity::class.java)
+        val intent = Intent(this@TownOneActivity, BattleActivity::class.java)
         startActivity(intent)
     }
 

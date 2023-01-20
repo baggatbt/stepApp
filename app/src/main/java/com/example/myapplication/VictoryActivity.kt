@@ -1,19 +1,14 @@
 package com.example.myapplication
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.MainActivity.Companion.player
 import com.example.myapplication.ui.main.Battle
-import com.example.myapplication.ui.main.Goblin
-import org.w3c.dom.Text
-import kotlin.properties.Delegates
 
 class VictoryActivity: AppCompatActivity() {
 
@@ -59,7 +54,7 @@ class VictoryActivity: AppCompatActivity() {
     }
 
     fun backToQuestScreen(view: View) {
-        val intent = Intent(this@VictoryActivity, QuestActivity::class.java)
+        val intent = Intent(this@VictoryActivity, TownOneActivity::class.java)
         startActivity((intent))
     }
 }

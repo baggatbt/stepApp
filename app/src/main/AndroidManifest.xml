@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".QuestActivity"
+            android:name=".TownOneActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
@@ -48,6 +48,9 @@
         <activity
             android:name=".VictoryActivity"
             android:exported="true" />
+
+        <activity android:name=".WarriorBuildingTownOneActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

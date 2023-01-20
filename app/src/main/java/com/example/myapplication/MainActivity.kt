@@ -41,14 +41,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // steps and it has also been given the value of 0 float
     private var previousTotalSteps = 0f
 
+    var stepsToGo = WarriorBuildingTownOneActivity.stepsToGo
+
 
     // Current steps are calculated by taking the difference of total steps
     // and previous steps
     companion object{
-
         var currentSteps = 0
-
-
         val player = Player(1,1,0,"knight",0,10,0)
 
     }
@@ -57,10 +56,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        println(stepsToGo)
         loadData()
         // Adding a context of SENSOR_SERVICE as Sensor Manager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
         val button = findViewById<Button>(R.id.button_menu)
         button.setOnClickListener {
             showMenu(it)
@@ -104,6 +103,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         var expDisplay = findViewById<TextView>(R.id.exp)
 
         var goldDisplay = findViewById<TextView>(R.id.gold)
+
+        stepsToGo--
+
+
 
         if (running) {
             totalSteps = event!!.values[0]
@@ -178,6 +181,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Create an intent to launch the BattleActivity
         val intent = Intent(this@MainActivity, WarriorBuildingTownOneActivity::class.java)
         startActivity(intent)
+        WarriorBuildingTownOneActivity.stepsToGo = stepsToGo
     }
 
 

@@ -160,7 +160,7 @@ class Battle {
             battlePlayerTextView.text = "You attack ${enemy.name} for ${player.attack} damage"
             var damageDealt = (player.attack - enemy.defense)
             enemyHealthBar.progress -= damageDealt
-            Skill.basicAttack(enemy)
+            basicAtk
             checkVictoryAndDefeat(rootView)
             //start cooldown
             attackOnCooldown = true

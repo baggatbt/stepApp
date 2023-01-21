@@ -1,9 +1,9 @@
 package com.example.myapplication.ui.main
 
 class Job {
-    var skillList = listOf<Skill>()
+    var skillList = mutableListOf<Skill>()
 
-    public fun knight(){
-
+     fun knight(){
+       skillList.add(basicAtk)
     }
 }

@@ -5,13 +5,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
-class Skill() {
+typealias test = (enemy:Enemy) -> Unit
+class Skill(var skillName: String, var skillDescription: String, var callback:test) {
     companion object {
 
-        fun basicAttack(enemy: Enemy){
-            enemy.health  -= MainActivity.player.attack
-        }
+
+
+
+
 
         fun defend(player: Player) {
             player.defense++
@@ -23,3 +24,10 @@ class Skill() {
     }
 
 }
+
+fun basicAttack(enemy: Enemy){
+    enemy.health  -= MainActivity.player.attack
+}
+
+var basicAtk = Skill("Basic Attack","description", ::basicAttack)
+

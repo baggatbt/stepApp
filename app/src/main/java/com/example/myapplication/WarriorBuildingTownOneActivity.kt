@@ -21,6 +21,7 @@ class WarriorBuildingTownOneActivity: AppCompatActivity(), SensorEventListener {
 
     lateinit var stepsToGoView: TextView
     lateinit var trainingButton: Button
+     var trainingFlag = false
 
     companion object{
         var stepsToGo: Int = 0
@@ -49,15 +50,18 @@ class WarriorBuildingTownOneActivity: AppCompatActivity(), SensorEventListener {
         // implementation here
     }
 
+    //Counts down the amount of steps until reward, checks to make sure the training button was pressed and is 0 again, then re-enables the training button.
     override fun onSensorChanged(event: SensorEvent?) {
-        if (stepsToGo > 0) {
+        if (stepsToGo > 0 && trainingFlag) {
             stepsToGo--
             stepsToGoView.text = ("$stepsToGo")
         }
-        println(stepsToGo)
-
+        else if (trainingFlag && stepsToGo == 0){
+             MainActivity.player.experience += 30
+            trainingButton.isEnabled = true
+            trainingFlag = false
+         }
     }
-
 
 
     fun backToTown(view: View?) {
@@ -65,12 +69,15 @@ class WarriorBuildingTownOneActivity: AppCompatActivity(), SensorEventListener {
         startActivity(intent)
     }
 
-    fun startTraining(view: View?){
-        stepsToGo = 500
-        stepsToGoView.visibility = View.VISIBLE
+    fun startTraining(view: View?) {
+            trainingFlag = true
+            stepsToGo = 500
+            stepsToGoView.visibility = View.VISIBLE
             stepsToGoView.text = ("$stepsToGo")
-        }
+            trainingButton.isEnabled = false
     }
+}
+
 
 
 

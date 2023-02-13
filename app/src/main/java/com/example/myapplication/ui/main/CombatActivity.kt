@@ -45,6 +45,7 @@ class CombatActivity : AppCompatActivity() {
                 // ...
             }
         }
+        //test
 
         startAttackAnimation()
     }

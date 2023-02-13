@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/goblinImage"
-        android:layout_width="99dp"
-        android:layout_height="169dp"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
         android:layout_marginTop="124dp"
         android:layout_marginEnd="16dp"
         android:visibility="invisible"
@@ -60,23 +60,79 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/goblin" />
 
+
     <ImageView
         android:id="@+id/basicKnight"
-        android:layout_width="114dp"
-        android:layout_height="182dp"
-        android:layout_marginTop="125dp"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="108dp"
         android:contentDescription="TODO"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/basicknight" />
 
+    <ImageView
+        android:id="@+id/basicKnight2"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="184dp"
+        android:contentDescription="TODO"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/basicknight" />
+
+    <ImageView
+        android:id="@+id/basicKnight3"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="TODO"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/basicknight" />
+
+    <ImageView
+        android:id="@+id/basicKnight4"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="184dp"
+        android:contentDescription="TODO"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/basicknight" />
+
+    <ImageView
+        android:id="@+id/basicKnight5"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="108dp"
+        android:contentDescription="TODO"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/basicknight" />
+
+    <ImageView
+        android:id="@+id/basicKnight6"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="TODO"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/basicknight" />
 
     <TextView
         android:id="@+id/damageTextView"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginEnd="172dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="188dp"
+        android:layout_marginBottom="76dp"
         app:layout_constraintBottom_toTopOf="@id/goblinImage"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -107,7 +163,7 @@
         android:layout_height="21dp"
         android:layout_marginStart="16dp"
 
-        android:layout_marginTop="304dp"
+        android:layout_marginTop="320dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

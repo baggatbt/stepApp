@@ -16,8 +16,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.myapplication.*
-import com.example.myapplication.ui.main.Skill.Companion.defend
 import kotlinx.coroutines.NonCancellable.cancel
+import kotlinx.coroutines.delay
 import org.w3c.dom.Text
 import java.util.*
 import kotlin.properties.Delegates
@@ -42,6 +42,7 @@ class Battle {
     lateinit var enemyAttackProgressBar: ProgressBar
     lateinit var playerHealthBar: ProgressBar
     lateinit var enemyHealthBar: ProgressBar
+    var enemyCanAttackFlag = false
     var runnable: Runnable = Runnable {}
     private var isBattleOver = false
 
@@ -117,15 +118,17 @@ class Battle {
 
         attackButton.setOnClickListener {
             attack()
+            enemyCanAttackFlag = true
         }
 
         defendButton.setOnClickListener {
             defend()
+            enemyCanAttackFlag = true
         }
 
         //This runs the enemy attack every 3 seconds as long as the player is above 0
-        runnable = Runnable {
-            if (player.health > 0) {
+     /*   runnable = Runnable {
+            if (player.health > 0 && enemyCanAttackFlag) {
                 //This controls the progress bar that indicates when an enemy attacks
                 animator.start()
                 enemyAttack()
@@ -139,7 +142,7 @@ class Battle {
             }
         }
         rootView.postDelayed(runnable, 3000)
-
+*/
     }
 
 
@@ -179,7 +182,7 @@ class Battle {
         if (!isBattleOver) {
 
             battlePlayerTextView.text = "You increase your defense by 1"
-            Skill.defend(player)
+            basicDefense
             println(player.defense)
             checkVictoryAndDefeat(rootView)
 

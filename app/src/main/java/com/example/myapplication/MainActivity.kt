@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
@@ -15,10 +14,8 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.ui.main.Job
+import com.example.myapplication.ui.main.CombatActivity
 import com.example.myapplication.ui.main.Player
-import com.example.myapplication.ui.main.Skill
-
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -173,7 +170,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     fun startRandomBattle(item:MenuItem){
         // Create an intent to launch the BattleActivity
-        val intent = Intent(this@MainActivity, BattleActivity::class.java)
+        val intent = Intent(this@MainActivity, CombatActivity::class.java)
         startActivity(intent)
     }
 

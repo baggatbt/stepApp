@@ -63,65 +63,10 @@
 
     <ImageView
         android:id="@+id/basicKnight"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
+        android:layout_width="115dp"
+        android:layout_height="141dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="108dp"
-        android:contentDescription="TODO"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicknight" />
-
-    <ImageView
-        android:id="@+id/basicKnight2"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="184dp"
-        android:contentDescription="TODO"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicknight" />
-
-    <ImageView
-        android:id="@+id/basicKnight3"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:contentDescription="TODO"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicknight" />
-
-    <ImageView
-        android:id="@+id/basicKnight4"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="184dp"
-        android:contentDescription="TODO"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicknight" />
-
-    <ImageView
-        android:id="@+id/basicKnight5"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="108dp"
-        android:contentDescription="TODO"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicknight" />
-
-    <ImageView
-        android:id="@+id/basicKnight6"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="96dp"
         android:contentDescription="TODO"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

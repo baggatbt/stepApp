@@ -1,0 +1,30 @@
+To create a new skill you can:
+
+val slashSkill = Skills(AbilityType.SLASH)
+val blockCard = Skills(AbilityType.BLOCK)
+
+Then, to use a card's ability, you can simply call the use() method:
+
+slashSkill.use()
+blockSkill.use()
+
+
+
+Combat flow
+
+Select attacks, uses stamina per card, regen X per turn
+
+EXAMPLE
+
+I select slash(speed 2, stamina 2)
+
+Enemies lock in their attacks
+
+Turn order decided by speed.
+
+One by one each attack is resolved in order of lowest speed to highest
+
+So in this turn, the player would attack once, and block once
+
+When the player attacks, each ability will have a window of timing, a flash where a new input can be made. If timed right, the player can
+use whichever ability they chose, as long as they can afford the stamina cost

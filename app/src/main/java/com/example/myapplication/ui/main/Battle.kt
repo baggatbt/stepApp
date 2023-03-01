@@ -45,7 +45,7 @@ class Battle {
     var enemyCanAttackFlag = false
     var runnable: Runnable = Runnable {}
     private var isBattleOver = false
-
+    val enemyList = mutableListOf<Enemy>()
 
     fun checkVictoryAndDefeat(rootView: View) {
         val victoryActivity = VictoryActivity()
@@ -89,6 +89,8 @@ class Battle {
     fun start(player: Player, enemy: Enemy, context: Context) {
         this.player = player
         this.enemy = enemy
+        enemyList.add(enemy)
+        println(enemy)
         this.context = context
         battlePlayerTextView = (context as Activity).findViewById(R.id.battlePlayerText)
         battleEnemyTextView = (context as Activity).findViewById(R.id.battleEnemyText)
@@ -97,8 +99,8 @@ class Battle {
         basicKnight = (context as Activity).findViewById(R.id.basicKnight)
         goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
         rootView = (context as Activity).findViewById<View>(R.id.root)
-        enemyAttackProgressBar = (context as Activity).findViewById(R.id.enemyAttackTimerProgressBar)
-        enemyAttackProgressBar.max = 100
+      //  enemyAttackProgressBar = (context as Activity).findViewById(R.id.enemyAttackTimerProgressBar)
+       // enemyAttackProgressBar.max = 100
         playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
         playerHealthBar.max = player.health
         playerHealthBar.progress = player.health
@@ -106,34 +108,43 @@ class Battle {
         enemyHealthBar.max = enemy.health
         enemyHealthBar.progress = enemy.health
 
-        println(player.defense)
+
+
+        attackButton.setOnClickListener {
+            attack()
+
+        }
+        /* Controlled the enemies attack gauge, depreciated
         val animator = ValueAnimator.ofInt(0, 100).setDuration(3000)
         animator.addUpdateListener { valueAnimator ->
             enemyAttackProgressBar.progress = valueAnimator.animatedValue as Int
         }
         animator.start()
 
+
         var countDownTimer: CountDownTimer? = null
         var timerRunning = false
 
-        attackButton.setOnClickListener {
-            attack()
-            enemyCanAttackFlag = true
-        }
+
 
         defendButton.setOnClickListener {
             defend()
             enemyCanAttackFlag = true
         }
+        */
 
+
+       /*DEPRECIATED
         //This runs the enemy attack every 3 seconds as long as the player is above 0
-     /*   runnable = Runnable {
-            if (player.health > 0 && enemyCanAttackFlag) {
+       runnable = Runnable {
+           rootView.postDelayed(runnable, 3000)
+           if (player.health > 0 && enemyCanAttackFlag) {
                 //This controls the progress bar that indicates when an enemy attacks
-                animator.start()
+                println("runnable is working")
                 enemyAttack()
+                println(player.health)
                 enemyAttackProgressBar.progress = 0
-                rootView.postDelayed(runnable, 3000)
+
 
             }
             else {
@@ -142,16 +153,32 @@ class Battle {
             }
         }
         rootView.postDelayed(runnable, 3000)
-*/
+        */
     }
+
+
+    fun generateTurnOrder(abilitySpeed: Int, enemies: List<Enemy>, player: Player, chosenAttack: Skills): List<BattleUnit> {
+        val units = mutableListOf<BattleUnit>()
+        units.add(BattleUnit(abilitySpeed, abilitySpeed))
+        enemies.forEach { enemy -> units.add(BattleUnit(enemy)) }
+        units.add(BattleUnit(player, chosenAttack.speed))
+        units.sortBy { it.speed }
+        println(units)
+        return units
+    }
+
+
+
+
+
+
+
+
 
 
 
     private var attackOnCooldown = false
     private val cooldownPeriod: Long = 1000
-    //TODO: Combat is turn based around timers? Enemy attacks off cooldown, player can respond/attack on their own with cooldowns
-    //this allows a almost active combat with possibilities for reactive play. EX: player use shield right before enemy hits
-    //Allow player to make macros for autocombat, such as use ability A/B/C off cooldown
     //function, isBattleRunning() to keep allowing inputs and cooldowns
 
     //Change this to Ability 1 (will handle calling abilities in this function)
@@ -163,7 +190,9 @@ class Battle {
             battlePlayerTextView.text = "You attack ${enemy.name} for ${player.attack} damage"
             var damageDealt = (player.attack - enemy.defense)
             enemyHealthBar.progress -= damageDealt
-            basicAtk
+            val slashSkill = Skills(AbilityType.SLASH)
+            slashSkill.use(enemy)
+            println(enemy.health)
             checkVictoryAndDefeat(rootView)
             //start cooldown
             attackOnCooldown = true
@@ -182,7 +211,7 @@ class Battle {
         if (!isBattleOver) {
 
             battlePlayerTextView.text = "You increase your defense by 1"
-            basicDefense
+            player.defense += 1
             println(player.defense)
             checkVictoryAndDefeat(rootView)
 
@@ -192,6 +221,7 @@ class Battle {
             defendButton.text = "Cooldown"
             defendButton.postDelayed({
 
+                player.defense -= 1
                 attackOnCooldown = false
                 defendButton.isEnabled = true
                 defendButton.text = "Defend"

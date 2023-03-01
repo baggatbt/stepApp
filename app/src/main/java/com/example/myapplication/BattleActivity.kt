@@ -35,24 +35,26 @@ class BattleActivity : AppCompatActivity() {
         // Initialize the player
         player = Player(player.level,player.attack,player.defense,player.playerJob,player.gold,player.health,player.experience)
 
-        //Initialize the battle
-        battle = Battle()
-
+        val goblin = Enemy.EnemyType.GOBLIN
         // Create a list of enemies
-        val enemies = listOf(Goblin(0, 0), Slime(0, 0))
+        val enemies = listOf(
 
         // Shuffle the list and select the first element as the enemy
         enemy = enemies.shuffled().first()
 
-        if (enemy.name == "Goblin"){
+        if (enemy.enemyName == "Goblin"){
             goblinImageView.visibility = View.VISIBLE
         }
 
-        else if ( enemy.name == "Slime"){
+        else if ( enemy.enemyName == "Slime"){
             slimeImageView.visibility = View.VISIBLE
         }
 
-        println("You've been attacked by a ${enemy.name}")
+        println("You've been attacked by a ${enemy.enemyName}")
+
+        //Initialize the battle
+        battle = Battle()
+
 
 
 

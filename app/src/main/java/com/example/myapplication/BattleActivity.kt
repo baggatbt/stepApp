@@ -35,9 +35,10 @@ class BattleActivity : AppCompatActivity() {
         // Initialize the player
         player = Player(player.level,player.attack,player.defense,player.playerJob,player.gold,player.health,player.experience)
 
-        val goblin = Enemy.EnemyType.GOBLIN
+        val goblin = Enemy(EnemyType.GOBLIN)
+        val slime = Enemy(EnemyType.SLIME)
         // Create a list of enemies
-        val enemies = listOf(
+        val enemies = listOf(goblin,slime)
 
         // Shuffle the list and select the first element as the enemy
         enemy = enemies.shuffled().first()

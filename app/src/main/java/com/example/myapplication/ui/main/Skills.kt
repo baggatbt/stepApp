@@ -7,7 +7,7 @@ enum class AbilityType(val speed: Int, val staminaCost: Int) {
 }
 
 class Skills(private val type: AbilityType) {
-    val speed: Int = type.speed
+    var speed: Int = type.speed
 
     //Takes an optional parameter
     fun use(enemy: Enemy? = null, player: Player? = null) {

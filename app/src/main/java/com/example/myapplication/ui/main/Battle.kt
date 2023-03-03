@@ -51,12 +51,12 @@ class Battle {
         val victoryActivity = VictoryActivity()
         // Check if the enemy is defeated
         if (enemy.health <= 0) {
-            battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.name}!"
+            battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.enemyName}!"
             isBattleOver = true
 
 
             //Updates player exp and gold
-            MainActivity.player.experience += enemy.experienceReward
+            MainActivity.player.experience += enemy.goldReward
             MainActivity.player.gold += enemy.goldReward
 
             // Passing values to companion object so that it can be passed to victory activity
@@ -76,7 +76,7 @@ class Battle {
         }
         // Check if the player is defeated
         if (player.health <= 0) {
-            battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have been defeated by the ${enemy.name}!"
+            battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have been defeated by the ${enemy.enemyName}!"
             attackButton.isEnabled = false
             defendButton.isEnabled = false
             rootView.removeCallbacks(runnable)
@@ -187,7 +187,7 @@ class Battle {
         // code to handle the player's attack
         if (!isBattleOver) {
             animateKnight()
-            battlePlayerTextView.text = "You attack ${enemy.name} for ${player.attack} damage"
+            battlePlayerTextView.text = "You attack ${enemy.enemyName} for ${player.attack} damage"
             var damageDealt = (player.attack - enemy.defense)
             enemyHealthBar.progress -= damageDealt
             val slashSkill = Skills(AbilityType.SLASH)
@@ -235,9 +235,9 @@ class Battle {
         var damageDealt = (enemy.attack - player.defense)
         if (damageDealt >= 0) {
             playerHealthBar.progress -= damageDealt
-            battleEnemyTextView.text = "The ${enemy.name} attacks you for ${damageDealt} damage"
+            battleEnemyTextView.text = "The ${enemy.enemyName} attacks you for ${damageDealt} damage"
         } else {
-            "The ${enemy.name} attacks you for 0 damage"
+            "The ${enemy.enemyName} attacks you for 0 damage"
         }
     }
 

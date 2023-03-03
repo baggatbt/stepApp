@@ -1,24 +1,27 @@
 package com.example.myapplication.ui.main
 
 
-enum class AbilityType(val speed: Int, val staminaCost: Int) {
-    SLASH(2,3),
-    HEAVYSLASH(6,5)
+enum class AbilityType(var damage: Int, var speed: Int, var staminaCost: Int) {
+    SLASH(2,2,3),
+    HEAVYSLASH(5,6,5)
 }
 
 class Skills(private val type: AbilityType) {
     var speed: Int = type.speed
+    var damage: Int = type.damage
+    var staminaCost: Int = type.staminaCost
 
     //Takes an optional parameter
     fun use(enemy: Enemy? = null, player: Player? = null) {
         when (type) {
             AbilityType.SLASH -> {
                 // Logic for using the slash ability
-                enemy?.takeDamage(1)
+                enemy?.takeDamage(AbilityType.SLASH.damage)
+
             }
             AbilityType.HEAVYSLASH -> {
                 //Logic for the heavy slash
-                enemy?.takeDamage(3)
+                enemy?.takeDamage(AbilityType.HEAVYSLASH.damage)
                 }
             }
         }

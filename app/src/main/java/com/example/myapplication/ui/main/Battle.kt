@@ -157,15 +157,56 @@ class Battle {
     }
 
 
-    fun generateTurnOrder(abilitySpeed: Int, enemies: List<Enemy>, player: Player, chosenAttack: Skills): List<BattleUnit> {
-        val units = mutableListOf<BattleUnit>()
-        units.add(BattleUnit(abilitySpeed, abilitySpeed))
-        enemies.forEach { enemy -> units.add(BattleUnit(enemy)) }
-        units.add(BattleUnit(player, chosenAttack.speed))
-        units.sortBy { it.speed }
-        println(units)
-        return units
+    fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
+        val characterSpeed = chosenSkill.speed
+
+        val enemySpeeds = enemies.map { it.speed }
+
+        val turnOrder = mutableListOf<String>()
+
+        // Add the character to the turn order list
+        turnOrder.add("character")
+
+        // Add each enemy to the turn order list
+        for (i in 0 until enemies.size) {
+            turnOrder.add("enemy$i")
+        }
+
+        // Sort the turn order list based on speed, with lower speeds going first
+        turnOrder.sortBy { if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()] }
+
+        // Execute each turn in the turn order
+        for (turn in turnOrder) {
+            if (turn == "character") {
+               executeCharacterTurn(chosenSkill)
+            } else {
+                executeEnemyTurn(enemies[turn.substring(5).toInt()],player)
+            }
+        }
     }
+
+    fun executeCharacterTurn(chosenSkill: Skills){
+        var skillUsed = chosenSkill
+        animateKnight()
+        skillUsed.use(enemy)
+
+        var damageDealt = (skillUsed.damage - enemy.defense)
+        enemyHealthBar.progress -= damageDealt
+    }
+
+    fun executeEnemyTurn(enemy: Enemy, player: Player) {
+        // Calculate the damage dealt by the enemy
+        val damageDealt = enemy.attack
+
+        // Apply the damage to the player
+        player.takeDamage(damageDealt)
+        playerHealthBar.progress -= damageDealt
+
+        // Print the results of the turn
+        println("${enemy.enemyName} dealt $damageDealt damage to the player!")
+    }
+
+
 
 
 
@@ -191,6 +232,8 @@ class Battle {
             var damageDealt = (player.attack - enemy.defense)
             enemyHealthBar.progress -= damageDealt
             val slashSkill = Skills(AbilityType.SLASH)
+            var chosenSkill = slashSkill
+           println(generateTurnOrder(chosenSkill,enemyList))
             slashSkill.use(enemy)
             println(enemy.health)
             checkVictoryAndDefeat(rootView)
@@ -231,7 +274,7 @@ class Battle {
     }
 
 
-    private fun enemyAttack() {
+  /*  private fun enemyAttack() {
         var damageDealt = (enemy.attack - player.defense)
         if (damageDealt >= 0) {
             playerHealthBar.progress -= damageDealt
@@ -240,6 +283,8 @@ class Battle {
             "The ${enemy.enemyName} attacks you for 0 damage"
         }
     }
+
+   */
 
 
     private fun animateKnight() {

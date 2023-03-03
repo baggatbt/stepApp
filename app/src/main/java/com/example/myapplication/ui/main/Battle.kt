@@ -72,7 +72,7 @@ class Battle {
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
         abilityTwoButton = (context as Activity).findViewById(R.id.ability_card_2)
 
-          turnOrderBar = (context as Activity).findViewById<ProgressBar>(R.id.turnOrderBar)
+          turnOrderBar = (context as Activity).findViewById<ProgressBar>(R.id.turn_order_bar)
           enemyImageIcon = (context as Activity).findViewById<ImageView>(R.id.enemyImage)
 
 
@@ -81,7 +81,7 @@ class Battle {
         goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
         rootView = (context as Activity).findViewById<View>(R.id.root)
 
-        turnOrderBar = (context as Activity).findViewById(R.id.turnOrderBar)
+        turnOrderBar = (context as Activity).findViewById(R.id.turn_order_bar)
         turnOrderBar.max = 10
         playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
         playerHealthBar.max = player.health
@@ -103,46 +103,20 @@ class Battle {
             println("You did " + abilityTwoSkill.damage + "damage!")
         }
 
-    generateTurnOrderBar(enemyList)
+    addTurnOrderIcon(enemy.speed)
 
     }
 
 
-    private fun generateTurnOrderBar(enemies: List<Enemy>) {
-        val enemySpeeds = enemies.map { enemy -> enemy.speed }
-        val enemyAttackProgressBar = (context as Activity).findViewById<ProgressBar>(R.id.turnOrderBar)
-        val enemyAttackProgressBarWidth = enemyAttackProgressBar.width
-        val enemyAttackProgressBarMax = enemyAttackProgressBar.max
-        val enemyImageWidth = (context as Activity).findViewById<ImageView>(R.id.enemyImage).width
-        val horizontalOffset = enemyAttackProgressBarWidth.toFloat() / enemyAttackProgressBarMax.toFloat()
+    fun addTurnOrderIcon(position: Int) {
+        val turnOrderBar = (context as Activity).findViewById<LinearLayout>(R.id.turn_order_bar)
 
-        // Update the enemy image position based on their speed
-        for (i in enemies.indices) {
-            val enemyImage = (context as Activity).findViewById<ImageView>(R.id.enemyImage)
-            enemyImage.visibility = View.VISIBLE
+        val turnOrderIcon = (context as Activity).layoutInflater.inflate(R.layout.view_turn_order_icon, turnOrderBar, false)
 
-            // Calculate the horizontal position of the enemy image based on its speed
-            val horizontalPosition = (enemyAttackProgressBar.x + (horizontalOffset * enemySpeeds[i])
-                    - (enemyImageWidth.toFloat() / 2))
-
-            // Check if the enemy image is within the bounds of the progress bar
-            val minHorizontalPosition = enemyAttackProgressBar.x
-            val maxHorizontalPosition = enemyAttackProgressBar.x + enemyAttackProgressBarWidth - enemyImageWidth
-            if (horizontalPosition < minHorizontalPosition) {
-                enemyImage.x = minHorizontalPosition
-            } else if (horizontalPosition > maxHorizontalPosition) {
-                enemyImage.x = maxHorizontalPosition
-            } else {
-                enemyImage.x = horizontalPosition
-            }
-
-            // Set the top and bottom margins to make the enemy image appear on top of the ProgressBar
-            val layoutParams = enemyImage.layoutParams as ViewGroup.MarginLayoutParams
-            layoutParams.topMargin = 0
-            layoutParams.bottomMargin = enemyAttackProgressBar.height - enemyImage.height
-            enemyImage.layoutParams = layoutParams
-        }
+        // Add enemy icon to the specified position
+        turnOrderBar.addView(turnOrderIcon, position)
     }
+
 
 
 

@@ -43,27 +43,24 @@
         app:srcCompat="@drawable/basicknight" />
 
 
-    <ProgressBar
-        android:id="@+id/turnOrderBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
+    <LinearLayout
+        android:id="@+id/turn_order_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:max="10"
-        android:progress="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal">
+    </LinearLayout>
+
 
 
     <ImageView
         android:id="@+id/enemyImage"
-        android:layout_width="45dp"
-        android:layout_height="39dp"
-        android:src="@drawable/goblin"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/sword3030"
         android:visibility="invisible"
-        tools:layout_editor_absoluteX="171dp"
-        tools:layout_editor_absoluteY="322dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+         />
 
     <ProgressBar
         android:id="@+id/enemyHealthBar"

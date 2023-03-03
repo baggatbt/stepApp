@@ -5,34 +5,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BattleActivity"
-    >
+    tools:context=".BattleActivity">
 
-
-    <Button
-
-        android:id="@+id/attackButton"
-        android:layout_width="135dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="568dp"
-        android:text="Attack!"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.148"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-
-        android:id="@+id/defenseButton"
-        android:layout_width="135dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="568dp"
-        android:layout_marginEnd="55dp"
-        android:text="Defend"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/slimeImage"
@@ -42,21 +16,17 @@
         android:layout_marginEnd="16dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/slime" />
 
     <ImageView
         android:id="@+id/goblinImage"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
+        android:layout_width="99dp"
+        android:layout_height="111dp"
         android:layout_marginTop="124dp"
         android:layout_marginEnd="16dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/goblin" />
 
@@ -72,24 +42,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/basicknight" />
 
-    <TextView
-        android:id="@+id/damageTextView"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="188dp"
-        android:layout_marginBottom="76dp"
-        app:layout_constraintBottom_toTopOf="@id/goblinImage"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <ProgressBar
-        android:id="@+id/enemyAttackTimerProgressBar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="16dp"
+        android:id="@+id/turnOrderBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:max="10"
+        android:progress="0"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/enemyImage"
+        android:layout_width="45dp"
+        android:layout_height="39dp"
+        android:src="@drawable/goblin"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="171dp"
+        tools:layout_editor_absoluteY="322dp" />
 
     <ProgressBar
         android:id="@+id/enemyHealthBar"
@@ -106,49 +80,11 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="98dp"
         android:layout_height="21dp"
-        android:layout_marginStart="16dp"
 
-        android:layout_marginTop="320dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="245dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ScrollView
-        android:layout_width="408dp"
-        android:layout_height="107dp"
-        app:layout_constraintBottom_toTopOf="@id/attackButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.978">
-
-        <TextView
-            android:id="@+id/battlePlayerText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textSize="18sp" />
-    </ScrollView>
-
-    <ScrollView
-        android:layout_width="408dp"
-        android:layout_height="107dp"
-        app:layout_constraintBottom_toTopOf="@id/attackButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.744">
-
-        <TextView
-            android:id="@+id/battleEnemyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textSize="18sp" />
-
-
-    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

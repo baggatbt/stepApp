@@ -26,6 +26,7 @@ class Enemy(private val type: EnemyType) {
 
     fun takeDamage(damage: Int) {
         health -= damage
+        println("Enemy.takeDamage value:" + damage)
     }
 
 

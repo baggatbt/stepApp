@@ -5,10 +5,13 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.myapplication.ui.main.*
 import com.example.myapplication.MainActivity
 
@@ -17,7 +20,7 @@ import kotlin.random.Random
 
 
 class BattleActivity : AppCompatActivity() {
-    private lateinit var attackButton: Button
+    private lateinit var abilityOneButton: Button
     private lateinit var enemy: Enemy
     lateinit var battle: Battle
     var player = MainActivity.player
@@ -29,11 +32,8 @@ class BattleActivity : AppCompatActivity() {
         var goblinImageView: ImageView = findViewById(R.id.goblinImage)
         var slimeImageView: ImageView = findViewById(R.id.slimeImage)
 
-
-        attackButton = findViewById(R.id.attackButton)
-
         // Initialize the player
-        player = Player(player.level,player.attack,player.defense,player.playerJob,player.gold,player.health,player.experience)
+        player = Player(player.level,player.attack,player.defense,player.playerJob,player.gold,player.health,player.experience,player.loadout)
 
         val goblin = Enemy(EnemyType.GOBLIN)
         val slime = Enemy(EnemyType.SLIME)
@@ -52,6 +52,24 @@ class BattleActivity : AppCompatActivity() {
         }
 
         println("You've been attacked by a ${enemy.enemyName}")
+
+        //Creates the ability buttons and puts them over the battle view
+        //Creates the ability buttons and puts them over the battle view
+        val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)
+        val bottomLayout = findViewById<ConstraintLayout>(R.id.root)
+
+// Add constraints to position the ability cards at the bottom of the root layout
+        val params = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.MATCH_PARENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+        abilityCardsLayout.layoutParams = params
+
+        bottomLayout.addView(abilityCardsLayout)
+        abilityOneButton = abilityCardsLayout.findViewById(R.id.ability_card_1)
+
+
 
         //Initialize the battle
         battle = Battle()

@@ -14,8 +14,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.ui.main.CombatActivity
-import com.example.myapplication.ui.main.Player
+import com.example.myapplication.ui.main.*
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -45,7 +44,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // and previous steps
     companion object{
         var currentSteps = 0
-        val player = Player(1,1,0,"knight",0,10,0)
+        var loadout = Loadout(skill1 = Skills(AbilityType.SLASH), skill2 = Skills(AbilityType.HEAVYSLASH), skill3 = Skills(AbilityType.SLASH))
+        var player = Player(level = 1, attack = 10, defense = 5, playerJob = "Warrior", gold = 0,10, loadout = loadout,
+            experience = 0
+        )
+
+
 
     }
 

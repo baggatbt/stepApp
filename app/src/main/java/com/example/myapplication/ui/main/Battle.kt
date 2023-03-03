@@ -9,15 +9,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.CountDownTimer
 import android.view.View
-import kotlinx.coroutines.Runnable
+import android.view.ViewGroup
+import android.widget.*
 
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.myapplication.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.NonCancellable.cancel
-import kotlinx.coroutines.delay
 import org.w3c.dom.Text
 import java.util.*
 import kotlin.properties.Delegates
@@ -29,9 +27,10 @@ class Battle {
         var goldGained = 0
     }
 
-    lateinit var battlePlayerTextView: TextView
-    lateinit var battleEnemyTextView: TextView
-    lateinit var attackButton: Button
+   // lateinit var battlePlayerTextView: TextView
+   // lateinit var battleEnemyTextView: TextView
+    lateinit var abilityOneButton: Button
+    lateinit var abilityTwoButton: Button
     lateinit var defendButton: Button
     lateinit var enemy: Enemy
     lateinit var player: Player
@@ -42,16 +41,180 @@ class Battle {
     lateinit var enemyAttackProgressBar: ProgressBar
     lateinit var playerHealthBar: ProgressBar
     lateinit var enemyHealthBar: ProgressBar
+    lateinit var turnOrderBar: ProgressBar
+    lateinit var enemyImageIcon : ImageView
+    lateinit var abilityOneSkill: Skills
+    lateinit var abilityTwoSkill: Skills
+
     var enemyCanAttackFlag = false
     var runnable: Runnable = Runnable {}
     private var isBattleOver = false
     val enemyList = mutableListOf<Enemy>()
 
+
+
+//INITIALIZE EVERYTHING REQUIRED FOR BATTLE TO RUN
+    fun start(player: Player, enemy: Enemy, context: Context) {
+        this.player = player
+
+        //TODO: Implement setPlayerSkills()
+       //THIS FUNCTION WILL ASSIGN THE EQUIPPED SKILLS TO THE BUTTONS
+        // setPlayerSkills()
+        //FOR NOW ITS HARDCODED TO SLASH FOR TESTING PURPOSES
+        abilityOneSkill = Skills(AbilityType.SLASH)
+        abilityTwoSkill = Skills(AbilityType.HEAVYSLASH)
+
+        this.enemy = enemy
+        enemyList.add(enemy)
+        println(enemy)
+        this.context = context
+
+        abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
+        abilityTwoButton = (context as Activity).findViewById(R.id.ability_card_2)
+
+          turnOrderBar = (context as Activity).findViewById<ProgressBar>(R.id.turnOrderBar)
+          enemyImageIcon = (context as Activity).findViewById<ImageView>(R.id.enemyImage)
+
+
+    //  defendButton = (context as Activity).findViewById(R.id.defenseButton)
+        basicKnight = (context as Activity).findViewById(R.id.basicKnight)
+        goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
+        rootView = (context as Activity).findViewById<View>(R.id.root)
+
+        turnOrderBar = (context as Activity).findViewById(R.id.turnOrderBar)
+        turnOrderBar.max = 10
+        playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
+        playerHealthBar.max = player.health
+        playerHealthBar.progress = player.health
+        enemyHealthBar =  (context as Activity).findViewById(R.id.enemyHealthBar)
+        enemyHealthBar.max = enemy.health
+        enemyHealthBar.progress = enemy.health
+
+
+        //THESE SET THE SKILLS TO THE CREATED ABILITY BUTTONS
+        abilityOneButton.setOnClickListener {
+           generateTurnOrder(abilityOneSkill,enemyList)
+            println("You did " + abilityOneSkill.damage + "damage!")
+
+        }
+
+        abilityTwoButton.setOnClickListener {
+            generateTurnOrder(abilityTwoSkill,enemyList)
+            println("You did " + abilityTwoSkill.damage + "damage!")
+        }
+
+    generateTurnOrderBar(enemyList)
+
+    }
+
+
+    private fun generateTurnOrderBar(enemies: List<Enemy>) {
+        val enemySpeeds = enemies.map { enemy -> enemy.speed }
+        val enemyAttackProgressBar = (context as Activity).findViewById<ProgressBar>(R.id.turnOrderBar)
+        val enemyAttackProgressBarWidth = enemyAttackProgressBar.width
+        val enemyAttackProgressBarMax = enemyAttackProgressBar.max
+        val enemyImageWidth = (context as Activity).findViewById<ImageView>(R.id.enemyImage).width
+        val horizontalOffset = enemyAttackProgressBarWidth.toFloat() / enemyAttackProgressBarMax.toFloat()
+
+        // Update the enemy image position based on their speed
+        for (i in enemies.indices) {
+            val enemyImage = (context as Activity).findViewById<ImageView>(R.id.enemyImage)
+            enemyImage.visibility = View.VISIBLE
+
+            // Calculate the horizontal position of the enemy image based on its speed
+            val horizontalPosition = (enemyAttackProgressBar.x + (horizontalOffset * enemySpeeds[i])
+                    - (enemyImageWidth.toFloat() / 2))
+
+            // Check if the enemy image is within the bounds of the progress bar
+            val minHorizontalPosition = enemyAttackProgressBar.x
+            val maxHorizontalPosition = enemyAttackProgressBar.x + enemyAttackProgressBarWidth - enemyImageWidth
+            if (horizontalPosition < minHorizontalPosition) {
+                enemyImage.x = minHorizontalPosition
+            } else if (horizontalPosition > maxHorizontalPosition) {
+                enemyImage.x = maxHorizontalPosition
+            } else {
+                enemyImage.x = horizontalPosition
+            }
+
+            // Set the top and bottom margins to make the enemy image appear on top of the ProgressBar
+            val layoutParams = enemyImage.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.topMargin = 0
+            layoutParams.bottomMargin = enemyAttackProgressBar.height - enemyImage.height
+            enemyImage.layoutParams = layoutParams
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    private fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
+        val characterSpeed = chosenSkill.speed
+        val enemySpeeds = enemies.map { it.speed }
+        val turnOrder = mutableListOf<String>()
+
+        // Add the character to the turn order list
+        turnOrder.add("character")
+
+        // Add each enemy to the turn order list
+        for (i in enemies.indices) {
+            turnOrder.add("enemy$i")
+        }
+
+        // Sort the turn order list based on speed, with lower speeds going first
+        turnOrder.sortBy { if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()] }
+        println(turnOrder)
+
+        // Execute each turn in the turn order with a delay
+        for ((index, turn) in turnOrder.withIndex()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                delay((index + 1) * 1000L) // delay for 1 second times the index of the turn
+                if (turn == "character") {
+                    executeCharacterTurn(chosenSkill)
+                    checkVictoryAndDefeat(rootView)
+                } else {
+                    executeEnemyTurn(enemies[turn.substring(5).toInt()],player)
+                    checkVictoryAndDefeat(rootView)
+                }
+            }
+        }
+    }
+
+
+
+
+    private fun executeCharacterTurn(chosenSkill: Skills){
+        var skillUsed = chosenSkill
+        animateKnight()
+        skillUsed.use(enemy)
+        println("after skillUsed.use(enemy) in executeCharacterTurn")
+
+        var damageDealt = (skillUsed.damage - enemy.defense)
+        enemyHealthBar.progress -= damageDealt
+    }
+
+    private fun executeEnemyTurn(enemy: Enemy, player: Player) {
+        // Calculate the damage dealt by the enemy
+        val damageDealt = enemy.attack
+
+        // Apply the damage to the player
+        player.takeDamage(damageDealt)
+        playerHealthBar.progress -= damageDealt
+
+        // Print the results of the turn
+        println("${enemy.enemyName} dealt $damageDealt damage to the player!")
+    }
+
     fun checkVictoryAndDefeat(rootView: View) {
         val victoryActivity = VictoryActivity()
         // Check if the enemy is defeated
         if (enemy.health <= 0) {
-            battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.enemyName}!"
+            //  battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.enemyName}!"
             isBattleOver = true
 
 
@@ -67,7 +230,7 @@ class Battle {
             victoryActivity.expGained = enemy.experienceReward
 
             // Use View.postDelayed to delay the transition to the rewards screen
-            battlePlayerTextView.postDelayed({
+            rootView.postDelayed({
                 //Moves to the rewards screen
                 val victoryIntent = Intent(context, VictoryActivity::class.java)
                 context.startActivity(victoryIntent)
@@ -76,134 +239,12 @@ class Battle {
         }
         // Check if the player is defeated
         if (player.health <= 0) {
-            battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have been defeated by the ${enemy.enemyName}!"
-            attackButton.isEnabled = false
+            abilityOneButton.isEnabled = false
             defendButton.isEnabled = false
             rootView.removeCallbacks(runnable)
 
         }
 
-    }
-
-
-    fun start(player: Player, enemy: Enemy, context: Context) {
-        this.player = player
-        this.enemy = enemy
-        enemyList.add(enemy)
-        println(enemy)
-        this.context = context
-        battlePlayerTextView = (context as Activity).findViewById(R.id.battlePlayerText)
-        battleEnemyTextView = (context as Activity).findViewById(R.id.battleEnemyText)
-        attackButton = (context as Activity).findViewById(R.id.attackButton)
-        defendButton = (context as Activity).findViewById(R.id.defenseButton)
-        basicKnight = (context as Activity).findViewById(R.id.basicKnight)
-        goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
-        rootView = (context as Activity).findViewById<View>(R.id.root)
-      //  enemyAttackProgressBar = (context as Activity).findViewById(R.id.enemyAttackTimerProgressBar)
-       // enemyAttackProgressBar.max = 100
-        playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
-        playerHealthBar.max = player.health
-        playerHealthBar.progress = player.health
-        enemyHealthBar =  (context as Activity).findViewById(R.id.enemyHealthBar)
-        enemyHealthBar.max = enemy.health
-        enemyHealthBar.progress = enemy.health
-
-
-
-        attackButton.setOnClickListener {
-            attack()
-
-        }
-        /* Controlled the enemies attack gauge, depreciated
-        val animator = ValueAnimator.ofInt(0, 100).setDuration(3000)
-        animator.addUpdateListener { valueAnimator ->
-            enemyAttackProgressBar.progress = valueAnimator.animatedValue as Int
-        }
-        animator.start()
-
-
-        var countDownTimer: CountDownTimer? = null
-        var timerRunning = false
-
-
-
-        defendButton.setOnClickListener {
-            defend()
-            enemyCanAttackFlag = true
-        }
-        */
-
-
-       /*DEPRECIATED
-        //This runs the enemy attack every 3 seconds as long as the player is above 0
-       runnable = Runnable {
-           rootView.postDelayed(runnable, 3000)
-           if (player.health > 0 && enemyCanAttackFlag) {
-                //This controls the progress bar that indicates when an enemy attacks
-                println("runnable is working")
-                enemyAttack()
-                println(player.health)
-                enemyAttackProgressBar.progress = 0
-
-
-            }
-            else {
-                checkVictoryAndDefeat(rootView)
-
-            }
-        }
-        rootView.postDelayed(runnable, 3000)
-        */
-    }
-
-
-    fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
-        val characterSpeed = chosenSkill.speed
-
-        val enemySpeeds = enemies.map { it.speed }
-
-        val turnOrder = mutableListOf<String>()
-
-        // Add the character to the turn order list
-        turnOrder.add("character")
-
-        // Add each enemy to the turn order list
-        for (i in 0 until enemies.size) {
-            turnOrder.add("enemy$i")
-        }
-
-        // Sort the turn order list based on speed, with lower speeds going first
-        turnOrder.sortBy { if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()] }
-
-        // Execute each turn in the turn order
-        for (turn in turnOrder) {
-            if (turn == "character") {
-               executeCharacterTurn(chosenSkill)
-            } else {
-                executeEnemyTurn(enemies[turn.substring(5).toInt()],player)
-            }
-        }
-    }
-
-    fun executeCharacterTurn(chosenSkill: Skills){
-        var skillUsed = chosenSkill
-        animateKnight()
-        skillUsed.use(enemy)
-
-        var damageDealt = (skillUsed.damage - enemy.defense)
-        enemyHealthBar.progress -= damageDealt
-    }
-
-    fun executeEnemyTurn(enemy: Enemy, player: Player) {
-        // Calculate the damage dealt by the enemy
-        val damageDealt = enemy.attack
-
-        // Apply the damage to the player
-        player.takeDamage(damageDealt)
-        playerHealthBar.progress -= damageDealt
-
-        // Print the results of the turn
-        println("${enemy.enemyName} dealt $damageDealt damage to the player!")
     }
 
 
@@ -224,13 +265,11 @@ class Battle {
 
     //Change this to Ability 1 (will handle calling abilities in this function)
     //For now it will be coded to be attack
-    private fun attack() {
+  /*  private fun attack() {
         // code to handle the player's attack
         if (!isBattleOver) {
             animateKnight()
-            battlePlayerTextView.text = "You attack ${enemy.enemyName} for ${player.attack} damage"
-            var damageDealt = (player.attack - enemy.defense)
-            enemyHealthBar.progress -= damageDealt
+           // battlePlayerTextView.text = "You attack ${enemy.enemyName} for ${player.attack} damage"
             val slashSkill = Skills(AbilityType.SLASH)
             var chosenSkill = slashSkill
            println(generateTurnOrder(chosenSkill,enemyList))
@@ -239,21 +278,23 @@ class Battle {
             checkVictoryAndDefeat(rootView)
             //start cooldown
             attackOnCooldown = true
-            attackButton.isEnabled = false
-            attackButton.text = "Cooldown"
-            attackButton.postDelayed({
+            abilityOneButton.isEnabled = false
+            abilityOneButton.text = "Cooldown"
+            abilityOneButton.postDelayed({
                 attackOnCooldown = false
-                attackButton.isEnabled = true
-                attackButton.text = "Attack"
+                abilityOneButton.isEnabled = true
+                abilityOneButton.text = "Attack"
             }, cooldownPeriod)
         }
     }
+
+   */
     //change this to Ability2
     private fun defend() {
         // code to use defend ability
         if (!isBattleOver) {
 
-            battlePlayerTextView.text = "You increase your defense by 1"
+
             player.defense += 1
             println(player.defense)
             checkVictoryAndDefeat(rootView)

@@ -40,11 +40,9 @@ class CombatActivity : AppCompatActivity() {
             if (correctTiming) {
                 // Increase the damage dealt
                 // ...
-               println("SUCCESS")
             } else {
                 // Decrease the damage dealt
                 // ...
-                println("FAIL")
             }
         }
         //test
@@ -61,14 +59,9 @@ class CombatActivity : AppCompatActivity() {
         attackTimer = object : CountDownTimer(3000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 // Update the animation frame
-                if (currentFrame < attackFrames.size - 1) {
-                    currentFrame++
-                } else {
-                    currentFrame = 0
-                }
+                currentFrame++
                 attackAnimation.setImageResource(attackFrames[currentFrame])
             }
-
 
             override fun onFinish() {
                 // End the attack

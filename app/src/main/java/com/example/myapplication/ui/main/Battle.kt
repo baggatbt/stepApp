@@ -27,8 +27,7 @@ class Battle {
         var goldGained = 0
     }
 
-   // lateinit var battlePlayerTextView: TextView
-   // lateinit var battleEnemyTextView: TextView
+
     lateinit var abilityOneButton: Button
     lateinit var abilityTwoButton: Button
     lateinit var defendButton: Button
@@ -41,7 +40,6 @@ class Battle {
     lateinit var enemyAttackProgressBar: ProgressBar
     lateinit var playerHealthBar: ProgressBar
     lateinit var enemyHealthBar: ProgressBar
-    lateinit var turnOrderBar: ProgressBar
     lateinit var enemyImageIcon : ImageView
     lateinit var abilityOneSkill: Skills
     lateinit var abilityTwoSkill: Skills
@@ -72,7 +70,7 @@ class Battle {
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
         abilityTwoButton = (context as Activity).findViewById(R.id.ability_card_2)
 
-          turnOrderBar = (context as Activity).findViewById<ProgressBar>(R.id.turn_order_bar)
+         // turnOrderBar = (context as Activity).findViewById<ProgressBar>(R.id.turn_order_bar)
           enemyImageIcon = (context as Activity).findViewById<ImageView>(R.id.enemyImage)
 
 
@@ -81,8 +79,8 @@ class Battle {
         goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
         rootView = (context as Activity).findViewById<View>(R.id.root)
 
-        turnOrderBar = (context as Activity).findViewById(R.id.turn_order_bar)
-        turnOrderBar.max = 10
+       // turnOrderBar = (context as Activity).findViewById(R.id.turn_order_bar)
+       // turnOrderBar.max = 10
         playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
         playerHealthBar.max = player.health
         playerHealthBar.progress = player.health
@@ -103,27 +101,9 @@ class Battle {
             println("You did " + abilityTwoSkill.damage + "damage!")
         }
 
-    addTurnOrderIcon(enemy.speed)
+
 
     }
-
-
-    fun addTurnOrderIcon(position: Int) {
-        val turnOrderBar = (context as Activity).findViewById<LinearLayout>(R.id.turn_order_bar)
-
-        val turnOrderIcon = (context as Activity).layoutInflater.inflate(R.layout.view_turn_order_icon, turnOrderBar, false)
-
-        // Add enemy icon to the specified position
-        turnOrderBar.addView(turnOrderIcon, position)
-    }
-
-
-
-
-
-
-
-
 
 
 

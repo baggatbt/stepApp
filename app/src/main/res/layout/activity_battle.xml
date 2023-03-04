@@ -43,12 +43,12 @@
         app:srcCompat="@drawable/basicknight" />
 
 
-    <LinearLayout
+    <ProgressBar
         android:id="@+id/turn_order_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-    </LinearLayout>
+    </ProgressBar>
 
 
 

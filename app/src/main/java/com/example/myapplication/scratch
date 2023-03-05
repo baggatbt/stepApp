@@ -1,14 +1,3 @@
-To create a new skill you can:
-
-val slashSkill = Skills(AbilityType.SLASH)
-val blockCard = Skills(AbilityType.BLOCK)
-
-Then, to use a card's ability, you can simply call the use() method:
-
-slashSkill.use()
-blockSkill.use()
-
-
 
 Combat flow
 
@@ -28,3 +17,7 @@ So in this turn, the player would attack once, and block once
 
 When the player attacks, each ability will have a window of timing, a flash where a new input can be made. If timed right, the player can
 use whichever ability they chose, as long as they can afford the stamina cost
+
+
+TODO:
+10 unit progress bar, make 10 enemy icons not visible. turn order function will take enemy speed (1-10) and make visible the corresponding icons.

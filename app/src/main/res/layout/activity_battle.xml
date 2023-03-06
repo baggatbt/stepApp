@@ -45,22 +45,139 @@
 
     <ProgressBar
         android:id="@+id/turn_order_bar"
-        android:layout_width="match_parent"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="299dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    </ProgressBar>
-
-
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></ProgressBar>
 
     <ImageView
-        android:id="@+id/enemyImage"
-        android:layout_width="30dp"
+        android:id="@+id/enemyImage1"
+        android:layout_width="0dp"
         android:layout_height="30dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="30dp"
         android:src="@drawable/sword3030"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage3"
+        app:layout_constraintHorizontal_bias="0.146"
         app:layout_constraintStart_toStartOf="parent"
-         />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="295dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage3"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage4"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage4"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage5"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage5"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage6"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage6"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage7"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage7"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage8"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage8"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage9"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage9"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/enemyImage10"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
+
+    <ImageView
+        android:id="@+id/enemyImage10"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="55dp"
+        android:src="@drawable/sword3030"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/enemyImage9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sword3030"/>
 
     <ProgressBar
         android:id="@+id/enemyHealthBar"

@@ -7,6 +7,7 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.media.Image
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
@@ -40,9 +41,22 @@ class Battle {
     lateinit var enemyAttackProgressBar: ProgressBar
     lateinit var playerHealthBar: ProgressBar
     lateinit var enemyHealthBar: ProgressBar
+    lateinit var turn_order_bar: ProgressBar
     lateinit var enemyImageIcon : ImageView
     lateinit var abilityOneSkill: Skills
     lateinit var abilityTwoSkill: Skills
+
+    lateinit var monsterTurnIcon: ImageView
+    lateinit var monsterTurnIcon2: ImageView
+    lateinit var monsterTurnIcon3: ImageView
+    lateinit var monsterTurnIcon4: ImageView
+    lateinit var monsterTurnIcon5: ImageView
+    lateinit var monsterTurnIcon6: ImageView
+    lateinit var monsterTurnIcon7: ImageView
+    lateinit var monsterTurnIcon8: ImageView
+    lateinit var monsterTurnIcon9: ImageView
+    lateinit var monsterTurnIcon10: ImageView
+
 
     var enemyCanAttackFlag = false
     var runnable: Runnable = Runnable {}
@@ -70,8 +84,17 @@ class Battle {
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
         abilityTwoButton = (context as Activity).findViewById(R.id.ability_card_2)
 
-         // turnOrderBar = (context as Activity).findViewById<ProgressBar>(R.id.turn_order_bar)
-          enemyImageIcon = (context as Activity).findViewById<ImageView>(R.id.enemyImage)
+    turn_order_bar = (context as Activity).findViewById<ProgressBar>(R.id.turn_order_bar)
+    monsterTurnIcon = (context as Activity).findViewById<ImageView>(R.id.enemyImage1)
+    monsterTurnIcon2 = (context as Activity).findViewById<ImageView>(R.id.enemyImage2)
+    monsterTurnIcon3 = (context as Activity).findViewById<ImageView>(R.id.enemyImage3)
+    monsterTurnIcon4 = (context as Activity).findViewById<ImageView>(R.id.enemyImage4)
+    monsterTurnIcon5 = (context as Activity).findViewById<ImageView>(R.id.enemyImage5)
+    monsterTurnIcon6 = (context as Activity).findViewById<ImageView>(R.id.enemyImage6)
+    monsterTurnIcon7 = (context as Activity).findViewById<ImageView>(R.id.enemyImage7)
+    monsterTurnIcon8 = (context as Activity).findViewById<ImageView>(R.id.enemyImage8)
+    monsterTurnIcon9 = (context as Activity).findViewById<ImageView>(R.id.enemyImage9)
+    monsterTurnIcon10 = (context as Activity).findViewById<ImageView>(R.id.enemyImage10)
 
 
     //  defendButton = (context as Activity).findViewById(R.id.defenseButton)
@@ -91,20 +114,51 @@ class Battle {
 
         //THESE SET THE SKILLS TO THE CREATED ABILITY BUTTONS
         abilityOneButton.setOnClickListener {
-           generateTurnOrder(abilityOneSkill,enemyList)
+           generatePlayerTurnOrder(abilityOneSkill)
+            generateTurnOrder(abilityOneSkill,enemyList)
             println("You did " + abilityOneSkill.damage + "damage!")
 
         }
 
         abilityTwoButton.setOnClickListener {
+            generatePlayerTurnOrder(abilityTwoSkill)
             generateTurnOrder(abilityTwoSkill,enemyList)
             println("You did " + abilityTwoSkill.damage + "damage!")
         }
+
+    generateEnemyTurnOrder(enemyList)
 
 
 
     }
 
+    private fun generateEnemyTurnOrder(enemies:List<Enemy>) {
+        // Check for each speed value in enemy list
+        for (i in enemies.indices) {
+            when (enemy.speed) {
+                1 -> {monsterTurnIcon.visibility = View.VISIBLE}
+                2 -> {monsterTurnIcon2.visibility = View.VISIBLE}
+                3 -> {monsterTurnIcon3.visibility = View.VISIBLE}
+                4 -> {monsterTurnIcon4.visibility = View.VISIBLE}
+                5 -> {monsterTurnIcon5.visibility = View.VISIBLE}
+                6 -> {monsterTurnIcon6.visibility = View.VISIBLE}
+                7 -> {monsterTurnIcon7.visibility = View.VISIBLE}
+                8 -> {monsterTurnIcon8.visibility = View.VISIBLE}
+                9 -> {monsterTurnIcon9.visibility = View.VISIBLE}
+                10 -> {monsterTurnIcon10.visibility = View.VISIBLE}
+
+            }
+        }
+    }
+
+    //TODO: create player icon for turn order bar and finish this function
+    private fun generatePlayerTurnOrder(chosenSkill: Skills){
+        val characterSpeed = chosenSkill.speed
+        when (characterSpeed){
+            1 -> {monsterTurnIcon.visibility = View.VISIBLE}
+
+        }
+    }
 
 
     private fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
@@ -118,6 +172,9 @@ class Battle {
         // Add each enemy to the turn order list
         for (i in enemies.indices) {
             turnOrder.add("enemy$i")
+            if (enemy.speed == 4) {
+                monsterTurnIcon4.visibility = View.VISIBLE
+            }
         }
 
         // Sort the turn order list based on speed, with lower speeds going first

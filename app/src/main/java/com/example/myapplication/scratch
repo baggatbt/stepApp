@@ -19,5 +19,3 @@ When the player attacks, each ability will have a window of timing, a flash wher
 use whichever ability they chose, as long as they can afford the stamina cost
 
 
-TODO:
-10 unit progress bar, make 10 enemy icons not visible. turn order function will take enemy speed (1-10) and make visible the corresponding icons.

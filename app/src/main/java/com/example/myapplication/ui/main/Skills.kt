@@ -11,13 +11,29 @@ class Skills(private val type: AbilityType) {
     var damage: Int = type.damage
     var staminaCost: Int = type.staminaCost
 
+    fun tapSuccessTiming(startAttack: Int, endAttack: Int, enemy: Enemy?, damageBonus: Int) {
+        var lastTapTime = 0L
+
+        val currentTime = System.currentTimeMillis()
+        val timeSinceLastTap = currentTime - lastTapTime
+        lastTapTime = currentTime
+
+        // Check if the tap was within the correct timing window
+        val correctTiming = timeSinceLastTap in startAttack..endAttack
+
+        if (correctTiming) {
+            enemy?.takeDamage(damageBonus)
+            println("success! damage dealt increased")
+        } else {
+            println("Damage decreased")
+        }
+    }
     //Takes an optional parameter
     fun use(enemy: Enemy? = null, player: Player? = null) {
         when (type) {
             AbilityType.SLASH -> {
-                // Logic for using the slash ability
+                tapSuccessTiming(0,750,enemy,1)
                 enemy?.takeDamage(AbilityType.SLASH.damage)
-
             }
             AbilityType.HEAVYSLASH -> {
                 //Logic for the heavy slash

@@ -22,4 +22,6 @@ If the player inputs nothing, it does normal damage,
 if they hit the timing it does increased
 but if they attempt and miss it decreases.
 
+Towerclimb mode, start recording for X minutes, get as many steps as you can.
+
 

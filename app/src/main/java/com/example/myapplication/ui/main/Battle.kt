@@ -116,7 +116,7 @@ class Battle {
         abilityOneButton.setOnClickListener {
            generatePlayerTurnOrder(abilityOneSkill)
             generateTurnOrder(abilityOneSkill,enemyList)
-            println("You did " + abilityOneSkill.damage + "damage!")
+            println("You did " + abilityOneSkill.damage + " damage!")
 
         }
 

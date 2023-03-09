@@ -13,9 +13,10 @@ class CombatActivity : AppCompatActivity() {
     private lateinit var attackButton: Button
 
     private val attackFrames = arrayOf(
-        R.drawable.knight_frame_1,
-        R.drawable.knight_frame_2,
-        R.drawable.knight_frame_3
+        R.drawable.basicslash1,
+        R.drawable.basicslash2,
+        R.drawable.basicslash3,
+        R.drawable.basicslash4
     )
     private var currentFrame = 0
 
@@ -55,11 +56,14 @@ class CombatActivity : AppCompatActivity() {
         attackTimer?.cancel()
     }
 
-    private fun startAttackAnimation() {
-        attackTimer = object : CountDownTimer(3000, 1000) {
+     private fun startAttackAnimation() {
+        attackTimer = object : CountDownTimer(3000, 50) {
             override fun onTick(millisUntilFinished: Long) {
                 // Update the animation frame
                 currentFrame++
+                if (currentFrame >= attackFrames.size) {
+                    currentFrame = 0 // reset to the first frame
+                }
                 attackAnimation.setImageResource(attackFrames[currentFrame])
             }
 

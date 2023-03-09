@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.os.CountDownTimer
 import android.view.View
 import android.widget.*
 import com.example.myapplication.*
@@ -55,6 +56,22 @@ class Battle {
     var runnable: Runnable = Runnable {}
     private var isBattleOver = false
     val enemyList = mutableListOf<Enemy>()
+    var turnOrder = mutableListOf<String>()
+
+    //Slash animation variables
+    private lateinit var attackAnimation: ImageView
+    private lateinit var attackButton: Button
+
+    private val attackFrames = arrayOf(
+        R.drawable.basicslash1,
+        R.drawable.basicslash2,
+        R.drawable.basicslash3,
+        R.drawable.basicslash4
+    )
+    private var currentFrame = 0
+
+    private var attackTimer: CountDownTimer? = null
+    private var lastTapTime = 0L
 
 
 
@@ -73,6 +90,10 @@ class Battle {
         enemyList.add(enemy)
         println(enemy)
         this.context = context
+
+        //Basic Slash Animation Variables
+        attackAnimation = (context as Activity).findViewById(R.id.basicKnight)
+
 
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
         abilityTwoButton = (context as Activity).findViewById(R.id.ability_card_2)
@@ -107,7 +128,23 @@ class Battle {
 
         //THESE SET THE SKILLS TO THE CREATED ABILITY BUTTONS
         abilityOneButton.setOnClickListener {
-           generatePlayerTurnOrder(abilityOneSkill)
+            abilityOneButton.isEnabled = false
+                val currentTime = System.currentTimeMillis()
+                val timeSinceLastTap = currentTime - lastTapTime
+                lastTapTime = currentTime
+
+                // Check if the tap was within the correct timing window
+                val correctTiming = timeSinceLastTap in 250..750
+
+                if (correctTiming) {
+                    println("Damage increased by timing success")
+                } else {
+                    println("Timing failed")
+                }
+
+            animateKnight()
+            generatePlayerTurnOrder(abilityOneSkill)
+            startAttackAnimation()
             generateTurnOrder(abilityOneSkill,enemyList)
             println("You did " + abilityOneSkill.damage + " damage!")
 
@@ -151,20 +188,23 @@ class Battle {
             1 -> {monsterTurnIcon.visibility = View.VISIBLE}
 
         }
-        basicKnight.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
-        basicKnight.postDelayed(java.lang.Runnable { basicKnight.clearColorFilter() }, 50)
+        basicKnight.postDelayed({
+            basicKnight.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+            basicKnight.postDelayed({ basicKnight.clearColorFilter() }, 50)
+        }, 300)
     }
 
 
     private fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
         val characterSpeed = chosenSkill.speed
         val enemySpeeds = enemies.map { it.speed }
-        val turnOrder = mutableListOf<String>()
+        turnOrder = mutableListOf<String>()
+
 
         // Add the character to the turn order list
         turnOrder.add("character")
 
-        // Add each enemy to the turn order list
+        // Add each enemy to the turn order list and create icons on the turn order bar UI element
         for (i in enemies.indices) {
             turnOrder.add("enemy$i")
             if (enemy.speed == 4) {
@@ -189,6 +229,7 @@ class Battle {
                 }
             }
         }
+
     }
 
 
@@ -196,12 +237,13 @@ class Battle {
 
     private fun executeCharacterTurn(chosenSkill: Skills){
         var skillUsed = chosenSkill
-        animateKnight()
         skillUsed.use(enemy)
         println("after skillUsed.use(enemy) in executeCharacterTurn")
 
         var damageDealt = (skillUsed.damage - enemy.defense)
         enemyHealthBar.progress -= damageDealt
+
+
     }
 
     private fun executeEnemyTurn(enemy: Enemy, player: Player) {
@@ -252,92 +294,11 @@ class Battle {
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private var attackOnCooldown = false
-    private val cooldownPeriod: Long = 1000
-    //function, isBattleRunning() to keep allowing inputs and cooldowns
-
-    //Change this to Ability 1 (will handle calling abilities in this function)
-    //For now it will be coded to be attack
-  /*  private fun attack() {
-        // code to handle the player's attack
-        if (!isBattleOver) {
-            animateKnight()
-           // battlePlayerTextView.text = "You attack ${enemy.enemyName} for ${player.attack} damage"
-            val slashSkill = Skills(AbilityType.SLASH)
-            var chosenSkill = slashSkill
-           println(generateTurnOrder(chosenSkill,enemyList))
-            slashSkill.use(enemy)
-            println(enemy.health)
-            checkVictoryAndDefeat(rootView)
-            //start cooldown
-            attackOnCooldown = true
-            abilityOneButton.isEnabled = false
-            abilityOneButton.text = "Cooldown"
-            abilityOneButton.postDelayed({
-                attackOnCooldown = false
-                abilityOneButton.isEnabled = true
-                abilityOneButton.text = "Attack"
-            }, cooldownPeriod)
-        }
-    }
-
-   */
-    //change this to Ability2
-    private fun defend() {
-        // code to use defend ability
-        if (!isBattleOver) {
-
-
-            player.defense += 1
-            println(player.defense)
-            checkVictoryAndDefeat(rootView)
-
-            //start cooldown
-            attackOnCooldown = true
-            defendButton.isEnabled = false
-            defendButton.text = "Cooldown"
-            defendButton.postDelayed({
-
-                player.defense -= 1
-                attackOnCooldown = false
-                defendButton.isEnabled = true
-                defendButton.text = "Defend"
-            }, cooldownPeriod)
-            println(player.defense)
-        }
-    }
-
-
-  /*  private fun enemyAttack() {
-        var damageDealt = (enemy.attack - player.defense)
-        if (damageDealt >= 0) {
-            playerHealthBar.progress -= damageDealt
-            battleEnemyTextView.text = "The ${enemy.enemyName} attacks you for ${damageDealt} damage"
-        } else {
-            "The ${enemy.enemyName} attacks you for 0 damage"
-        }
-    }
-
-   */
-
-
+//ANIMATION FUNCTIONS
     private fun animateKnight() {
         // Create an ObjectAnimator to animate the x position of the basicKnight image
         val animator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x + 50f)
-        animator.duration = 500
+        animator.duration = 200
         animator.start()
 
         // Add a listener to the animator to reverse the animation when it's finished
@@ -345,29 +306,38 @@ class Battle {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 val reverseAnimator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x - 50f)
-                reverseAnimator.duration = 500
+                reverseAnimator.duration = 300
                 reverseAnimator.start()
             }
         })
     }
 
- /**  private fun animateGoblin() {
-        // Create an ObjectAnimator to animate the x position of the basicKnight image
-        val animator = ObjectAnimator.ofFloat(goblinPicture, "x", goblinPicture.x, goblinPicture.x - 50f)
-        animator.duration = 500
-        animator.start()
-
-        // Add a listener to the animator to reverse the animation when it's finished
-        animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                val reverseAnimator = ObjectAnimator.ofFloat(goblinPicture, "x", goblinPicture.x, goblinPicture.x + 50f)
-                reverseAnimator.duration = 500
-                reverseAnimator.start()
+    private fun startAttackAnimation() {
+        attackTimer = object : CountDownTimer(200, 50) {
+            override fun onTick(millisUntilFinished: Long) {
+                // Update the animation frame
+                currentFrame++
+                if (currentFrame >= attackFrames.size) {
+                    currentFrame = 0 // reset to the first frame
+                }
+                attackAnimation.setImageResource(attackFrames[currentFrame])
             }
-        })
-    } **/
+
+            override fun onFinish() {
+                // End the attack
+
+
+            }
+        }
+
+        attackTimer?.start()
+    }
+
 }
+
+
+
+
 
 
 

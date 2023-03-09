@@ -6,7 +6,7 @@
         android:id="@+id/attack_animation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/knight_frame_1"/>
+        />
 
     <Button
         android:id="@+id/attack_button"

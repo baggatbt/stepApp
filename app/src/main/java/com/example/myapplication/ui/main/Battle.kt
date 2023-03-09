@@ -3,23 +3,16 @@ package com.example.myapplication.ui.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.media.Image
-import android.os.CountDownTimer
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
-
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.myapplication.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.NonCancellable.cancel
-import org.w3c.dom.Text
 import java.util.*
-import kotlin.properties.Delegates
 
 
 class Battle {
@@ -65,7 +58,7 @@ class Battle {
 
 
 
-//INITIALIZE EVERYTHING REQUIRED FOR BATTLE TO RUN
+    //INITIALIZE EVERYTHING REQUIRED FOR BATTLE TO RUN
     fun start(player: Player, enemy: Enemy, context: Context) {
         this.player = player
 
@@ -158,6 +151,8 @@ class Battle {
             1 -> {monsterTurnIcon.visibility = View.VISIBLE}
 
         }
+        basicKnight.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+        basicKnight.postDelayed(java.lang.Runnable { basicKnight.clearColorFilter() }, 50)
     }
 
 

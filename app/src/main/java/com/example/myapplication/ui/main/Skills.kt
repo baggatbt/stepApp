@@ -3,7 +3,6 @@ package com.example.myapplication.ui.main
 import android.app.Activity
 import android.media.Image
 import android.widget.ImageView
-import android.widget.ProgressBar
 import com.example.myapplication.R
 
 
@@ -13,56 +12,33 @@ enum class AbilityType(var damage: Int, var speed: Int, var staminaCost: Int) {
     HEAVYSLASH(5,6,5)
 }
 
-class Skills(private val type: AbilityType, private val activity: Activity) {
+class Skills(private val type: AbilityType) {
     var speed: Int = type.speed
     var damage: Int = type.damage
     var staminaCost: Int = type.staminaCost
 
-    var lastTapTime = 0L
 
-    fun tapSuccessTiming(startAttack: Int, endAttack: Int, enemy: Enemy?, damageBonus: Int) {
-        val currentTime = System.currentTimeMillis()
-        val timeSinceLastTap = currentTime - lastTapTime
-        println(timeSinceLastTap)
-        lastTapTime = currentTime
+                //Takes an optional parameter
+                fun use(enemy: Enemy? = null, player: Player? = null) {
 
-
-        // Check if the tap was within the correct timing window
-        val correctTiming = timeSinceLastTap in startAttack..endAttack
-        val timingWindow = 250..700
-        val basicKnightImageView = activity.findViewById<ImageView>(R.id.basicKnight)
-        when {
-            correctTiming -> {
-                enemy?.takeDamage(damageBonus)
-                println("success! damage dealt increased")
-            }
-            timeSinceLastTap in timingWindow -> {
-                println("Timing Missed, but within timing window")
-                basicKnightImageView.setImageResource(R.drawable.knightflashtiming)
-            }
-            else -> {
-                println("Timing Missed")
-
+                    when (type) {
+                        AbilityType.SLASH -> {
+                            enemy?.takeDamage(AbilityType.SLASH.damage)
+                        }
+                        AbilityType.HEAVYSLASH -> {
+                            //Logic for the heavy slash
+                            enemy?.takeDamage(AbilityType.HEAVYSLASH.damage)
+                        }
+                    }
                 }
             }
-        }
 
 
 
-    //Takes an optional parameter
-    fun use(enemy: Enemy? = null, player: Player? = null) {
-        when (type) {
-            AbilityType.SLASH -> {
-                tapSuccessTiming(250,750,enemy,1,)
-                enemy?.takeDamage(AbilityType.SLASH.damage)
-            }
-            AbilityType.HEAVYSLASH -> {
-                //Logic for the heavy slash
-                enemy?.takeDamage(AbilityType.HEAVYSLASH.damage)
-                }
-            }
-        }
-    }
+
+
+
+
 
 
 

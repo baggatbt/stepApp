@@ -5,7 +5,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BattleActivity">
+    tools:context=".BattleActivity"
+    android:background="@drawable/battlebackground">
 
 
     <ImageView
@@ -40,7 +41,8 @@
         android:contentDescription="TODO"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicknight" />
+        app:srcCompat="@drawable/basicknight"
+        app:tint="@null" />
 
 
     <ProgressBar

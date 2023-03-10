@@ -13,7 +13,7 @@ Turn order decided by speed.
 
 One by one each attack is resolved in order of lowest speed to highest
 
-So in this turn, the player would attack once, and block once
+So in this turn, the player would attack once
 
 When the player attacks, each ability will have a window of timing, a flash where a new input can be made. If timed right, the player can
 use whichever ability they chose, as long as they can afford the stamina cost

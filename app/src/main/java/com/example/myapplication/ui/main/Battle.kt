@@ -124,31 +124,56 @@ class Battle {
         enemyHealthBar =  (context as Activity).findViewById(R.id.enemyHealthBar)
         enemyHealthBar.max = enemy.health
         enemyHealthBar.progress = enemy.health
-
+        var currentTime: Long
+        var abilityOneExecuted = false
 
         //THESE SET THE SKILLS TO THE CREATED ABILITY BUTTONS
+        var timingWindowOpen = false
+
+        var lastTapTime = 0L
         abilityOneButton.setOnClickListener {
-            abilityOneButton.isEnabled = false
-                val currentTime = System.currentTimeMillis()
-                val timeSinceLastTap = currentTime - lastTapTime
-                lastTapTime = currentTime
+                if (timingWindowOpen) {
+                    currentTime = System.currentTimeMillis()
 
-                // Check if the tap was within the correct timing window
-                val correctTiming = timeSinceLastTap in 250..750
+                    val timeSinceLastTap = currentTime - lastTapTime
+                    println("lastTapTime" + lastTapTime)
+                    lastTapTime = currentTime
 
-                if (correctTiming) {
-                    println("Damage increased by timing success")
-                } else {
-                    println("Timing failed")
+                    // Check if the tap was within the correct timing window
+                    val correctTiming = timeSinceLastTap in 350..500
+                    println("currentitme: " + currentTime)
+                    println("timesincelasttap" + timeSinceLastTap)
+                    println("lastTapTime" + lastTapTime)
+                    println("correct timing" + correctTiming)
+
+                    if (correctTiming) {
+                        println("Damage increased by timing success")
+                        timingWindowOpen = false
+                    } else {
+                        println("Timing failed")
+                        timingWindowOpen = false
+                    }
                 }
+            if (!abilityOneExecuted) {
+                abilityOneExecuted = true
 
-            animateKnight()
-            generatePlayerTurnOrder(abilityOneSkill)
-            startAttackAnimation()
-            generateTurnOrder(abilityOneSkill,enemyList)
-            println("You did " + abilityOneSkill.damage + " damage!")
+                if (abilityOneExecuted) {
+                    startAttackAnimation()
+                    animateKnight()
+                    lastTapTime = System.currentTimeMillis()
+                    generatePlayerTurnOrder(abilityOneSkill)
+                    generateTurnOrder(abilityOneSkill, enemyList)
+                    println("You did " + abilityOneSkill.damage + " damage!")
+                    timingWindowOpen = true;
+
+                }
+            }
 
         }
+
+
+
+
 
         abilityTwoButton.setOnClickListener {
             generatePlayerTurnOrder(abilityTwoSkill)

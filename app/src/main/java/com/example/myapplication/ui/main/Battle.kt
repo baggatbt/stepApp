@@ -30,9 +30,10 @@ class Battle {
     lateinit var player: Player
     lateinit var context: Context
     lateinit var basicKnight : ImageView
+
     lateinit var goblinPicture : ImageView
     lateinit var rootView: View
-    lateinit var enemyAttackProgressBar: ProgressBar
+
     lateinit var playerHealthBar: ProgressBar
     lateinit var enemyHealthBar: ProgressBar
     lateinit var turn_order_bar: ProgressBar
@@ -112,13 +113,12 @@ class Battle {
     monsterTurnIcon10 = (context as Activity).findViewById<ImageView>(R.id.enemyImage10)
 
 
-    //  defendButton = (context as Activity).findViewById(R.id.defenseButton)
+
         basicKnight = (context as Activity).findViewById(R.id.basicKnight)
         goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
         rootView = (context as Activity).findViewById<View>(R.id.root)
 
-       // turnOrderBar = (context as Activity).findViewById(R.id.turn_order_bar)
-       // turnOrderBar.max = 10
+
         playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
         playerHealthBar.max = player.health
         playerHealthBar.progress = player.health
@@ -158,7 +158,7 @@ class Battle {
             if (!abilityOneExecuted) {
                 abilityOneExecuted = true
 
-                if (abilityOneExecuted) {
+                if (abilityOneExecuted && checkVictoryAndDefeat(rootView) == false) {
                     startAttackAnimation()
                     animateKnight()
                     lastTapTime = System.currentTimeMillis()
@@ -222,6 +222,8 @@ class Battle {
 
 
     private fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
+        var battleEnded = false // Flag to check if the battle has ended
+
         val characterSpeed = chosenSkill.speed
         val enemySpeeds = enemies.map { it.speed }
         turnOrder = mutableListOf<String>()
@@ -239,36 +241,49 @@ class Battle {
             if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()]
         }
 
-
         var numTurnsTaken = 0 // Initialize a variable to keep track of the number of turns taken
 
         // Execute each turn in the turn order with a delay
         for ((index, turn) in turnOrder.withIndex()) {
             CoroutineScope(Dispatchers.Main).launch {
                 delay((index + 1) * 1000L) // delay for 1 second times the index of the turn
-                if (turn == "character") {
-                    executeCharacterTurn(chosenSkill)
+                if (!battleEnded) { // Only execute the turn if the battle has not ended
+                    if (turn == "character") {
+                        executeCharacterTurn(chosenSkill)
+                    } else {
+                        val enemy = enemies[turn.substring(5).toInt()]
+                        val enemyAbility = if (enemy.attacksToChargeSpecial == 0) {
+                            enemy.abilities.find { it.isSpecial } ?: error("No special ability found")
+                        } else {
+                            enemy.abilities.first { !it.isSpecial }
+                        }
+                        executeEnemyTurn(enemyAbility)
+                    }
 
-                } else {
-                    executeEnemyTurn(enemies[turn.substring(5).toInt()], player)
-                }
+                    numTurnsTaken++ // Increment the number of turns taken
 
-                numTurnsTaken++ // Increment the number of turns taken
+                    // Check if all turns have been taken
+                    if (numTurnsTaken == turnOrder.size) {
+                        // Reset the turn order and number of turns taken
+                        if(checkVictoryAndDefeat(rootView) == false) {
+                            turnOrder.clear()
+                            numTurnsTaken = 0
+                            generateEnemyTurnOrder(enemyList)
+                            lastTapTime = 0L
+                            abilityOneExecuted = false
+                        }
+                    }
 
-                // Check if all turns have been taken
-                if (numTurnsTaken == turnOrder.size) {
-                    // Reset the turn order and number of turns taken
-                    if(checkVictoryAndDefeat(rootView) == false) {
-                        turnOrder.clear()
-                        numTurnsTaken = 0
-                        generateEnemyTurnOrder(enemyList)
-                        lastTapTime = 0L
-                        abilityOneExecuted = false;
+                    // Check if the battle has ended
+                    if (player.health <= 0 || enemies.all { it.health <= 0 }) {
+                        endBattle()
+                        battleEnded = true
                     }
                 }
             }
         }
     }
+
 
 
 
@@ -281,20 +296,56 @@ class Battle {
 
         var damageDealt = (skillUsed.damage - enemy.defense)
         enemyHealthBar.progress -= damageDealt
+        if (enemy.health <= 0) {
+            goblinPicture.visibility = View.GONE
 
+        }
+
+        if (player.health <= 0) {
+            return
+        }
 
     }
 
-    private fun executeEnemyTurn(enemy: Enemy, player: Player) {
+    private fun executeEnemyTurn(enemyAbility: EnemyAbility) {
+
+        if (enemy.health <= 0) {
+            return
+        }
+
         // Calculate the damage dealt by the enemy
-        val damageDealt = enemy.attack
+        val attack = if (enemy.attacksToChargeSpecial == 0) {
+            enemy.abilities.find { it.isSpecial } ?: error("No special ability found")
+        } else {
+            enemy.abilities.first { !it.isSpecial }
+        }
+
+        val damageDealt = attack.damage
 
         // Apply the damage to the player
+        animateGoblin()
         player.takeDamage(damageDealt)
         playerHealthBar.progress -= damageDealt
 
+        // Decrement the number of turns until the special attack can be used
+        if (enemy.attacksToChargeSpecial > 0) {
+            enemy.attacksToChargeSpecial--
+        }
+
         // Print the results of the turn
-        println("${enemy.enemyName} dealt $damageDealt damage to the player!")
+        if  (enemy.attacksToChargeSpecial == 0) {
+            println("${enemy.enemyName} used ${attack.name}!")
+        } else {
+            println("${enemy.enemyName} attacked with its non-special ability!")
+        }
+        if (enemy.health <= 0) {
+            goblinPicture.visibility = View.GONE
+
+        }
+    }
+
+    private fun endBattle() {
+        checkVictoryAndDefeat(rootView)
     }
 
     private fun checkVictoryAndDefeat(rootView: View): Boolean {
@@ -352,6 +403,22 @@ class Battle {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 val reverseAnimator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x - 50f)
+                reverseAnimator.duration = 300
+                reverseAnimator.start()
+            }
+        })
+    }
+    private fun animateGoblin() {
+        // Create an ObjectAnimator to animate the x position of the basicKnight image
+        val animator = ObjectAnimator.ofFloat(goblinPicture, "x", goblinPicture.x, goblinPicture.x -50f)
+        animator.duration = 200
+        animator.start()
+
+        // Add a listener to the animator to reverse the animation when it's finished
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                val reverseAnimator = ObjectAnimator.ofFloat(goblinPicture, "x", goblinPicture.x, goblinPicture.x + 50f)
                 reverseAnimator.duration = 300
                 reverseAnimator.start()
             }

@@ -3,14 +3,17 @@ package com.example.myapplication.ui.main
 
 import android.media.Image
 import com.example.myapplication.R
+import kotlin.random.Random
 
 enum class EnemyType(var enemyID: Int, var enemyName: String, var level: Int, var attack: Int, var defense: Int,
-                     var health: Int, var experienceReward: Int, var goldReward: Int, var speed: Int)
+                     var health: Int, var experienceReward: Int, var goldReward: Int, var speed: Int, var attacksToChargeSpecial : Int, var abilities: List<EnemyAbility>)
 {
-    GOBLIN(1,"Goblin",1,1,0,5,5,3,4),
-    SLIME(2,"Slime",1,1,0,5,5,3,4)
+    GOBLIN(1,"Goblin",1,1,0,5,5,3,4,2,listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE)),
+    SLIME(2,"Slime",1,1,0,5,5,3,4,2,listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH))
 
 }
+
+
 
 class Enemy(private val type: EnemyType) {
     var enemyID = type.enemyID
@@ -22,6 +25,9 @@ class Enemy(private val type: EnemyType) {
     var experienceReward = type.experienceReward
     var goldReward = type.goldReward
     var speed = type.speed
+    var abilities = type.abilities
+    //The number of turns they take before special
+    var attacksToChargeSpecial = type.attacksToChargeSpecial
 
 
     fun takeDamage(damage: Int) {
@@ -31,17 +37,42 @@ class Enemy(private val type: EnemyType) {
 
 
 }
+//isSpecial denotes whether or not the ability is the enemies special attack, usable when charged.
+enum class EnemyAbility(var damage: Int, var speed: Int, var staminaCost: Int, var isSpecial: Boolean) {
+    //Goblin
+    SWIPE(4,2,3, true),
+    TACKLE(2,4,3,false),
+    //Slime
+    SLAP(5,9,3,true),
+    SQUISH(1,1,5,false)
+}
 
-/*class Goblin (
-    attackModifier: Int,
-    defenseModifier: Int,
-) : Enemy(1,"Goblin", 1, 1 + attackModifier, 0 + defenseModifier, 3, 5, 3,3)
+class EnemySkills(private val type: EnemyAbility) {
+    var speed: Int = type.speed
+    var damage: Int = type.damage
+    var staminaCost: Int = type.staminaCost
 
+    //Takes an optional parameter
+    fun useEnemySkill(enemy: Enemy? = null, player: Player? = null) {
 
+        when (type) {
+            EnemyAbility.TACKLE -> {
 
-class Slime(
-    attackModifier: Int,
-    defenseModifier: Int
-) : Enemy(2,"Slime", 1, 1 + attackModifier, 0 + defenseModifier, 3, 5, 3,6)
+                //do damage
+            }
+            EnemyAbility.SWIPE -> {
 
- */
+                //do damage
+            }
+            EnemyAbility.SLAP -> {
+
+                //do damage
+            }
+            EnemyAbility.SQUISH -> {
+
+               // do damage
+            }
+        }
+    }
+}
+

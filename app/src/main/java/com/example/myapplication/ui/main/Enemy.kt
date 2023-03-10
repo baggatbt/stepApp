@@ -8,7 +8,7 @@ enum class EnemyType(var enemyID: Int, var enemyName: String, var level: Int, va
                      var health: Int, var experienceReward: Int, var goldReward: Int, var speed: Int)
 {
     GOBLIN(1,"Goblin",1,1,0,5,5,3,4),
-    SLIME(1,"Slime",1,1,0,5,5,3,4)
+    SLIME(2,"Slime",1,1,0,5,5,3,4)
 
 }
 

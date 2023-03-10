@@ -72,6 +72,7 @@ class Battle {
 
     private var attackTimer: CountDownTimer? = null
     private var lastTapTime = 0L
+    var abilityOneExecuted = false
 
 
 
@@ -125,7 +126,7 @@ class Battle {
         enemyHealthBar.max = enemy.health
         enemyHealthBar.progress = enemy.health
         var currentTime: Long
-        var abilityOneExecuted = false
+
 
         //THESE SET THE SKILLS TO THE CREATED ABILITY BUTTONS
         var timingWindowOpen = false
@@ -225,21 +226,21 @@ class Battle {
         val enemySpeeds = enemies.map { it.speed }
         turnOrder = mutableListOf<String>()
 
-
         // Add the character to the turn order list
         turnOrder.add("character")
 
         // Add each enemy to the turn order list and create icons on the turn order bar UI element
         for (i in enemies.indices) {
             turnOrder.add("enemy$i")
-            if (enemy.speed == 4) {
-                monsterTurnIcon4.visibility = View.VISIBLE
-            }
         }
 
         // Sort the turn order list based on speed, with lower speeds going first
-        turnOrder.sortBy { if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()] }
-        println(turnOrder)
+        turnOrder.sortBy {
+            if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()]
+        }
+
+
+        var numTurnsTaken = 0 // Initialize a variable to keep track of the number of turns taken
 
         // Execute each turn in the turn order with a delay
         for ((index, turn) in turnOrder.withIndex()) {
@@ -247,15 +248,28 @@ class Battle {
                 delay((index + 1) * 1000L) // delay for 1 second times the index of the turn
                 if (turn == "character") {
                     executeCharacterTurn(chosenSkill)
-                    checkVictoryAndDefeat(rootView)
+
                 } else {
-                    executeEnemyTurn(enemies[turn.substring(5).toInt()],player)
-                    checkVictoryAndDefeat(rootView)
+                    executeEnemyTurn(enemies[turn.substring(5).toInt()], player)
+                }
+
+                numTurnsTaken++ // Increment the number of turns taken
+
+                // Check if all turns have been taken
+                if (numTurnsTaken == turnOrder.size) {
+                    // Reset the turn order and number of turns taken
+                    if(checkVictoryAndDefeat(rootView) == false) {
+                        turnOrder.clear()
+                        numTurnsTaken = 0
+                        generateEnemyTurnOrder(enemyList)
+                        lastTapTime = 0L
+                        abilityOneExecuted = false;
+                    }
                 }
             }
         }
-
     }
+
 
 
 
@@ -283,13 +297,14 @@ class Battle {
         println("${enemy.enemyName} dealt $damageDealt damage to the player!")
     }
 
-    fun checkVictoryAndDefeat(rootView: View) {
+    private fun checkVictoryAndDefeat(rootView: View): Boolean {
         val victoryActivity = VictoryActivity()
+        var isVictory = false
+
         // Check if the enemy is defeated
         if (enemy.health <= 0) {
             //  battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.enemyName}!"
             isBattleOver = true
-
 
             //Updates player exp and gold
             MainActivity.player.experience += enemy.goldReward
@@ -309,17 +324,23 @@ class Battle {
                 context.startActivity(victoryIntent)
             }, 2000) // Delay for 2 seconds (2000 milliseconds)
             rootView.removeCallbacks(runnable)
+
+            // Set the isVictory flag to true
+            isVictory = true
         }
+
         // Check if the player is defeated
         if (player.health <= 0) {
             abilityOneButton.isEnabled = false
             defendButton.isEnabled = false
             rootView.removeCallbacks(runnable)
-
         }
 
+        // Return the isVictory flag
+        return isVictory
     }
-//ANIMATION FUNCTIONS
+
+    //ANIMATION FUNCTIONS
     private fun animateKnight() {
         // Create an ObjectAnimator to animate the x position of the basicKnight image
         val animator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x + 50f)
@@ -336,6 +357,8 @@ class Battle {
             }
         })
     }
+
+
 
     private fun startAttackAnimation() {
         attackTimer = object : CountDownTimer(200, 50) {

@@ -25,7 +25,7 @@ class Battle {
 
     lateinit var abilityOneButton: Button
     lateinit var abilityTwoButton: Button
-    lateinit var defendButton: Button
+
     lateinit var enemy: Enemy
     lateinit var player: Player
     lateinit var context: Context
@@ -128,6 +128,7 @@ class Battle {
         var currentTime: Long
 
 
+
         //THESE SET THE SKILLS TO THE CREATED ABILITY BUTTONS
         var timingWindowOpen = false
 
@@ -164,11 +165,14 @@ class Battle {
                     lastTapTime = System.currentTimeMillis()
                     generatePlayerTurnOrder(abilityOneSkill)
                     generateTurnOrder(abilityOneSkill, enemyList)
+                    generateEnemyTurnOrder(enemyList)
                     println("You did " + abilityOneSkill.damage + " damage!")
                     timingWindowOpen = true;
 
                 }
             }
+            clearTurnOrderIcons(abilityOneSkill)
+
 
         }
 
@@ -188,10 +192,16 @@ class Battle {
 
     }
 
+    private fun setTimingWindow(chosenSkill: Skills){
+
+    }
+
     private fun generateEnemyTurnOrder(enemies:List<Enemy>) {
         // Check for each speed value in enemy list
         for (i in enemies.indices) {
-            when (enemy.speed) {
+            val currentEnemy = enemies[i]
+            val enemySpeed = if (currentEnemy.attacksToChargeSpecial == 0) currentEnemy.specialAttackSpeed else currentEnemy.speed
+            when (enemySpeed) {
                 1 -> {monsterTurnIcon.visibility = View.VISIBLE}
                 2 -> {monsterTurnIcon2.visibility = View.VISIBLE}
                 3 -> {monsterTurnIcon3.visibility = View.VISIBLE}
@@ -202,22 +212,48 @@ class Battle {
                 8 -> {monsterTurnIcon8.visibility = View.VISIBLE}
                 9 -> {monsterTurnIcon9.visibility = View.VISIBLE}
                 10 -> {monsterTurnIcon10.visibility = View.VISIBLE}
-
             }
         }
     }
+
 
     //TODO: create player icon for turn order bar and finish this function
     private fun generatePlayerTurnOrder(chosenSkill: Skills){
         val characterSpeed = chosenSkill.speed
         when (characterSpeed){
             1 -> {monsterTurnIcon.visibility = View.VISIBLE}
+            2 -> {monsterTurnIcon2.visibility = View.VISIBLE}
+            3 -> {monsterTurnIcon3.visibility = View.VISIBLE}
+            4 -> {monsterTurnIcon4.visibility = View.VISIBLE}
+            5 -> {monsterTurnIcon5.visibility = View.VISIBLE}
+            6 -> {monsterTurnIcon6.visibility = View.VISIBLE}
+            7 -> {monsterTurnIcon7.visibility = View.VISIBLE}
+            8 -> {monsterTurnIcon8.visibility = View.VISIBLE}
+            9 -> {monsterTurnIcon9.visibility = View.VISIBLE}
+            10 ->{monsterTurnIcon10.visibility = View.VISIBLE}
 
         }
+        //TODO: Separate timing flash into its own function, taking in the delay of the move used
         basicKnight.postDelayed({
             basicKnight.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
             basicKnight.postDelayed({ basicKnight.clearColorFilter() }, 50)
         }, 300)
+    }
+
+    private fun clearTurnOrderIcons(chosenSkill: Skills) {
+        when (chosenSkill.speed){
+            1 -> {monsterTurnIcon.visibility = View.INVISIBLE}
+            2 -> {monsterTurnIcon2.visibility = View.INVISIBLE}
+            3 -> {monsterTurnIcon3.visibility = View.INVISIBLE}
+            4 -> {monsterTurnIcon4.visibility = View.INVISIBLE}
+            5 -> {monsterTurnIcon5.visibility = View.INVISIBLE}
+            6 -> {monsterTurnIcon6.visibility = View.INVISIBLE}
+            7 -> {monsterTurnIcon7.visibility = View.INVISIBLE}
+            8 -> {monsterTurnIcon8.visibility = View.INVISIBLE}
+            9 -> {monsterTurnIcon9.visibility = View.INVISIBLE}
+            10 ->{monsterTurnIcon10.visibility = View.INVISIBLE}
+
+        }
     }
 
 
@@ -225,7 +261,13 @@ class Battle {
         var battleEnded = false // Flag to check if the battle has ended
 
         val characterSpeed = chosenSkill.speed
-        val enemySpeeds = enemies.map { it.speed }
+        val enemySpeeds = enemies.map { if (enemy.attacksToChargeSpecial == 0){
+            it.specialAttackSpeed
+        } else{
+            it.speed
+        }
+        }
+
         turnOrder = mutableListOf<String>()
 
         // Add the character to the turn order list
@@ -300,6 +342,7 @@ class Battle {
             goblinPicture.visibility = View.GONE
 
         }
+        clearTurnOrderIcons(skillUsed)
 
         if (player.health <= 0) {
             return
@@ -307,7 +350,7 @@ class Battle {
 
     }
 
-    private fun executeEnemyTurn(enemyAbility: EnemyAbility) {
+    private fun executeEnemyTurn(enemyAbility: EnemyAbility, ) {
 
         if (enemy.health <= 0) {
             return
@@ -383,7 +426,7 @@ class Battle {
         // Check if the player is defeated
         if (player.health <= 0) {
             abilityOneButton.isEnabled = false
-            defendButton.isEnabled = false
+
             rootView.removeCallbacks(runnable)
         }
 

@@ -29,5 +29,14 @@ Like knighthood, enemies will charge as they attack, each one ahving a unique at
 Players will too
 
 
+hen the enemy uses the special, the player animation still happens first, but takes damage first.
 
+The battle also doesnt end until hitting them again after using special.
+
+Battle is passed (enemies,player)
+Battle starts
+Shows enemy turn order, waits for player input
+once the move is in, player is inserted into turn order
+After a small delay, the attacks start launching low to high
+once every move is used, order resets, enemies adjust and player is prompted to choose another move. combat repeats.
 

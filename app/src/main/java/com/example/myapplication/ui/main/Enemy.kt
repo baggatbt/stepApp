@@ -15,7 +15,7 @@ enum class EnemyType(var enemyID: Int, var enemyName: String, var level: Int, va
 
 
 
-class Enemy(private val type: EnemyType) {
+class Enemy(private val type: EnemyType) : GameEntity() {
     var enemyID = type.enemyID
     var enemyName = type.enemyName
     var level = type.level
@@ -29,15 +29,11 @@ class Enemy(private val type: EnemyType) {
     //The number of turns they take before special
     var specialAttackSpeed = type.specialAttackSpeed
     var attacksToChargeSpecial = type.attacksToChargeSpecial
-
-
     fun takeDamage(damage: Int) {
         health -= damage
-        println("Enemy.takeDamage value:" + damage)
     }
-
-
 }
+
 //isSpecial denotes whether or not the ability is the enemies special attack, usable when charged.
 enum class EnemyAbility(var damage: Int, var speed: Int, var staminaCost: Int, var isSpecial: Boolean) {
     //Goblin

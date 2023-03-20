@@ -3,40 +3,45 @@ package com.example.myapplication.ui.main
 //Interface all status effects must implement all of these functions
 interface StatusEffect {
 
+
     //return boolean, false indicates status not applied.
     //if true, then the status effect should be applied
-    fun condition_check();
+    fun condition_check() {
 
-//returns who should be targeted by this status effect
-    fun entity_to_target();
+    }
+
+    //returns who should be targeted by this status effect
+    fun entity_to_target() {
+
+    }
 
     //this defines what happens when a status effect is being applied
     //apply will directly visit the player object, and update his state accordingly.
-    fun apply(LivingEntity entity);
-
-    /*
-    {
-        entity.health -= poision_amount;
-        entity.speed -= slug_amount;
-
-        if(entity instanceof Player)
-        {
-            Player plyr = (Player)entity; //downcast
-
-            plyr.skill_tree.remove(ability_one); //suppress ability 1
+    fun apply(gameEntity: GameEntity) {
+        when (gameEntity) {
+            is Player -> {
+                val player: Player = gameEntity // can cast gameEntity to Player type here
+                // do something with the player object
+            }
+            is Enemy -> {
+                val enemy: Enemy = gameEntity // can cast gameEntity to Enemy type here
+                // do something with the enemy object
+            }
+            else -> throw IllegalArgumentException("Invalid game entity type")
         }
+    }
 
-        else if(entity instanceof Enemy)
-        {
+// Player plyr = (Player)entity; //downcast
 
-        }
-    }*/
-
-    //this function describes what the status effect does
+    // this function describes what the status effect does
     //can be used to inform the user
-    fun String desrcipt()
+    fun description(string: String) {
+
+    }
 }
 
+
+/*
 class Poison implements StateEffect
 {
     double factors;
@@ -78,7 +83,7 @@ class Burn implements StatusEffect
 }
 
 // This is how you implement all status effects.
-class Battle
+/*class Battle
 {
 
     for(Skill s : player.skill_tree)
@@ -96,3 +101,4 @@ class Battle
         }
     }
 }
+*/

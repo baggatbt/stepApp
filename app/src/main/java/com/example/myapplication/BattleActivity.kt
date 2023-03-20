@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -21,6 +22,7 @@ import kotlin.random.Random
 
 class BattleActivity : AppCompatActivity() {
     private lateinit var abilityOneButton: Button
+    private lateinit var basicAttackButton : Button
     private lateinit var enemy: Enemy
     lateinit var battle: Battle
     var player = MainActivity.player
@@ -56,18 +58,29 @@ class BattleActivity : AppCompatActivity() {
         //Creates the ability buttons and puts them over the battle view
         //Creates the ability buttons and puts them over the battle view
         val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)
+        val basicAttackLayout = LayoutInflater.from(this).inflate(R.layout.basicattackbutton, null)
         val bottomLayout = findViewById<ConstraintLayout>(R.id.root)
+
 
 // Add constraints to position the ability cards at the bottom of the root layout
         val params = ConstraintLayout.LayoutParams(
             ConstraintLayout.LayoutParams.MATCH_PARENT,
             ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
+        val params2 = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.MATCH_PARENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
+        )
         params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+        params2.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
         abilityCardsLayout.layoutParams = params
+        basicAttackLayout.layoutParams = params2
 
         bottomLayout.addView(abilityCardsLayout)
+        bottomLayout.addView(basicAttackLayout)
+
         abilityOneButton = abilityCardsLayout.findViewById(R.id.ability_card_1)
+        basicAttackButton = basicAttackLayout.findViewById(R.id.basicAttackButton)
 
 
 

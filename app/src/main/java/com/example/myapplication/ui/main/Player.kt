@@ -15,9 +15,14 @@ class Player(
         var health: Int,
         var experience: Int = 0,
         var loadout: Loadout
-) {
+) : GameEntity() {
         fun takeDamage(damage: Int) {
                 health -= damage
         }
+
+        fun basicAttack(enemy: Enemy, player: Player) {
+                enemy.health -= player.attack
+        }
+
 }
 

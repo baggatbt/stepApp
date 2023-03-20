@@ -7,15 +7,17 @@ import com.example.myapplication.R
 
 
 
-enum class AbilityType(var damage: Int, var speed: Int, var staminaCost: Int) {
-    SLASH(2,2,3),
-    HEAVYSLASH(5,6,5)
+enum class AbilityType(var damage: Int, var speed: Int, var staminaCost: Int, var startWindow: Int, var endWindow: Int) {
+    SLASH(2,2,3,350,500),
+    HEAVYSLASH(5,6,5,350,500)
 }
 
 class Skills(private val type: AbilityType) {
     var speed: Int = type.speed
     var damage: Int = type.damage
     var staminaCost: Int = type.staminaCost
+    var startWindow: Int = type.startWindow
+    var endWindow: Int = type.endWindow
 
 
 

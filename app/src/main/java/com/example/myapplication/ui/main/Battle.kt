@@ -125,6 +125,8 @@ class Battle {
         enemyHealthBar =  (context as Activity).findViewById(R.id.enemyHealthBar)
         enemyHealthBar.max = enemy.health
         enemyHealthBar.progress = enemy.health
+
+
         var currentTime: Long
 
 
@@ -283,8 +285,10 @@ class Battle {
             if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()]
         }
 
+        //TODO: Take out and make member variable
         var numTurnsTaken = 0 // Initialize a variable to keep track of the number of turns taken
 
+        //TODO: Make its own function
         // Execute each turn in the turn order with a delay
         for ((index, turn) in turnOrder.withIndex()) {
             CoroutineScope(Dispatchers.Main).launch {
@@ -325,9 +329,6 @@ class Battle {
             }
         }
     }
-
-
-
 
 
 

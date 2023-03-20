@@ -40,3 +40,12 @@ once the move is in, player is inserted into turn order
 After a small delay, the attacks start launching low to high
 once every move is used, order resets, enemies adjust and player is prompted to choose another move. combat repeats.
 
+
+
+
+
+
+Keep skills and status effects decoupled.
+
+Subclass Player and Enemy (Allows them to derive from the same parent class)
+

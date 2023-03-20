@@ -18,6 +18,7 @@ class Skills(private val type: AbilityType) {
     var staminaCost: Int = type.staminaCost
 
 
+
                 //Takes an optional parameter
                 fun use(enemy: Enemy? = null, player: Player? = null) {
 

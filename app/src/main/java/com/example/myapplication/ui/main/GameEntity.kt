@@ -1,6 +1,6 @@
 package com.example.myapplication.ui.main
 
-open class GameEntity {
+abstract class GameEntity {
     /*
     var name: String = ""
     var level: Int = 1
@@ -9,6 +9,8 @@ open class GameEntity {
     var health: Int = 100
     */
 
+
+    abstract val speed: Int
 }
 
 

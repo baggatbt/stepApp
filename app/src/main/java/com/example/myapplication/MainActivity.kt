@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         var currentSteps = 0
         var loadout = Loadout(skill1 = Skills(AbilityType.SLASH), skill2 = Skills(AbilityType.HEAVYSLASH), skill3 = Skills(AbilityType.SLASH))
         var player = Player(level = 1, attack = 10, defense = 5, playerJob = "Warrior", gold = 0,10, loadout = loadout,
-            experience = 0
+            experience = 0,
+            speed = 1
         )
 
 

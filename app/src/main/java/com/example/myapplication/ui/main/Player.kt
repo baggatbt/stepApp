@@ -14,7 +14,10 @@ class Player(
         var gold: Int,
         var health: Int,
         var experience: Int = 0,
-        var loadout: Loadout
+        var loadout: Loadout,
+        override var speed: Int
+
+
 ) : GameEntity() {
         fun takeDamage(damage: Int) {
                 health -= damage
@@ -23,6 +26,7 @@ class Player(
         fun basicAttack(enemy: Enemy, player: Player) {
                 enemy.health -= player.attack
         }
+
 
 }
 

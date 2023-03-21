@@ -35,7 +35,7 @@ class BattleActivity : AppCompatActivity() {
         var slimeImageView: ImageView = findViewById(R.id.slimeImage)
 
         // Initialize the player
-        player = Player(player.level,player.attack,player.defense,player.playerJob,player.gold,player.health,player.experience,player.loadout)
+        player = Player(player.level,player.attack,player.defense,player.playerJob,player.gold,player.health,player.experience,player.loadout,player.speed)
 
         val goblin = Enemy(EnemyType.GOBLIN)
         val slime = Enemy(EnemyType.SLIME)

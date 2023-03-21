@@ -5,8 +5,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BattleActivity"
-    android:background="@drawable/battlebackground">
+    android:background="@drawable/battlebackground"
+    tools:context=".BattleActivity">
 
 
     <ImageView
@@ -51,7 +51,9 @@
         android:layout_width="299dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="282dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -70,7 +72,16 @@
         app:layout_constraintHorizontal_bias="0.146"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
+
+    <ImageView
+        android:id="@+id/tapTimeImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/turn_order_bar" />
 
     <ImageView
         android:id="@+id/enemyImage2"
@@ -82,7 +93,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage3"
@@ -94,7 +105,7 @@
         app:layout_constraintEnd_toStartOf="@+id/enemyImage4"
         app:layout_constraintStart_toEndOf="@+id/enemyImage1"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage4"
@@ -106,7 +117,7 @@
         app:layout_constraintEnd_toStartOf="@+id/enemyImage5"
         app:layout_constraintStart_toEndOf="@+id/enemyImage3"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage5"
@@ -118,7 +129,7 @@
         app:layout_constraintEnd_toStartOf="@+id/enemyImage6"
         app:layout_constraintStart_toEndOf="@+id/enemyImage4"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage6"
@@ -130,7 +141,7 @@
         app:layout_constraintEnd_toStartOf="@+id/enemyImage7"
         app:layout_constraintStart_toEndOf="@+id/enemyImage5"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage7"
@@ -142,7 +153,7 @@
         app:layout_constraintEnd_toStartOf="@+id/enemyImage8"
         app:layout_constraintStart_toEndOf="@+id/enemyImage6"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage8"
@@ -154,7 +165,7 @@
         app:layout_constraintEnd_toStartOf="@+id/enemyImage9"
         app:layout_constraintStart_toEndOf="@+id/enemyImage7"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage9"
@@ -166,7 +177,7 @@
         app:layout_constraintEnd_toStartOf="@+id/enemyImage10"
         app:layout_constraintStart_toEndOf="@+id/enemyImage8"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ImageView
         android:id="@+id/enemyImage10"
@@ -179,7 +190,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/enemyImage9"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030"/>
+        app:srcCompat="@drawable/sword3030" />
 
     <ProgressBar
         android:id="@+id/enemyHealthBar"
@@ -188,9 +199,9 @@
         android:layout_height="30dp"
         android:layout_marginTop="292dp"
         android:layout_marginEnd="16dp"
+        android:progressDrawable="@drawable/custom_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:progressDrawable="@drawable/custom_progress_bar"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/playerHealthBar"

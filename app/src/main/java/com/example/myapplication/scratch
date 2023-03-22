@@ -49,3 +49,5 @@ Keep skills and status effects decoupled.
 
 Subclass Player and Enemy (Allows them to derive from the same parent class)
 
+The android mobile game Momentum has a battle system where the enemies are shown in the turn order and go at various speeds. The player chooses an ability from 1 of 4 and depending on the abilities speed, is shown on the turn order bar. Then in speed order the attacks launch, and the player has the ability to tap at a specific time to use a second ability. When an enemy is going, the player can tap at a specific time to parry. Can you show me an example implementation of a similar battle system in kotlin for android?
+

@@ -35,7 +35,7 @@ class BattleActivity : AppCompatActivity() {
         var slimeImageView: ImageView = findViewById(R.id.slimeImage)
 
         // Initialize the player
-        player = Player(player.level,player.attack,player.defense,player.playerJob,player.gold,player.health,player.experience,player.loadout,player.speed)
+
 
         val goblin = Enemy(EnemyType.GOBLIN)
         val slime = Enemy(EnemyType.SLIME)
@@ -45,15 +45,15 @@ class BattleActivity : AppCompatActivity() {
         // Shuffle the list and select the first element as the enemy
         enemy = enemies.shuffled().first()
 
-        if (enemy.enemyName == "Goblin"){
+        if (enemy.name == "Goblin"){
             goblinImageView.visibility = View.VISIBLE
         }
 
-        else if ( enemy.enemyName == "Slime"){
+        else if ( enemy.name == "Slime"){
             slimeImageView.visibility = View.VISIBLE
         }
 
-        println("You've been attacked by a ${enemy.enemyName}")
+        println("You've been attacked by a ${enemy.name}")
 
         //Creates the ability buttons and puts them over the battle view
         //Creates the ability buttons and puts them over the battle view

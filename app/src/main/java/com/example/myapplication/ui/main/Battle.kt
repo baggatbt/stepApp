@@ -129,34 +129,54 @@ class Battle {
         chosenSkill = abilityOneSkill
 
         // Set onClickListeners for skill buttons
+        /*
         basicAttackButton.setOnClickListener {
             setAbilityButtonsEnabled(false)
             generatePlayerTurnOrder(abilityOneSkill)
-            performPlayerTurn(abilityOneSkill)
-            Handler(Looper.getMainLooper()).postDelayed({
-                setAbilityButtonsEnabled(true)
-                battleLoop()
-            }, nextTurnDelay)
+            rootView.setOnClickListener {
+                timingWindowOpen = true
+                lastTapTime = System.currentTimeMillis()
+                val damageModifier = setTimingWindow(1.0f, 1.5f) // Set your desired damage boost range
+                performPlayerTurn(abilityOneSkill, damageModifier)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    setAbilityButtonsEnabled(true)
+                    battleLoop()
+                }, nextTurnDelay)
+            }
         }
 
-        abilityOneButton.setOnClickListener {
-            setAbilityButtonsEnabled(false)
-            generatePlayerTurnOrder(abilityOneSkill)
-            performPlayerTurn(abilityOneSkill)
+         */
+
+        fun onRootViewClick(view: View) {
+            println("ability one current time for last tap time" + lastTapTime)
             Handler(Looper.getMainLooper()).postDelayed({
                 setAbilityButtonsEnabled(true)
                 battleLoop()
             }, nextTurnDelay)
+
+            // Remove the listener from the rootView
+            rootView.setOnClickListener(null)
         }
+        abilityOneButton.setOnClickListener {
+            chosenSkill = abilityOneSkill
+            generatePlayerTurnOrder(abilityOneSkill)
+            rootView.setOnClickListener(::onRootViewClick)
+        }
+
 
         abilityTwoButton.setOnClickListener {
             setAbilityButtonsEnabled(false)
+            chosenSkill = abilityTwoSkill
             generatePlayerTurnOrder(abilityTwoSkill)
-            performPlayerTurn(abilityTwoSkill)
-            Handler(Looper.getMainLooper()).postDelayed({
-                setAbilityButtonsEnabled(true)
-                battleLoop()
-            }, nextTurnDelay)
+            rootView.setOnClickListener {
+                timingWindowOpen = true
+                lastTapTime = System.currentTimeMillis()
+                performPlayerTurn(abilityTwoSkill)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    setAbilityButtonsEnabled(true)
+                    battleLoop()
+                }, nextTurnDelay)
+            }
         }
 
 
@@ -182,6 +202,10 @@ class Battle {
         // Get the current turn
         val currentTurn = getNextTurn()
 
+        if (currentTurn is Player) {
+            performPlayerTurn(abilityOneSkill)
+            setAbilityButtonsEnabled(false)
+        }
         // Perform the turn
         if (currentTurn is Enemy) {
             // Enemy's turn
@@ -216,17 +240,17 @@ class Battle {
 
     // Player's turn logic
     private fun performPlayerTurn(chosenSkill: Skills) {
-        // Generate player turn order
-        generatePlayerTurnOrder(chosenSkill)
+        timingWindowOpen = true
+        setTimingWindow(chosenSkill)
         // Deal damage to enemy
-        val damage = chosenSkill.damage
+        val damage = (chosenSkill.damage)
         enemy.takeDamage(damage)
         // Update enemy health bar
         enemyHealthBar.progress = enemy.health
         // Show attack animation
         animateKnight()
-        startAttackAnimation()
     }
+
 
 
 
@@ -234,14 +258,22 @@ class Battle {
     private fun performEnemyTurn(enemy: Enemy) {
         // Generate enemy turn order
         generateEnemyTurnOrder(enemyList)
-        // Deal damage to player
-        val damage = enemy.attack
-        player.takeDamage(damage)
-        // Update player health bar
-        playerHealthBar.progress = player.health
-        // Show attack animation
-        animateGoblin()
+        // Open the timing window for damage reduction
+        timingWindowOpen = true
+        // Set a constant delay for enemy attacks
+        val constantDelay = 2000L // 2 seconds, adjust this value as needed
+        // Deal damage to player after waiting for the constant delay
+        Handler(Looper.getMainLooper()).postDelayed({
+         //   val timingWindow = setTimingWindow(chosenSkill) //TODO: set the window by a parameter the enemy will have eventually like attackTiming on each enemy skill
+            val damage = (enemy.attack)
+            player.takeDamage(damage)
+            // Update player health bar
+            playerHealthBar.progress = player.health
+            // Show attack animation
+            animateGoblin()
+        }, constantDelay)
     }
+
 
     // End the battle with a victory/defeat message
     private fun endBattle(victory: Boolean) {
@@ -258,14 +290,15 @@ class Battle {
 
     //TODO: if(playerAttackHasLaunched){ set beginAttackTime = currentTime} This will start the timing event only when the attack begins.
     //Will need a flag in turn order
-    private fun setTimingWindow(chosenSkill: Skills){
+    private fun setTimingWindow(chosenSkill: Skills)  {
         if (timingWindowOpen) {
             currentTime = System.currentTimeMillis()
-            var skillStartWindow = chosenSkill.startWindow
-            var skillEndWindow = chosenSkill.endWindow
-
+            println("currentTime in settimingwindow " + currentTime)
+            val skillStartWindow = chosenSkill.startWindow
+            val skillEndWindow = chosenSkill.endWindow
 
             val timeSinceLastTap = currentTime - lastTapTime
+            println("timesincelasttap in setTiming" + timeSinceLastTap)
             println("lastTapTime" + lastTapTime)
             lastTapTime = currentTime
 
@@ -274,13 +307,14 @@ class Battle {
             if (correctTiming) {
                 println("Success Effect Applied!")
                 timingWindowOpen = false
-                startAttackAnimation()
-                animateKnight()
+
             } else {
                 println("Timing failed")
                 timingWindowOpen = false
+
             }
         }
+        return
     }
 
     private fun generateEnemyTurnOrder(enemies:List<Enemy>) {
@@ -460,9 +494,9 @@ class Battle {
 
         // Print the results of the turn
         if  (enemy.attacksToChargeSpecial == 0) {
-            println("${enemy.enemyName} used ${attack.name}!")
+            println("${enemy.name} used ${attack.name}!")
         } else {
-            println("${enemy.enemyName} attacked with its non-special ability!")
+            println("${enemy.name} attacked with its non-special ability!")
         }
         if (enemy.health <= 0) {
             goblinPicture.visibility = View.GONE
@@ -551,6 +585,15 @@ class Battle {
             }
         })
     }
+
+    //Trial
+    fun getTurnOrder(player: Player, enemies: List<Enemy>): List<GameEntity> {
+        val allCharacters = mutableListOf<GameEntity>(player)
+        allCharacters.addAll(enemies)
+        return allCharacters.sortedByDescending { it.speed }
+    }
+
+
 
 
 

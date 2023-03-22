@@ -130,29 +130,44 @@ class Battle {
 
         // Set onClickListeners for skill buttons
         basicAttackButton.setOnClickListener {
+            setAbilityButtonsEnabled(false)
             generatePlayerTurnOrder(abilityOneSkill)
-            battleLoop()
+            performPlayerTurn(abilityOneSkill)
+            Handler(Looper.getMainLooper()).postDelayed({
+                setAbilityButtonsEnabled(true)
+                battleLoop()
+            }, nextTurnDelay)
         }
 
         abilityOneButton.setOnClickListener {
+            setAbilityButtonsEnabled(false)
             generatePlayerTurnOrder(abilityOneSkill)
-            battleLoop()
+            performPlayerTurn(abilityOneSkill)
+            Handler(Looper.getMainLooper()).postDelayed({
+                setAbilityButtonsEnabled(true)
+                battleLoop()
+            }, nextTurnDelay)
         }
 
         abilityTwoButton.setOnClickListener {
+            setAbilityButtonsEnabled(false)
             generatePlayerTurnOrder(abilityTwoSkill)
-            battleLoop()
+            performPlayerTurn(abilityTwoSkill)
+            Handler(Looper.getMainLooper()).postDelayed({
+                setAbilityButtonsEnabled(true)
+                battleLoop()
+            }, nextTurnDelay)
         }
 
+
+
         generateEnemyTurnOrder(enemyList)
-        battleLoop()
+
     }
-
-
-
 
     private var currentTurnIndex = 0 // keep track of whose turn it is currently
 
+    val nextTurnDelay = 1000L // set delay before the next turn
     private fun battleLoop() {
         // Check if player or enemy is dead and end the battle if so
         if (player.health <= 0) {
@@ -166,19 +181,27 @@ class Battle {
 
         // Get the current turn
         val currentTurn = getNextTurn()
-        val nextTurnDelay = 500L // set delay before the next turn
 
         // Perform the turn
-        if (currentTurn is Player) {
-            // Player's turn
-            performPlayerTurn()
-            Handler(Looper.getMainLooper()).postDelayed({ battleLoop() }, nextTurnDelay)
-        } else if (currentTurn is Enemy) {
+        if (currentTurn is Enemy) {
             // Enemy's turn
+            setAbilityButtonsEnabled(false)
             performEnemyTurn(currentTurn)
-            Handler(Looper.getMainLooper()).postDelayed({ battleLoop() }, nextTurnDelay)
+            Handler(Looper.getMainLooper()).postDelayed({
+                setAbilityButtonsEnabled(true)
+                battleLoop()
+            }, nextTurnDelay)
         }
     }
+
+
+    private fun setAbilityButtonsEnabled(enabled: Boolean) {
+        basicAttackButton.isEnabled = enabled
+        abilityOneButton.isEnabled = enabled
+        abilityTwoButton.isEnabled = enabled
+    }
+
+
 
     // Returns the next entity whose turn it is (either the player or an enemy)
     private fun getNextTurn(): GameEntity {
@@ -192,14 +215,7 @@ class Battle {
     }
 
     // Player's turn logic
-    private fun performPlayerTurn() {
-        // Check which ability button was pressed
-        val chosenSkill = when {
-            abilityOneButton.isPressed -> abilityOneSkill
-            abilityTwoButton.isPressed -> abilityTwoSkill
-            else -> abilityOneSkill // Default to ability one if no button is pressed
-        }
-
+    private fun performPlayerTurn(chosenSkill: Skills) {
         // Generate player turn order
         generatePlayerTurnOrder(chosenSkill)
         // Deal damage to enemy
@@ -211,6 +227,7 @@ class Battle {
         animateKnight()
         startAttackAnimation()
     }
+
 
 
     // Enemy's turn logic

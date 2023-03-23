@@ -1,53 +1,25 @@
+To implement:
+-Inventory system:
+1.Needs to keep track of weapons/equipment
 
-Combat flow
+-Weapon system:
+1.Player can swap weapons
+2.Weapons will need to be able to have unique properties
 
-Select attacks, uses stamina per card, regen X per turn
+-Class System:
+1.Each class comes with its own properties/abilities/combat style
 
-EXAMPLE
+To explore:
 
-I select slash(speed 2, stamina 2)
+-An activity that allows you to start a timer for X minutes, during that time get as many steps as you can
+OR get to a target, IE: 1000 steps in 5 mins(like going on a run/walk) Gives rewards. Would have to be limited in attempts.
 
-Enemies lock in their attacks
+-Learning skills like FFT- gain exp in job ur using or learn them from weapons? players can equip X points worth of skills?
 
-Turn order decided by speed.
+-enemies will charge as they attack, filling a progress bar, each one having a unique attack (with effects?) on full charge.
 
-One by one each attack is resolved in order of lowest speed to highest
-
-So in this turn, the player would attack once
-
-When the player attacks, each ability will have a window of timing, a flash where a new input can be made. If timed right, the player can
-use whichever ability they chose, as long as they can afford the stamina cost
-
-If the player inputs nothing, it does normal damage,
-if they hit the timing it does increased
-but if they attempt and miss it decreases.
-
-Towerclimb mode, start recording for X minutes, get as many steps as you can.
-
-Like knighthood, enemies will charge as they attack, each one ahving a unique attack on full charge.
-
-Players will too
-
-
-hen the enemy uses the special, the player animation still happens first, but takes damage first.
-
-The battle also doesnt end until hitting them again after using special.
-
-Battle is passed (enemies,player)
-Battle starts
-Shows enemy turn order, waits for player input
-once the move is in, player is inserted into turn order
-After a small delay, the attacks start launching low to high
-once every move is used, order resets, enemies adjust and player is prompted to choose another move. combat repeats.
-
-
-Learning skills like FFT- gain exp in job ur using
+-Does combat need stamina usage?
 
 
 
-Keep skills and status effects decoupled.
-
-Subclass Player and Enemy (Allows them to derive from the same parent class)
-
-The android mobile game Momentum has a battle system where the enemies are shown in the turn order and go at various speeds. The player chooses an ability from 1 of 4 and depending on the abilities speed, is shown on the turn order bar. Then in speed order the attacks launch, and the player has the ability to tap at a specific time to use a second ability. When an enemy is going, the player can tap at a specific time to parry. Can you show me an example implementation of a similar battle system in kotlin for android?
 

@@ -19,7 +19,7 @@ enum class EnemyType(
     val attacksToChargeSpecial: Int,
     val abilities: List<EnemyAbility>
 ) {
-    GOBLIN(1, "Goblin", 1, 1, 0, 200, 5, 3, 4, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE)),
+    GOBLIN(1, "Goblin", 1, 1, 0, 200, 5, 3, 1, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE)),
     SLIME(2, "Slime", 1, 1, 0, 200, 5, 3, 4, 2, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH))
 }
 

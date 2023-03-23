@@ -550,17 +550,6 @@ class Battle {
         })
     }
 
-    //Trial
-    fun getTurnOrder(player: Player, enemies: List<Enemy>): List<GameEntity> {
-        val allCharacters = mutableListOf<GameEntity>(player)
-        allCharacters.addAll(enemies)
-        return allCharacters.sortedByDescending { it.speed }
-    }
-
-
-
-
-
     private fun startAttackAnimation() {
         attackTimer = object : CountDownTimer(200, 50) {
             override fun onTick(millisUntilFinished: Long) {

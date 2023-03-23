@@ -4,7 +4,7 @@ To implement:
 
 -Weapon system:
 1.Player can swap weapons
-2.Weapons will need to be able to have unique properties
+2.Weapons will need to be able to have types that function differently IE: Sword, Axe, Staff, Bow etc
 
 -Class System:
 1.Each class comes with its own properties/abilities/combat style
@@ -19,6 +19,8 @@ OR get to a target, IE: 1000 steps in 5 mins(like going on a run/walk) Gives rew
 -enemies will charge as they attack, filling a progress bar, each one having a unique attack (with effects?) on full charge.
 
 -Does combat need stamina usage?
+
+-Skills unlocking with realworld achievements. IE: Rogue class unlocks an ability when you get 10000 steps in 10 minutes.
 
 
 

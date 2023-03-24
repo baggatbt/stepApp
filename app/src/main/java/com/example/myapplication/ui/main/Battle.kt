@@ -140,6 +140,7 @@ class Battle {
         abilityOneButton.setOnClickListener {
             chosenSkill = abilityOneSkill
             generateTurnOrder(abilityOneSkill, enemyList)
+            generatePlayerTurnOrder(abilityOneSkill)
             setAbilityButtonsEnabled(false)
             //Set the animation frames for the chosen skill
             attackFrames = abilityOneSkill.attackFrames
@@ -282,6 +283,7 @@ class Battle {
 
 
     private fun executeCharacterTurn(chosenSkill: Skills){
+        remainingTurnOrders.removeAt(0)
         attackInProgress = true // Set the attackInProgress flag to true
         println("Time executeCharacter started, ${System.currentTimeMillis()}")
 
@@ -307,6 +309,7 @@ class Battle {
 
 
     private fun executeEnemyTurn(enemyAbility: EnemyAbility, ) {
+        remainingTurnOrders.removeAt(0)
 
         if (enemy.health <= 0) {
             return
@@ -351,6 +354,7 @@ class Battle {
         // Check for each speed value in enemy list
         for (i in enemies.indices) {
             val currentEnemy = enemies[i]
+            EnemyAbility.TACKLE.speed
             val enemySpeed = if (currentEnemy.attacksToChargeSpecial == 0) currentEnemy.specialAttackSpeed else currentEnemy.speed
             when (enemySpeed) {
                 1 -> {monsterTurnIcon.visibility = View.VISIBLE}
@@ -403,8 +407,12 @@ class Battle {
         }
     }
 
+    private val remainingTurnOrders = mutableListOf<Int>()
+
     var battleEnded = false // Flag to check if the battle has ended
     private fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
+        remainingTurnOrders.clear()
+        remainingTurnOrders.addAll(1..10)
 
         val characterSpeed = chosenSkill.speed
         val enemySpeeds = enemies.map { if (enemy.attacksToChargeSpecial == 0){

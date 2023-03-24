@@ -15,12 +15,8 @@ enum class AbilityType(
     var timingWindowStartFrame: Int,
     var timingWindowEndFrame: Int
 ) {
-    SLASH(2, 2, 3, intArrayOf(
-        R.drawable.basicslash1,
-        R.drawable.basicslash2,
-        R.drawable.basicslash3,
-        R.drawable.basicslash4
-    ), 1, 4),
+    SLASH(2, 2, 3, intArrayOf(R.drawable.basicslash1, R.drawable.basicslash2, R.drawable.basicslash3, R.drawable.basicslash4),
+        1, 4),
     HEAVYSLASH(5, 6, 5, intArrayOf(
         //Frames will go here
     ), 2, 3)

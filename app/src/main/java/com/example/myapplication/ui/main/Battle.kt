@@ -94,6 +94,7 @@ class Battle {
     fun start(player: Player, enemy: Enemy, context: Context) {
         this.player = player
 
+
         //TODO: Implement setPlayerSkills()
         // Set player skills
         abilityOneSkill = Skills(AbilityType.SLASH)
@@ -133,6 +134,7 @@ class Battle {
         chosenSkill = abilityOneSkill
         generateTurnOrder(chosenSkill,enemyList)
 
+
         // Set onClickListeners for skill buttons
         /*
         basicAttackButton.setOnClickListener {
@@ -152,19 +154,28 @@ class Battle {
 
          */
 
+        rootView.setOnClickListener {
+            while (timingWindowOpen){
+                println("nows the chance gogogo")
+                break
+            }
+            if (timingWindowOpen) {
+                // The player touched the screen between frame 2 and 3
+                println("Touched during timing window")
+            }
+        }
+
+
 
         abilityOneButton.setOnClickListener {
             chosenSkill = abilityOneSkill
             generateTurnOrder(abilityOneSkill, enemyList)
             setAbilityButtonsEnabled(false)
+
+
             // Start the battle loop
             battleLoop()
         }
-
-
-
-
-
 
         abilityTwoButton.setOnClickListener {
             setAbilityButtonsEnabled(false)
@@ -179,22 +190,10 @@ class Battle {
                 }, nextTurnDelay)
             }
         }
-
-
-
         generateEnemyTurnOrder(enemyList)
-
     }
 
-    fun onRootViewClick(view: View) {
-        tapTimeoutHandler?.removeCallbacks(tapTimeoutRunnable)
-        Handler(Looper.getMainLooper()).postDelayed({
-            handleTimingWindow(chosenSkill)
-        }, 100)
 
-        // Remove the listener from the rootView
-        rootView.setOnClickListener(null)
-    }
 
     private var currentTurnIndex = 0 // keep track of whose turn it is currently
 
@@ -210,9 +209,8 @@ class Battle {
             return
         }else {
             launchAttackTurns()
-            handleTimingWindow(chosenSkill)
-        }
 
+        }
     }
 
 
@@ -232,36 +230,148 @@ class Battle {
 
 
 
-    private fun handleTimingWindow(chosenSkill: Skills) {
+   /* private fun handleTimingWindow(chosenSkill: Skills) {
         if (attackInProgress) {
             println("window open")
-
             currentTime = System.currentTimeMillis()
             val skillStartWindow = chosenSkill.startWindow
             val skillEndWindow = chosenSkill.endWindow
-            val delayTillTimingStartOpens = skillStartWindow
 
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed({
-                timingFlash()
-                println("350ms has passed since someFunction() was called")
-            }, delayTillTimingStartOpens)
+            println("last tap time in handleTiming window $lastTapTime")
 
             val timeSinceLastTap = currentTime - lastTapTime
             println("current time in handle timing" + currentTime)
             println("time since last tap in handle timing $timeSinceLastTap")
             val correctTiming = timeSinceLastTap in skillStartWindow..skillEndWindow
             println("time since last tap in handle timing $timeSinceLastTap")
-            if (correctTiming) {
-
+            if (correctTiming){
                 println("Success Effect Applied!")
                 timingWindowOpen = false
+                tapAttempt = false
+
             } else {
                 println("Timing failed")
                 timingWindowOpen = false
+                tapAttempt = false
+
             }
         }
 
+    }
+    /
+    */
+
+    var tapAttempt = false
+
+    fun launchAttackTurns() {
+        // Register the click listener outside the loop
+
+
+        // Execute each turn in the turn order with a delay
+        for ((index, turn) in turnOrder.withIndex()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                delay((index + 1) * 1000L) // delay for 1 second times the index of the turn
+                if (!battleEnded) { // Only execute the turn if the battle has not ended
+                    if (turn == "character") {
+                        executeCharacterTurn(chosenSkill)
+                    } else {
+                        val enemy = enemyList[turn.substring(5).toInt()]
+                        val enemyAbility = if (enemy.attacksToChargeSpecial == 0) {
+                            enemy.abilities.find { it.isSpecial } ?: error("No special ability found")
+                        } else {
+                            enemy.abilities.first { !it.isSpecial }
+                        }
+                        executeEnemyTurn(enemyAbility)
+                    }
+
+                    numTurnsTaken++ // Increment the number of turns taken
+
+                    // Check if all turns have been taken
+                    if (numTurnsTaken == turnOrder.size) {
+                        // Reset the turn order and number of turns taken
+                        if(checkVictoryAndDefeat(rootView) == false) {
+                            turnOrder.clear()
+                            numTurnsTaken = 0
+                            generateEnemyTurnOrder(enemyList)
+                            abilityOneExecuted = false
+                            setAbilityButtonsEnabled(true)
+                        }
+                    }
+
+                    // Check if the battle has ended
+                    if (player.health <= 0 || enemyList.all { it.health <= 0 }) {
+                        endBattle()
+                        battleEnded = true
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+    private fun executeCharacterTurn(chosenSkill: Skills){
+        attackInProgress = true // Set the attackInProgress flag to true
+        println("Time executeCharacter started, ${System.currentTimeMillis()}")
+
+        animateKnight()
+        startAttackAnimation()
+
+
+        var skillUsed = chosenSkill
+        skillUsed.use(enemy)
+        println("after skillUsed.use(enemy) in executeCharacterTurn")
+
+
+        var damageDealt = (skillUsed.damage - enemy.defense)
+        enemyHealthBar.progress -= damageDealt
+        if (enemy.health <= 0) {
+            goblinPicture.visibility = View.GONE
+        }
+        clearTurnOrderIcons(skillUsed)
+
+        if (player.health <= 0) {
+            return
+        }
+    }
+
+
+    private fun executeEnemyTurn(enemyAbility: EnemyAbility, ) {
+
+        if (enemy.health <= 0) {
+            return
+        }
+
+        // Calculate the damage dealt by the enemy
+        val attack = if (enemy.attacksToChargeSpecial == 0) {
+            enemy.abilities.find { it.isSpecial } ?: error("No special ability found")
+        } else {
+            enemy.abilities.first { !it.isSpecial }
+        }
+
+        val damageDealt = attack.damage
+
+        // Apply the damage to the player
+        animateGoblin()
+        player.takeDamage(damageDealt)
+        playerHealthBar.progress -= damageDealt
+
+        // Decrement the number of turns until the special attack can be used
+        if (enemy.attacksToChargeSpecial > 0) {
+            enemy.attacksToChargeSpecial--
+        }
+
+        // Print the results of the turn
+        if  (enemy.attacksToChargeSpecial == 0) {
+            println("${enemy.name} used ${attack.name}!")
+        } else {
+            println("${enemy.name} attacked with its non-special ability!")
+        }
+        if (enemy.health <= 0) {
+            goblinPicture.visibility = View.GONE
+
+        }
     }
 
 
@@ -352,115 +462,7 @@ class Battle {
     }
 
     var numTurnsTaken = 0 // Initialize a variable to keep track of the number of turns taken
-    fun launchAttackTurns() {
-        // Execute each turn in the turn order with a delay
-        for ((index, turn) in turnOrder.withIndex()) {
-            CoroutineScope(Dispatchers.Main).launch {
-                delay((index + 1) * 1000L) // delay for 1 second times the index of the turn
-                if (!battleEnded) { // Only execute the turn if the battle has not ended
-                    if (turn == "character") {
-                        lastTapTime = System.currentTimeMillis()
-                        //TODO: figure out where this lasttaptime needs to be called for timing to work
-                        animateKnight()
-                        startAttackAnimation()
-                        executeCharacterTurn(chosenSkill)
-                    } else {
-                        val enemy = enemyList[turn.substring(5).toInt()]
-                        val enemyAbility = if (enemy.attacksToChargeSpecial == 0) {
-                            enemy.abilities.find { it.isSpecial } ?: error("No special ability found")
-                        } else {
-                            enemy.abilities.first { !it.isSpecial }
-                        }
-                        executeEnemyTurn(enemyAbility)
-                    }
 
-                    numTurnsTaken++ // Increment the number of turns taken
-
-                    // Check if all turns have been taken
-                    if (numTurnsTaken == turnOrder.size) {
-                        // Reset the turn order and number of turns taken
-                        if(checkVictoryAndDefeat(rootView) == false) {
-                            turnOrder.clear()
-                            numTurnsTaken = 0
-                            generateEnemyTurnOrder(enemyList)
-                            abilityOneExecuted = false
-                            setAbilityButtonsEnabled(true)
-                        }
-                    }
-
-                    // Check if the battle has ended
-                    if (player.health <= 0 || enemyList.all { it.health <= 0 }) {
-                        endBattle()
-                        battleEnded = true
-                    }
-                }
-            }
-        }
-    }
-
-
-
-    private fun executeCharacterTurn(chosenSkill: Skills){
-        timingWindowOpen = true
-        attackInProgress = true // Set the attackInProgress flag to true
-        rootView.setOnClickListener(::onRootViewClick)
-        tapTimeoutHandler = Handler(Looper.getMainLooper())
-        tapTimeoutHandler?.postDelayed(tapTimeoutRunnable, 2000) // 2 seconds after launching attack listener dies
-
-        var skillUsed = chosenSkill
-        skillUsed.use(enemy)
-        println("after skillUsed.use(enemy) in executeCharacterTurn")
-
-        var damageDealt = (skillUsed.damage - enemy.defense)
-        enemyHealthBar.progress -= damageDealt
-        if (enemy.health <= 0) {
-            goblinPicture.visibility = View.GONE
-
-        }
-        clearTurnOrderIcons(skillUsed)
-
-        if (player.health <= 0) {
-            return
-        }
-
-    }
-
-    private fun executeEnemyTurn(enemyAbility: EnemyAbility, ) {
-
-        if (enemy.health <= 0) {
-            return
-        }
-
-        // Calculate the damage dealt by the enemy
-        val attack = if (enemy.attacksToChargeSpecial == 0) {
-            enemy.abilities.find { it.isSpecial } ?: error("No special ability found")
-        } else {
-            enemy.abilities.first { !it.isSpecial }
-        }
-
-        val damageDealt = attack.damage
-
-        // Apply the damage to the player
-        animateGoblin()
-        player.takeDamage(damageDealt)
-        playerHealthBar.progress -= damageDealt
-
-        // Decrement the number of turns until the special attack can be used
-        if (enemy.attacksToChargeSpecial > 0) {
-            enemy.attacksToChargeSpecial--
-        }
-
-        // Print the results of the turn
-        if  (enemy.attacksToChargeSpecial == 0) {
-            println("${enemy.name} used ${attack.name}!")
-        } else {
-            println("${enemy.name} attacked with its non-special ability!")
-        }
-        if (enemy.health <= 0) {
-            goblinPicture.visibility = View.GONE
-
-        }
-    }
 
     private fun endBattle() {
         checkVictoryAndDefeat(rootView)
@@ -544,28 +546,44 @@ class Battle {
         })
     }
 
+    //TODO: This function needs to take a skills frames array as a parameter and then use that to animate the attack and calculate the timing window
+    //TODO: attack animation can be set according to the button they choose, that way its always named the same
     private fun startAttackAnimation() {
-        attackTimer = object : CountDownTimer(200, 50) {
+
+        //Calculate how long the duration of the animation needs to be
+        val frameInterval = 50L
+        val totalDuration = attackFrames.size * frameInterval
+
+        attackTimer = object : CountDownTimer(totalDuration, frameInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 // Update the animation frame
                 currentFrame++
                 if (currentFrame >= attackFrames.size) {
                     currentFrame = 0 // reset to the first frame
                 }
+
+                // Check if the animation is between frame 2 and 3
+                if (currentFrame in 0..3) {
+                    timingWindowOpen = true
+                    timingFlash()
+                } else {
+                    timingWindowOpen = false
+                }
+
                 attackAnimation.setImageResource(attackFrames[currentFrame])
             }
 
             override fun onFinish() {
-                // End the attack
-
-
+                // Handle the end of the animation if needed
+                timingWindowOpen = false
+                currentFrame = 0 // Reset to the first frame
+                attackAnimation.setImageResource(attackFrames[currentFrame]) // Set the animation to the first frame
             }
         }
-
         attackTimer?.start()
     }
-
 }
+
 
 
 

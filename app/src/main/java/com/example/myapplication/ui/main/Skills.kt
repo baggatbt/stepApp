@@ -7,36 +7,48 @@ import com.example.myapplication.R
 
 
 
-enum class AbilityType(var damage: Int, var speed: Int, var staminaCost: Int, var startWindow: Long, var endWindow: Int) {
-    SLASH(2,2,3,250,500),
-    HEAVYSLASH(5,6,5,350,500)
+enum class AbilityType(
+    var damage: Int,
+    var speed: Int,
+    var staminaCost: Int,
+    var attackFrames: IntArray,
+    var timingWindowStartFrame: Int,
+    var timingWindowEndFrame: Int
+) {
+    SLASH(2, 2, 3, intArrayOf(
+        R.drawable.basicslash1,
+        R.drawable.basicslash2,
+        R.drawable.basicslash3,
+        R.drawable.basicslash4
+    ), 1, 4),
+    HEAVYSLASH(5, 6, 5, intArrayOf(
+        //Frames will go here
+    ), 2, 3)
 }
+
 
 class Skills(private val type: AbilityType) {
     var speed: Int = type.speed
     var damage: Int = type.damage
     var staminaCost: Int = type.staminaCost
-    var startWindow: Long = type.startWindow
-    var endWindow: Int = type.endWindow
+    var attackFrames: IntArray = type.attackFrames
+    var timingWindowStartFrame: Int = type.timingWindowStartFrame
+    var timingWindowEndFrame: Int = type.timingWindowEndFrame
 
 
     //Takes an optional parameter
     fun use(enemy: Enemy? = null, player: Player? = null) {
-            when (type) {
-                AbilityType.SLASH -> {
-                    enemy?.takeDamage(AbilityType.SLASH.damage)
-                }
-                AbilityType.HEAVYSLASH -> {
-                    //Logic for the heavy slash
-                    enemy?.takeDamage(AbilityType.HEAVYSLASH.damage)
-                }
+        when (type) {
+            AbilityType.SLASH -> {
+                enemy?.takeDamage(AbilityType.SLASH.damage)
+            }
+            AbilityType.HEAVYSLASH -> {
+                //Logic for the heavy slash
+                enemy?.takeDamage(AbilityType.HEAVYSLASH.damage)
             }
         }
-
     }
-
-
-
+}
 
 
 

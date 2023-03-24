@@ -56,6 +56,7 @@ class Battle {
     lateinit var monsterTurnIcon8: ImageView
     lateinit var monsterTurnIcon9: ImageView
     lateinit var monsterTurnIcon10: ImageView
+    lateinit var attackFrames: IntArray
 
 
     var enemyCanAttackFlag = false
@@ -68,12 +69,6 @@ class Battle {
     private lateinit var attackAnimation: ImageView
     private lateinit var attackButton: Button
 
-    private val attackFrames = arrayOf(
-        R.drawable.basicslash1,
-        R.drawable.basicslash2,
-        R.drawable.basicslash3,
-        R.drawable.basicslash4
-    )
     private var currentFrame = 0
 
     private var attackTimer: CountDownTimer? = null
@@ -135,44 +130,19 @@ class Battle {
         generateTurnOrder(chosenSkill,enemyList)
 
 
-        // Set onClickListeners for skill buttons
-        /*
-        basicAttackButton.setOnClickListener {
-            setAbilityButtonsEnabled(false)
-            generatePlayerTurnOrder(abilityOneSkill)
-            rootView.setOnClickListener {
-                timingWindowOpen = true
-                lastTapTime = System.currentTimeMillis()
-                val damageModifier = setTimingWindow(1.0f, 1.5f) // Set your desired damage boost range
-                performPlayerTurn(abilityOneSkill, damageModifier)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    setAbilityButtonsEnabled(true)
-                    battleLoop()
-                }, nextTurnDelay)
-            }
-        }
-
-         */
-
         rootView.setOnClickListener {
-            while (timingWindowOpen){
-                println("nows the chance gogogo")
-                break
-            }
             if (timingWindowOpen) {
                 // The player touched the screen between frame 2 and 3
                 println("Touched during timing window")
             }
         }
 
-
-
         abilityOneButton.setOnClickListener {
             chosenSkill = abilityOneSkill
             generateTurnOrder(abilityOneSkill, enemyList)
             setAbilityButtonsEnabled(false)
-
-
+            //Set the animation frames for the chosen skill
+            attackFrames = abilityOneSkill.attackFrames
             // Start the battle loop
             battleLoop()
         }
@@ -316,13 +286,12 @@ class Battle {
         println("Time executeCharacter started, ${System.currentTimeMillis()}")
 
         animateKnight()
-        startAttackAnimation()
-
+        //Takes in the array containing the frames of the selected ability, as well as the window the correct timing will be in
+        startAttackAnimation(attackFrames,abilityOneSkill.timingWindowStartFrame,abilityOneSkill.timingWindowEndFrame)
 
         var skillUsed = chosenSkill
         skillUsed.use(enemy)
         println("after skillUsed.use(enemy) in executeCharacterTurn")
-
 
         var damageDealt = (skillUsed.damage - enemy.defense)
         enemyHealthBar.progress -= damageDealt
@@ -546,10 +515,7 @@ class Battle {
         })
     }
 
-    //TODO: This function needs to take a skills frames array as a parameter and then use that to animate the attack and calculate the timing window
-    //TODO: attack animation can be set according to the button they choose, that way its always named the same
-    private fun startAttackAnimation() {
-
+    private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int) {
         //Calculate how long the duration of the animation needs to be
         val frameInterval = 50L
         val totalDuration = attackFrames.size * frameInterval
@@ -562,8 +528,8 @@ class Battle {
                     currentFrame = 0 // reset to the first frame
                 }
 
-                // Check if the animation is between frame 2 and 3
-                if (currentFrame in 0..3) {
+                // Check if the animation is between the timing window start and end frames
+                if (currentFrame in timingWindowStartFrame..timingWindowEndFrame) {
                     timingWindowOpen = true
                     timingFlash()
                 } else {
@@ -583,6 +549,7 @@ class Battle {
         attackTimer?.start()
     }
 }
+
 
 
 

@@ -201,36 +201,36 @@ class Battle {
 
 
 
-   /* private fun handleTimingWindow(chosenSkill: Skills) {
-        if (attackInProgress) {
-            println("window open")
-            currentTime = System.currentTimeMillis()
-            val skillStartWindow = chosenSkill.startWindow
-            val skillEndWindow = chosenSkill.endWindow
+    /* private fun handleTimingWindow(chosenSkill: Skills) {
+         if (attackInProgress) {
+             println("window open")
+             currentTime = System.currentTimeMillis()
+             val skillStartWindow = chosenSkill.startWindow
+             val skillEndWindow = chosenSkill.endWindow
 
-            println("last tap time in handleTiming window $lastTapTime")
+             println("last tap time in handleTiming window $lastTapTime")
 
-            val timeSinceLastTap = currentTime - lastTapTime
-            println("current time in handle timing" + currentTime)
-            println("time since last tap in handle timing $timeSinceLastTap")
-            val correctTiming = timeSinceLastTap in skillStartWindow..skillEndWindow
-            println("time since last tap in handle timing $timeSinceLastTap")
-            if (correctTiming){
-                println("Success Effect Applied!")
-                timingWindowOpen = false
-                tapAttempt = false
+             val timeSinceLastTap = currentTime - lastTapTime
+             println("current time in handle timing" + currentTime)
+             println("time since last tap in handle timing $timeSinceLastTap")
+             val correctTiming = timeSinceLastTap in skillStartWindow..skillEndWindow
+             println("time since last tap in handle timing $timeSinceLastTap")
+             if (correctTiming){
+                 println("Success Effect Applied!")
+                 timingWindowOpen = false
+                 tapAttempt = false
 
-            } else {
-                println("Timing failed")
-                timingWindowOpen = false
-                tapAttempt = false
+             } else {
+                 println("Timing failed")
+                 timingWindowOpen = false
+                 tapAttempt = false
 
-            }
-        }
+             }
+         }
 
-    }
-    /
-    */
+     }
+     /
+     */
 
     var tapAttempt = false
 
@@ -557,12 +557,6 @@ class Battle {
         attackTimer?.start()
     }
 }
-
-
-
-
-
-
 
 
 

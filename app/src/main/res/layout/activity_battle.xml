@@ -9,28 +9,27 @@
     tools:context=".BattleActivity">
 
 
-    <ImageView
-        android:id="@+id/slimeImage"
-        android:layout_width="99dp"
-        android:layout_height="171dp"
-        android:layout_marginTop="124dp"
-        android:layout_marginEnd="16dp"
-        android:visibility="invisible"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/enemiesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="292dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/slime" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageView
-        android:id="@+id/goblinImage"
-        android:layout_width="99dp"
-        android:layout_height="111dp"
-        android:layout_marginTop="124dp"
+        android:id="@+id/enemyImageView"
+        android:layout_width="147dp"
+        android:layout_height="243dp"
         android:layout_marginEnd="16dp"
-        android:visibility="invisible"
+        android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/goblin" />
-
+        app:srcCompat="@drawable/idle_slime"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteY="46dp" />
 
     <ImageView
         android:id="@+id/basicKnight"
@@ -53,7 +52,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="282dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -192,16 +190,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/sword3030" />
 
-    <ProgressBar
-        android:id="@+id/enemyHealthBar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="292dp"
-        android:layout_marginEnd="16dp"
-        android:progressDrawable="@drawable/custom_progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ProgressBar
         android:id="@+id/playerHealthBar"

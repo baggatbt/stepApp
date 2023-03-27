@@ -3,6 +3,7 @@ package com.example.myapplication.ui.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -13,13 +14,14 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.*
 import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.CountDownLatch
 
 
-class Battle {
+class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener) {
     companion object {
         var expGained = 0
         var goldGained = 0
@@ -36,10 +38,10 @@ class Battle {
     lateinit var basicKnight : ImageView
 
     lateinit var goblinPicture : ImageView
+    lateinit var slimePicture : ImageView
     lateinit var rootView: View
 
     lateinit var playerHealthBar: ProgressBar
-    lateinit var enemyHealthBar: ProgressBar
     lateinit var turn_order_bar: ProgressBar
     lateinit var enemyImageIcon : ImageView
     lateinit var chosenSkill: Skills
@@ -57,6 +59,9 @@ class Battle {
     lateinit var monsterTurnIcon9: ImageView
     lateinit var monsterTurnIcon10: ImageView
     lateinit var attackFrames: IntArray
+    lateinit var enemyRecyclerView: RecyclerView
+    lateinit var enemyAdapter: EnemyAdapter
+
 
 
     var enemyCanAttackFlag = false
@@ -118,15 +123,18 @@ class Battle {
         monsterTurnIcon9 = (context as Activity).findViewById<ImageView>(R.id.enemyImage9)
         monsterTurnIcon10 = (context as Activity).findViewById<ImageView>(R.id.enemyImage10)
         basicKnight = (context as Activity).findViewById(R.id.basicKnight)
-        goblinPicture = (context as Activity).findViewById(R.id.goblinImage)
         rootView = (context as Activity).findViewById<View>(R.id.root)
         playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
-        playerHealthBar.max = player.health
-        playerHealthBar.progress = player.health
-        enemyHealthBar =  (context as Activity).findViewById(R.id.enemyHealthBar)
-        enemyHealthBar.max = enemy.health
-        enemyHealthBar.progress = enemy.health
+        playerHealthBar.max = player.maxHealth
+        playerHealthBar.progress = player.currentHealth
         chosenSkill = abilityOneSkill
+
+        // Add RecyclerView and adapter references
+        enemyRecyclerView = (context as Activity).findViewById(R.id.enemiesRecyclerView)
+        enemyAdapter = EnemyAdapter(enemyList)
+        enemyRecyclerView.adapter = enemyAdapter
+
+
         generateTurnOrder(chosenSkill,enemyList)
 
 
@@ -171,11 +179,11 @@ class Battle {
     val nextTurnDelay = 1000L // set delay before the next turn
     private fun battleLoop() {
         // Check if player or enemy is dead and end the battle if so
-        if (player.health <= 0) {
+        if (player.currentHealth <= 0) {
             checkVictoryAndDefeat(rootView)
             return
         }
-        if (enemy.health <= 0) {
+        if (enemy.currentHealth <= 0) {
             checkVictoryAndDefeat(rootView)
             return
         }else {
@@ -270,7 +278,7 @@ class Battle {
                     }
 
                     // Check if the battle has ended
-                    if (player.health <= 0 || enemyList.all { it.health <= 0 }) {
+                    if (player.currentHealth <= 0 || enemyList.all { it.currentHealth <= 0 }) {
                         endBattle()
                         battleEnded = true
                     }
@@ -295,24 +303,32 @@ class Battle {
         skillUsed.use(enemy)
         println("after skillUsed.use(enemy) in executeCharacterTurn")
 
+        //Enemy takes damage and healthbar is updated
         var damageDealt = (skillUsed.damage - enemy.defense)
-        enemyHealthBar.progress -= damageDealt
-        if (enemy.health <= 0) {
-            goblinPicture.visibility = View.GONE
+        enemy.takeDamage(damageDealt)
+        onEnemyHealthChangedListener.onEnemyHealthChanged(enemy)
+
+        if (enemy.currentHealth <= 0) {
+            // Update the RecyclerView
+            enemyAdapter.notifyItemRemoved(enemyList.indexOf(enemy))
+            enemyList.remove(enemy)
         }
         clearTurnOrderIcons(skillUsed)
 
-        if (player.health <= 0) {
+        if (player.currentHealth <= 0) {
             return
         }
     }
 
 
+
     private fun executeEnemyTurn(enemyAbility: EnemyAbility, ) {
         remainingTurnOrders.removeAt(0)
 
-        if (enemy.health <= 0) {
-            return
+        if (enemy.currentHealth <= 0) {
+            // Update the RecyclerView
+            enemyAdapter.notifyItemRemoved(enemyList.indexOf(enemy))
+            enemyList.remove(enemy)
         }
 
         // Calculate the damage dealt by the enemy
@@ -325,15 +341,14 @@ class Battle {
         val damageDealt = attack.damage
 
         // Apply the damage to the player
-        animateGoblin()
         player.takeDamage(damageDealt)
         playerHealthBar.progress -= damageDealt
-            checkVictoryAndDefeat(rootView)
-
+        checkVictoryAndDefeat(rootView)
 
         // Decrement the number of turns until the special attack can be used
         if (enemy.attacksToChargeSpecial > 0) {
             enemy.attacksToChargeSpecial--
+            println("attacks to charge special ${enemy.attacksToChargeSpecial}")
         }
 
         // Print the results of the turn
@@ -342,7 +357,7 @@ class Battle {
         } else {
             println("${enemy.name} attacked with its non-special ability!")
         }
-        if (enemy.health <= 0) {
+        if (enemy.currentHealth <= 0) {
             goblinPicture.visibility = View.GONE
 
         }
@@ -356,6 +371,7 @@ class Battle {
         // Check for each speed value in enemy list
         for (i in enemies.indices) {
             val currentEnemy = enemies[i]
+            //TODO: this needs to change to be whatever ability is being used
             EnemyAbility.TACKLE.speed
             val enemySpeed = if (currentEnemy.attacksToChargeSpecial == 0) currentEnemy.specialAttackSpeed else currentEnemy.speed
             when (enemySpeed) {
@@ -452,7 +468,7 @@ class Battle {
         var isVictory = false
 
         // Check if the enemy is defeated
-        if (enemy.health <= 0) {
+        if (enemy.currentHealth <= 0) {
             //  battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.enemyName}!"
             isBattleOver = true
 
@@ -480,7 +496,7 @@ class Battle {
         }
 
         // Check if the player is defeated
-        if (player.health <= 0) {
+        if (player.currentHealth <= 0) {
             abilityOneButton.isEnabled = false
             isBattleOver = true
 
@@ -508,6 +524,8 @@ class Battle {
             }
         })
     }
+
+    /*
     private fun animateGoblin() {
         // Create an ObjectAnimator to animate the x position of the basicKnight image
         val animator = ObjectAnimator.ofFloat(goblinPicture, "x", goblinPicture.x, goblinPicture.x -50f)
@@ -524,6 +542,25 @@ class Battle {
             }
         })
     }
+
+    private fun animateSlime() {
+        // Create an ObjectAnimator to animate the x position of the basicKnight image
+        val animator = ObjectAnimator.ofFloat(slimePicture, "x", slimePicture.x, slimePicture.x -50f)
+        animator.duration = 200
+        animator.start()
+
+        // Add a listener to the animator to reverse the animation when it's finished
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                val reverseAnimator = ObjectAnimator.ofFloat(slimePicture, "x", slimePicture.x, slimePicture.x + 50f)
+                reverseAnimator.duration = 300
+                reverseAnimator.start()
+            }
+        })
+    }
+
+     */
 
     private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int) {
         //Calculate how long the duration of the animation needs to be

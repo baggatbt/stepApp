@@ -17,10 +17,11 @@ enum class EnemyType(
     val speed: Int,
     val specialAttackSpeed: Int,
     val attacksToChargeSpecial: Int,
-    val abilities: List<EnemyAbility>
+    val abilities: List<EnemyAbility>,
+    val drawableId: Int
 ) {
-    GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE)),
-    SLIME(2, "Slime", 1, 2, 0, 6, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH))
+    GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1),
+    SLIME(2, "Slime", 1, 2, 0, 6, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2)
 }
 
 class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed, type.health) {
@@ -34,14 +35,21 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
     val abilities = type.abilities
     val specialAttackSpeed = type.specialAttackSpeed
     var attacksToChargeSpecial = type.attacksToChargeSpecial
+    var drawableId = type.drawableId
+
+    fun getImageResource(): Int {
+        return when (drawableId) {
+            1 -> R.drawable.goblin
+            2 -> R.drawable.idle_slime
+            else -> throw IllegalArgumentException("Invalid drawableId: $drawableId")
+        }
+    }
 
     fun attack() {
         // Implement the logic for the enemy's attack here
     }
 
-    fun takeDamage(damage: Int) {
-        health -= damage
-    }
+
 }
 
 

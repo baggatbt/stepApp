@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ui.main.*
 import com.example.myapplication.MainActivity
 
@@ -20,49 +22,34 @@ import com.example.myapplication.MainActivity
 import kotlin.random.Random
 
 
-class BattleActivity : AppCompatActivity() {
+class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener {
     private lateinit var abilityOneButton: Button
-    private lateinit var basicAttackButton : Button
-    private lateinit var enemy: Enemy
+    private lateinit var basicAttackButton: Button
+    private lateinit var enemyAdapter: EnemyAdapter
+    private lateinit var enemiesRecyclerView: RecyclerView
+
     lateinit var battle: Battle
     var player = MainActivity.player
 
+    // Called when the health of an enemy changes
+    override fun onEnemyHealthChanged(enemy: Enemy) {
+        // Update the RecyclerView to show the new health values
+        (enemiesRecyclerView.adapter as? EnemyAdapter)?.notifyDataSetChanged()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_battle)
+        setContentView(R.layout.activity_battle)
 
-        var goblinImageView: ImageView = findViewById(R.id.goblinImage)
-        var slimeImageView: ImageView = findViewById(R.id.slimeImage)
+        // Set up the RecyclerView containing the list of enemies
+        setupEnemiesRecyclerView()
 
-        // Initialize the player
-
-
-        val goblin = Enemy(EnemyType.GOBLIN)
-        val slime = Enemy(EnemyType.SLIME)
-        // Create a list of enemies
-        val enemies = listOf(goblin,slime)
-
-        // Shuffle the list and select the first element as the enemy
-        enemy = enemies.shuffled().first()
-
-        if (enemy.name == "Goblin"){
-            goblinImageView.visibility = View.VISIBLE
-        }
-
-        else if ( enemy.name == "Slime"){
-            slimeImageView.visibility = View.VISIBLE
-        }
-
-        println("You've been attacked by a ${enemy.name}")
-
-        //Creates the ability buttons and puts them over the battle view
-        //Creates the ability buttons and puts them over the battle view
+        // Initialize and set up the ability buttons and basic attack button
         val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)
         val basicAttackLayout = LayoutInflater.from(this).inflate(R.layout.basicattackbutton, null)
         val bottomLayout = findViewById<ConstraintLayout>(R.id.root)
 
-
-// Add constraints to position the ability cards at the bottom of the root layout
+        // Add constraints to position the ability cards at the bottom of the root layout
         val params = ConstraintLayout.LayoutParams(
             ConstraintLayout.LayoutParams.MATCH_PARENT,
             ConstraintLayout.LayoutParams.WRAP_CONTENT
@@ -82,18 +69,36 @@ class BattleActivity : AppCompatActivity() {
         abilityOneButton = abilityCardsLayout.findViewById(R.id.ability_card_1)
         basicAttackButton = basicAttackLayout.findViewById(R.id.basicAttackButton)
 
-
-
-        //Initialize the battle
-        battle = Battle()
-
-
-
-
-        battle.start(this.player,this.enemy, this)
+        // Initialize the battle and start it with the first enemy in the list
+        battle = Battle(this)
+        val selectedEnemy = enemyAdapter.getEnemy(0) // Get the first enemy in the list
+        battle.start(player, selectedEnemy, this) // Pass the selected enemy to the start function
     }
 
+    // Sets up the enemies RecyclerView
+    private fun setupEnemiesRecyclerView() {
+        enemiesRecyclerView = findViewById(R.id.enemiesRecyclerView)
+        enemiesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
+        val enemies = generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies
+
+        val adapter = EnemyAdapter(enemies)
+        enemiesRecyclerView.adapter = adapter
+
+        enemyAdapter = adapter
+    }
+
+    // Generates a random list of enemies based on the number of enemies specified
+    private fun generateEnemyList(): List<Enemy> {
+        val numberOfEnemies = 2
+        val enemyList = mutableListOf<Enemy>()
+        for (i in 1..numberOfEnemies) {
+            val enemyType = EnemyType.values().random()
+            enemyList.add(Enemy(enemyType))
+        }
+        return enemyList
+    }
+
+    // The rest of the BattleActivity class
 }
-
 

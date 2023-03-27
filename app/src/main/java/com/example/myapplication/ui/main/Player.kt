@@ -15,11 +15,6 @@ class Player(name: String, speed: Int, health: Int,
              var experience: Int = 0,
              var loadout: Loadout) : GameEntity(name, speed, health) {
 
-
-        fun takeDamage(damage: Int) {
-                health -= damage
-        }
-
     fun performAbility() {
         // Implement the logic for the player's abilities here
     }

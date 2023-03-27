@@ -71,8 +71,7 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener {
 
         // Initialize the battle and start it with the first enemy in the list
         battle = Battle(this)
-        val selectedEnemy = enemyAdapter.getEnemy(0) // Get the first enemy in the list
-        battle.start(player, selectedEnemy, this) // Pass the selected enemy to the start function
+        battle.start(player, enemyAdapter.enemies, this) // Pass the list of enemies to the start function
     }
 
     // Sets up the enemies RecyclerView

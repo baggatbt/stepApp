@@ -32,7 +32,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     lateinit var abilityTwoButton: Button
     lateinit var basicAttackButton: Button
 
-    lateinit var enemy: Enemy
+
     lateinit var player: Player
     lateinit var context: Context
     lateinit var basicKnight : ImageView
@@ -91,7 +91,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
     //Intializing
-    fun start(player: Player, enemy: Enemy, context: Context) {
+    fun start(player: Player, enemies: List<Enemy>, context: Context) {
         this.player = player
 
 
@@ -101,9 +101,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         abilityTwoSkill = Skills(AbilityType.HEAVYSLASH)
 
 
-        this.enemy = enemy
-        enemyList.add(enemy)
-        println(enemy)
+        enemyList.clear()
+        enemyList.addAll(enemies)
+
         this.context = context
 
         // Find views
@@ -183,12 +183,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             checkVictoryAndDefeat(rootView)
             return
         }
-        if (enemy.currentHealth <= 0) {
+        if (enemyList[currentTurnIndex].currentHealth <= 0) {
             checkVictoryAndDefeat(rootView)
             return
-        }else {
+        } else {
             launchAttackTurns()
-
         }
     }
 

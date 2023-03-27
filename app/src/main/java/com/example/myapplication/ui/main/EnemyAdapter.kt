@@ -8,7 +8,7 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 
-class EnemyAdapter(private val enemies: List<Enemy>) :
+class EnemyAdapter(val enemies: List<Enemy>) :
     RecyclerView.Adapter<EnemyAdapter.EnemyViewHolder>() {
 
     inner class EnemyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

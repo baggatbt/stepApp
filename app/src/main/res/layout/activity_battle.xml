@@ -11,25 +11,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/enemiesRecyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="195dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="292dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <ImageView
-        android:id="@+id/enemyImageView"
-        android:layout_width="147dp"
-        android:layout_height="243dp"
-        android:layout_marginEnd="16dp"
-        android:adjustViewBounds="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/idle_slime"
-        android:visibility="invisible"
-        tools:layout_editor_absoluteY="46dp" />
 
     <ImageView
         android:id="@+id/basicKnight"
@@ -189,7 +177,6 @@
         app:layout_constraintStart_toEndOf="@+id/enemyImage9"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/sword3030" />
-
 
 
     <ProgressBar

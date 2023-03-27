@@ -328,6 +328,8 @@ class Battle {
         animateGoblin()
         player.takeDamage(damageDealt)
         playerHealthBar.progress -= damageDealt
+            checkVictoryAndDefeat(rootView)
+
 
         // Decrement the number of turns until the special attack can be used
         if (enemy.attacksToChargeSpecial > 0) {

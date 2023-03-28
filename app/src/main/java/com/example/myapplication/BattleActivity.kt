@@ -17,19 +17,57 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ui.main.*
 import com.example.myapplication.MainActivity
+import android.widget.Toast
+import com.example.myapplication.ui.main.EnemyType
+import com.example.myapplication.ui.main.Enemy
+
+
 
 
 import kotlin.random.Random
 
 
-class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener {
+class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnemyClickListener {
+
     private lateinit var abilityOneButton: Button
     private lateinit var basicAttackButton: Button
     private lateinit var enemyAdapter: EnemyAdapter
     private lateinit var enemiesRecyclerView: RecyclerView
+    private lateinit var turnOrderAdapter: TurnOrderAdapter
+    private lateinit var turnOrderRecyclerView: RecyclerView
 
     lateinit var battle: Battle
     var player = MainActivity.player
+    private var selectedEnemy: Enemy? = null
+
+    private fun updateSelectedEnemyUI() {
+        // Update the UI to show the selected enemy
+        for (i in 0 until enemiesRecyclerView.childCount) {
+            val enemyViewHolder = enemiesRecyclerView.findViewHolderForAdapterPosition(i)
+            if (enemyViewHolder is EnemyAdapter.EnemyViewHolder) {
+                val enemyImageView = enemyViewHolder.itemView.findViewById<ImageView>(R.id.enemyImageView)
+                val targetedEnemyIcon = enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon) // Change this line
+                if (selectedEnemy == enemyViewHolder.enemy) {
+                    enemyImageView.translationZ = 10f // Set the translationZ to a higher value
+                    targetedEnemyIcon.translationZ = 11f // Set the translationZ to an even higher value
+                    targetedEnemyIcon.visibility = View.VISIBLE // Make the targetedEnemyIcon visible
+                } else {
+                    // Remove the border or reset the background color for other enemies
+                    enemyImageView.background = null
+                    enemyImageView.translationZ = 0f // Reset the translationZ
+                    targetedEnemyIcon.translationZ = 0f // Reset the translationZ
+                    targetedEnemyIcon.visibility = View.INVISIBLE // Hide the targetedEnemyIcon for other enemies
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
 
     // Called when the health of an enemy changes
     override fun onEnemyHealthChanged(enemy: Enemy) {
@@ -37,12 +75,18 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener {
         (enemiesRecyclerView.adapter as? EnemyAdapter)?.notifyDataSetChanged()
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_battle)
 
         // Set up the RecyclerView containing the list of enemies
         setupEnemiesRecyclerView()
+
+        turnOrderRecyclerView = findViewById(R.id.turnOrderRecyclerView)
+        turnOrderAdapter = TurnOrderAdapter(listOf())
+        turnOrderRecyclerView.adapter = turnOrderAdapter
 
         // Initialize and set up the ability buttons and basic attack button
         val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)
@@ -69,23 +113,37 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener {
         abilityOneButton = abilityCardsLayout.findViewById(R.id.ability_card_1)
         basicAttackButton = basicAttackLayout.findViewById(R.id.basicAttackButton)
 
+
         // Initialize the battle and start it with the first enemy in the list
         battle = Battle(this)
-        battle.start(player, enemyAdapter.enemies, this) // Pass the list of enemies to the start function
+        val chosenSkill = battle.start(player, enemyAdapter.enemies, this) // Get the chosen skill
+        val turnOrderItems = battle.generateTurnOrderItems(chosenSkill, enemyAdapter.enemies)
+        turnOrderAdapter.turnOrderItems = turnOrderItems
+
     }
 
     // Sets up the enemies RecyclerView
+    // Sets up the enemies RecyclerView
     private fun setupEnemiesRecyclerView() {
         enemiesRecyclerView = findViewById(R.id.enemiesRecyclerView)
-        enemiesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        enemiesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         val enemies = generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies
 
-        val adapter = EnemyAdapter(enemies)
+        val adapter = EnemyAdapter(enemies, this)
         enemiesRecyclerView.adapter = adapter
 
         enemyAdapter = adapter
     }
+
+    override fun onEnemyClick(enemy: Enemy) {
+        selectedEnemy = enemy
+        updateSelectedEnemyUI()
+    }
+}
+
+
+
 
     // Generates a random list of enemies based on the number of enemies specified
     private fun generateEnemyList(): List<Enemy> {
@@ -98,6 +156,5 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener {
         return enemyList
     }
 
-    // The rest of the BattleActivity class
-}
+
 

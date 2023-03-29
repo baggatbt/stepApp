@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,8 @@ class TurnOrderAdapter(var turnOrderItems: List<TurnOrderItem>) : RecyclerView.A
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = turnOrderItems[position]
-
+        println("on bind is being used")
+        Log.d("TurnOrderAdapter", "Binding item at position $position with id ${currentItem.id}")
         holder.turnOrderIcon.setImageResource(currentItem.imageResource)
         holder.turnOrderSpeed.text = currentItem.speed.toString()
     }

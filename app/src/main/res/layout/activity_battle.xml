@@ -44,20 +44,6 @@
         app:tint="@null" />
 
 
-    <ProgressBar
-        android:id="@+id/turn_order_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="464dp"
-        android:layout_marginEnd="45dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/tapTimeImageView"
-        app:layout_constraintEnd_toStartOf="@+id/enemiesRecyclerView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/turnOrderBar"
         android:layout_width="match_parent"
@@ -87,8 +73,8 @@
             android:id="@+id/turnOrderIcon3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:src="@drawable/sword3030" />
+            android:src="@drawable/sword3030"
+            android:layout_margin="4dp"/>
 
 
     </LinearLayout>

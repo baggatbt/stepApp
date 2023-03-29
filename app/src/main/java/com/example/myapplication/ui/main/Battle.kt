@@ -123,7 +123,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         basicAttackButton = (context as Activity).findViewById(R.id.basicAttackButton)
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
         abilityTwoButton = (context as Activity).findViewById(R.id.ability_card_2)
-        turn_order_bar = (context as Activity).findViewById<ProgressBar>(R.id.turn_order_bar)
         monsterTurnIcon = (context as Activity).findViewById<ImageView>(R.id.enemyImage1)
         monsterTurnIcon2 = (context as Activity).findViewById<ImageView>(R.id.enemyImage2)
         monsterTurnIcon3 = (context as Activity).findViewById<ImageView>(R.id.enemyImage3)

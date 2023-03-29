@@ -154,6 +154,3 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         return enemyList
     }
 }
-
-
-

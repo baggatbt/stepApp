@@ -107,12 +107,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         turnOrderIcon2 = (context as Activity).findViewById(R.id.turnOrderIcon2)
         turnOrderIcon3 = (context as Activity).findViewById(R.id.turnOrderIcon3)
 
-
-
-
-
-
-
         enemyList.clear()
         enemyList.addAll(enemies)
 
@@ -150,7 +144,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
 
-        generateTurnOrderItems(chosenSkill, enemyList)
+
         generateTurnOrder(chosenSkill,enemyList)
 
 
@@ -165,7 +159,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             if (selectedEnemy != null) {
                 println("Ability 1 button clicked")
                 chosenSkill = abilityOneSkill
-                generateTurnOrderItems(abilityOneSkill, enemyList)
                 generatePlayerTurnOrderIcons(abilityOneSkill)
                 setAbilityButtonsEnabled(false)
                 attackFrames = abilityOneSkill.attackFrames
@@ -206,10 +199,8 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         }
 
         // Regenerate turnOrder list before starting the next round
-        generateTurnOrderItems(chosenSkill, enemyList)
         generateTurnOrder(chosenSkill, enemyList)
         generatePlayerTurnOrderIcons(chosenSkill)
-        generateEnemyTurnOrderIcons(enemyList)
 
         setAbilityButtonsEnabled(true)
     }
@@ -293,7 +284,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                         if (checkVictoryAndDefeat(rootView) == false) {
                             turnOrder.clear()
                             numTurnsTaken = 0
-                            generateEnemyTurnOrderIcons(enemyList)
+
                             abilityOneExecuted = false
                             battleLoop()
                         }
@@ -361,6 +352,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     private fun executeEnemyTurn(enemy: Enemy, enemyAbility: EnemyAbility) {
         remainingTurnOrders.removeAt(0)
 
+
         if (enemy.currentHealth <= 0) {
             // Update the RecyclerView
             enemyAdapter.notifyItemRemoved(enemyList.indexOf(enemy))
@@ -403,16 +395,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
 
-    private fun generateEnemyTurnOrderIcons(enemies: List<Enemy>): List<TurnOrderItem> {
-        val turnOrderItems = mutableListOf<TurnOrderItem>()
-        for (i in enemies.indices) {
-            val currentEnemy = enemies[i]
-            val enemySpeed = if (currentEnemy.attacksToChargeSpecial == 0) currentEnemy.specialAttackSpeed else currentEnemy.speed
-            //TODO: update this to use the enemy's actual image resource ID
-            turnOrderItems.add(TurnOrderItem("enemy$i", R.drawable.sword3030, enemySpeed))
-        }
-        return turnOrderItems
-    }
 
 
     //TODO: create player icon for turn order bar and finish this function
@@ -432,33 +414,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
     private val remainingTurnOrders = mutableListOf<Int>()
 
-    fun generateTurnOrderItems(chosenSkill: Skills, enemies: List<Enemy>): List<TurnOrderItem> {
-        remainingTurnOrders.clear()
-        remainingTurnOrders.addAll(1..10)
 
-        val turnOrderItems = mutableListOf<TurnOrderItem>()
-
-        // Add the character to the turn order list
-        //TODO: update this to go off player icon image
-        turnOrderItems.add(TurnOrderItem("character", R.drawable.sword3030, chosenSkill.speed))
-
-        // Add each enemy to the turn order list
-        for (i in enemies.indices) {
-            val enemy = enemies[i]
-            val enemySpeed = if (enemy.attacksToChargeSpecial == 0) {
-                enemy.specialAttackSpeed
-            } else {
-                enemy.speed
-            }
-            //TODO: update this to go off enemy.imageResource
-            turnOrderItems.add(TurnOrderItem("enemy$i", R.drawable.sword3030, enemySpeed))
-        }
-
-        // Sort the turn order list based on speed, with lower speeds going first
-        turnOrderItems.sortBy { it.speed }
-
-        return turnOrderItems
-    }
 
 
     private fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
@@ -476,6 +432,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         // Add each enemy to the turn order list and keep track of their speeds
         for (i in enemies.indices) {
             val enemy = enemies[i]
+            turnOrderIcon1
             val enemySpeed = if (enemy.attacksToChargeSpecial == 0) {
                 enemy.specialAttackSpeed
             } else {

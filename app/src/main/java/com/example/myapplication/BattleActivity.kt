@@ -48,20 +48,24 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
                 val enemyImageView =
                     enemyViewHolder.itemView.findViewById<ImageView>(R.id.enemyImageView)
                 val targetedEnemyIcon =
-                    enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon) // Change this line
+                    enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon)
                 if (selectedEnemy == enemyViewHolder.enemy) {
-                    enemyImageView.translationZ = 10f // Set the translationZ to a higher value
-                    targetedEnemyIcon.translationZ =
-                        11f // Set the translationZ to an even higher value
-                    targetedEnemyIcon.visibility =
-                        View.VISIBLE // Make the targetedEnemyIcon visible
+                    enemyImageView.translationZ = 10f
+                    targetedEnemyIcon.translationZ = 11f
+                    targetedEnemyIcon.visibility = View.VISIBLE
+
+                    // Center the targetedEnemyIcon over the targetedEnemyImageView
+                    val targetWidth = enemyImageView.width
+                    val targetHeight = enemyImageView.height
+                    val targetX = enemyImageView.x + (targetWidth - targetedEnemyIcon.width) / 2f
+                    val targetY = enemyImageView.y + (targetHeight - targetedEnemyIcon.height) / 2f
+                    targetedEnemyIcon.setX(targetX)
+                    targetedEnemyIcon.setY(targetY)
                 } else {
-                    // Remove the border or reset the background color for other enemies
                     enemyImageView.background = null
-                    enemyImageView.translationZ = 0f // Reset the translationZ
-                    targetedEnemyIcon.translationZ = 0f // Reset the translationZ
-                    targetedEnemyIcon.visibility =
-                        View.INVISIBLE // Hide the targetedEnemyIcon for other enemies
+                    enemyImageView.translationZ = 0f
+                    targetedEnemyIcon.translationZ = 0f
+                    targetedEnemyIcon.visibility = View.INVISIBLE
                 }
             }
         }
@@ -114,9 +118,9 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
 
         // Initialize the battle and start it with the first enemy in the list
         battle = Battle(this)
-        val chosenSkill = battle.start(player, enemyAdapter.enemies, this) // Get the chosen skill
-        val turnOrderItems = battle.generateTurnOrderItems(chosenSkill, enemyAdapter.enemies)
-        turnOrderAdapter.turnOrderItems = turnOrderItems
+         battle.start(player, enemyAdapter.enemies, this) // Get the chosen skill
+
+
 
     }
 

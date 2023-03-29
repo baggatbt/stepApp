@@ -96,6 +96,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     //Intializing
     fun start(player: Player, enemies: List<Enemy>, context: Context): Skills {
         this.player = player
+        player.currentHealth = player.maxHealth
 
         //TODO: Implement setPlayerSkills()
         // Set player skills
@@ -105,6 +106,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         turnOrderIcon1 = (context as Activity).findViewById(R.id.turnOrderIcon1)
         turnOrderIcon2 = (context as Activity).findViewById(R.id.turnOrderIcon2)
         turnOrderIcon3 = (context as Activity).findViewById(R.id.turnOrderIcon3)
+
+
+
+
+
 
 
         enemyList.clear()
@@ -157,21 +163,24 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         }
 
         abilityOneButton.setOnClickListener {
-            println("Ability 1 button clicked")
-            chosenSkill = abilityOneSkill
-            generateTurnOrderItems(abilityOneSkill, enemyList)
-            generatePlayerTurnOrder(abilityOneSkill)
-            setAbilityButtonsEnabled(false)
-            // Set the animation frames for the chosen skill
-            attackFrames = abilityOneSkill.attackFrames
-            // Start the battle loop
-            battleLoop()
+            if (selectedEnemy != null) {
+                println("Ability 1 button clicked")
+                chosenSkill = abilityOneSkill
+                generateTurnOrderItems(abilityOneSkill, enemyList)
+                generatePlayerTurnOrderIcons(abilityOneSkill)
+                setAbilityButtonsEnabled(false)
+                attackFrames = abilityOneSkill.attackFrames
+                launchAttackTurns()
+            } else {
+                Toast.makeText(context, "Please select an enemy to attack.", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         abilityTwoButton.setOnClickListener {
             setAbilityButtonsEnabled(false)
             chosenSkill = abilityTwoSkill
-            generatePlayerTurnOrder(abilityTwoSkill)
+            generatePlayerTurnOrderIcons(abilityTwoSkill)
             rootView.setOnClickListener {
                 timingWindowOpen = true
                 executeCharacterTurn(context,abilityTwoSkill)
@@ -182,6 +191,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             }
         }
         return chosenSkill // Return the chosen skill
+        battleLoop()
     }
 
 
@@ -190,27 +200,19 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
     val nextTurnDelay = 1000L // set delay before the next turn
     private fun battleLoop() {
-        // Check if player or enemy is dead and end the battle if so
-        if (player.currentHealth <= 0) {
+        if (player.currentHealth <= 0 || enemyList.all { it.currentHealth <= 0 }) {
             checkVictoryAndDefeat(rootView)
-            println("Player is dead")
+            println("Battle ended")
             return
-        }
-        if (enemyList.isEmpty()) {
-            checkVictoryAndDefeat(rootView)
-            println("Enemy is dead")
-            return
-        } else {
-            println("launching attack turns")
-            launchAttackTurns()
-            println("attack turns have been launched")
         }
 
-        // Increment the currentTurnIndex and reset it to 0 if it reaches the end of the list
-        currentTurnIndex++
-        if (currentTurnIndex >= enemyList.size) {
-            currentTurnIndex = 0
-        }
+        // Regenerate turnOrder list before starting the next round
+        generateTurnOrderItems(chosenSkill, enemyList)
+        generateTurnOrder(chosenSkill, enemyList)
+        generatePlayerTurnOrderIcons(chosenSkill)
+        generateEnemyTurnOrderIcons(enemyList)
+
+        setAbilityButtonsEnabled(true)
     }
 
 
@@ -267,13 +269,14 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     var battleEnded = false // Add this line at the class level
 
     private fun launchAttackTurns() {
-        // Execute each turn in the turn order with a delay
-        println("launch attack turns present")
-        println("turn order is $turnOrder")
+        setAbilityButtonsEnabled(false)
+        println("launch attack turns called")
+        println(turnOrder)
+
         for ((index, turn) in turnOrder.withIndex()) {
             CoroutineScope(Dispatchers.Main).launch {
-                delay((index + 1) * 1000L) // delay for 1 second times the index of the turn
-                if (!battleEnded) { // Only execute the turn if the battle has not ended
+                delay((index + 1) * 1000L)
+                if (!battleEnded) {
                     if (turn == "character") {
                         executeCharacterTurn(context, chosenSkill)
                     } else {
@@ -283,24 +286,20 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                         } else {
                             enemy.abilities.first { !it.isSpecial }
                         }
-                        executeEnemyTurn(enemyList[currentTurnIndex], enemyAbility)
+                        executeEnemyTurn(enemy, enemyAbility)
                     }
+                    numTurnsTaken++
 
-                    numTurnsTaken++ // Increment the number of turns taken
-
-                    // Check if all turns have been taken
                     if (numTurnsTaken == turnOrder.size) {
-                        // Reset the turn order and number of turns taken
-                        if(checkVictoryAndDefeat(rootView) == false) {
+                        if (checkVictoryAndDefeat(rootView) == false) {
                             turnOrder.clear()
                             numTurnsTaken = 0
-                            generateEnemyTurnOrder(enemyList)
+                            generateEnemyTurnOrderIcons(enemyList)
                             abilityOneExecuted = false
-                            setAbilityButtonsEnabled(true)
+                            battleLoop()
                         }
                     }
 
-                    // Check if the battle has ended
                     if (player.currentHealth <= 0 || enemyList.all { it.currentHealth <= 0 }) {
                         endBattle()
                         battleEnded = true
@@ -314,7 +313,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
 
-    private fun executeCharacterTurn(context: Context, chosenSkill: Skills) {
+    private fun executeCharacterTurn(context: Context, skill: Skills) {
         // Check if a target is selected
         if (selectedEnemy == null) {
             Toast.makeText(context, "Please select an enemy to attack.", Toast.LENGTH_SHORT).show()
@@ -334,8 +333,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         println("after skillUsed.use(enemy) in executeCharacterTurn")
 
         // Enemy takes damage and health bar is updated
-        var damageDealt = (skillUsed.damage - targetEnemy.defense)
-        targetEnemy.takeDamage(damageDealt)
         onEnemyHealthChangedListener.onEnemyHealthChanged(targetEnemy)
 
         if (targetEnemy.currentHealth <= 0) {
@@ -343,12 +340,21 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             enemyAdapter.notifyItemRemoved(enemyList.indexOf(targetEnemy))
             enemyList.remove(targetEnemy)
         }
-        clearTurnOrderIcons()
+
 
         if (player.currentHealth <= 0) {
             return
         }
+
+        if (player.currentHealth <= 0 || enemyList.all { it.currentHealth <= 0 }) {
+            endBattle()
+            battleEnded = true
+            return
+        }
+        currentTurnIndex++
+        battleLoop() // Call battleLoop() after the player's attack
     }
+
 
 
 
@@ -398,31 +404,22 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
 
-    private fun generateEnemyTurnOrder(enemies: List<Enemy>) {
-        clearTurnOrderIcons()
+    private fun generateEnemyTurnOrderIcons(enemies: List<Enemy>): List<TurnOrderItem> {
+        val turnOrderItems = mutableListOf<TurnOrderItem>()
         for (i in enemies.indices) {
             val currentEnemy = enemies[i]
             val enemySpeed = if (currentEnemy.attacksToChargeSpecial == 0) currentEnemy.specialAttackSpeed else currentEnemy.speed
-            when (enemySpeed) {
-                1 -> turnOrderIcon1.setImageResource(R.drawable.sword3030)
-                2 -> turnOrderIcon2.setImageResource(R.drawable.sword3030)
-                3 -> turnOrderIcon3.setImageResource(R.drawable.sword3030)
-                // ...
-            }
+            //TODO: update this to use the enemy's actual image resource ID
+            turnOrderItems.add(TurnOrderItem("enemy$i", R.drawable.sword3030, enemySpeed))
         }
+        return turnOrderItems
     }
 
 
     //TODO: create player icon for turn order bar and finish this function
-    private fun generatePlayerTurnOrder(chosenSkill: Skills) {
-        clearTurnOrderIcons()
+    private fun generatePlayerTurnOrderIcons(chosenSkill: Skills): List<TurnOrderItem> {
         val characterSpeed = chosenSkill.speed
-        when (characterSpeed) {
-            1 -> turnOrderIcon1.setImageResource(R.drawable.sword3030)
-            2 -> turnOrderIcon2.setImageResource(R.drawable.sword3030)
-            3 -> turnOrderIcon3.setImageResource(R.drawable.sword3030)
-            // ...
-        }
+        return listOf(TurnOrderItem("character", R.drawable.sword3030, characterSpeed))
     }
 
 
@@ -446,8 +443,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         //TODO: update this to go off player icon image
         turnOrderItems.add(TurnOrderItem("character", R.drawable.sword3030, chosenSkill.speed))
 
-
-        val characterSpeed = chosenSkill.speed
         // Add each enemy to the turn order list
         for (i in enemies.indices) {
             val enemy = enemies[i]
@@ -471,22 +466,23 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         remainingTurnOrders.clear()
         remainingTurnOrders.addAll(1..10)
 
-        //TODO: grab the current enemy
         val characterSpeed = chosenSkill.speed
-        val enemySpeeds = enemies.map { if (enemy.attacksToChargeSpecial == 0){
-            it.specialAttackSpeed
-        } else{
-            it.speed
-        }
-        }
+        val enemySpeeds = mutableListOf<Int>()
 
         turnOrder = mutableListOf<String>()
 
         // Add the character to the turn order list
         turnOrder.add("character")
 
-        // Add each enemy to the turn order list and create icons on the turn order bar UI element
+        // Add each enemy to the turn order list and keep track of their speeds
         for (i in enemies.indices) {
+            val enemy = enemies[i]
+            val enemySpeed = if (enemy.attacksToChargeSpecial == 0) {
+                enemy.specialAttackSpeed
+            } else {
+                enemy.speed
+            }
+            enemySpeeds.add(enemySpeed)
             turnOrder.add("enemy$i")
         }
 

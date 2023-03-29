@@ -45,28 +45,27 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         for (i in 0 until enemiesRecyclerView.childCount) {
             val enemyViewHolder = enemiesRecyclerView.findViewHolderForAdapterPosition(i)
             if (enemyViewHolder is EnemyAdapter.EnemyViewHolder) {
-                val enemyImageView = enemyViewHolder.itemView.findViewById<ImageView>(R.id.enemyImageView)
-                val targetedEnemyIcon = enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon) // Change this line
+                val enemyImageView =
+                    enemyViewHolder.itemView.findViewById<ImageView>(R.id.enemyImageView)
+                val targetedEnemyIcon =
+                    enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon) // Change this line
                 if (selectedEnemy == enemyViewHolder.enemy) {
                     enemyImageView.translationZ = 10f // Set the translationZ to a higher value
-                    targetedEnemyIcon.translationZ = 11f // Set the translationZ to an even higher value
-                    targetedEnemyIcon.visibility = View.VISIBLE // Make the targetedEnemyIcon visible
+                    targetedEnemyIcon.translationZ =
+                        11f // Set the translationZ to an even higher value
+                    targetedEnemyIcon.visibility =
+                        View.VISIBLE // Make the targetedEnemyIcon visible
                 } else {
                     // Remove the border or reset the background color for other enemies
                     enemyImageView.background = null
                     enemyImageView.translationZ = 0f // Reset the translationZ
                     targetedEnemyIcon.translationZ = 0f // Reset the translationZ
-                    targetedEnemyIcon.visibility = View.INVISIBLE // Hide the targetedEnemyIcon for other enemies
+                    targetedEnemyIcon.visibility =
+                        View.INVISIBLE // Hide the targetedEnemyIcon for other enemies
                 }
             }
         }
     }
-
-
-
-
-
-
 
 
     // Called when the health of an enemy changes
@@ -74,7 +73,6 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         // Update the RecyclerView to show the new health values
         (enemiesRecyclerView.adapter as? EnemyAdapter)?.notifyDataSetChanged()
     }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,9 +124,11 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
     // Sets up the enemies RecyclerView
     private fun setupEnemiesRecyclerView() {
         enemiesRecyclerView = findViewById(R.id.enemiesRecyclerView)
-        enemiesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        enemiesRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        val enemies = generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies
+        val enemies =
+            generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies
 
         val adapter = EnemyAdapter(enemies, this)
         enemiesRecyclerView.adapter = adapter
@@ -138,11 +138,9 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
 
     override fun onEnemyClick(enemy: Enemy) {
         selectedEnemy = enemy
+        battle.selectedEnemy = enemy // Update the selected enemy in the Battle instance
         updateSelectedEnemyUI()
     }
-}
-
-
 
 
     // Generates a random list of enemies based on the number of enemies specified
@@ -155,6 +153,7 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         }
         return enemyList
     }
+}
 
 
 

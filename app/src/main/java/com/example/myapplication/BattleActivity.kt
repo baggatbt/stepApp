@@ -69,6 +69,14 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
                 }
             }
         }
+        // Clear the previous glow effect
+        glowingTurnOrderIcon?.clearAnimation()
+        glowingTurnOrderIcon?.alpha = 1.0f
+        glowingTurnOrderIcon = null
+        glowAnimation?.cancel()
+        glowAnimation = null
+
+        updateTurnOrderGlow()
     }
 
 
@@ -151,7 +159,7 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
 
     // Generates a random list of enemies based on the number of enemies specified
     private fun generateEnemyList(): List<Enemy> {
-        val numberOfEnemies = 2
+        val numberOfEnemies = 1
         val enemyList = mutableListOf<Enemy>()
         for (i in 1..numberOfEnemies) {
             val enemyType = EnemyType.values().random()
@@ -163,6 +171,7 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
     override fun onTurnOrderUpdated(turnOrderItems: List<TurnOrderItem>) {
         val turnOrderAdapter = (turnOrderRecyclerView.adapter as TurnOrderAdapter)
         turnOrderAdapter.update(turnOrderItems)
+        updateTurnOrderGlow()
     }
 
 
@@ -187,6 +196,33 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         }
         turnOrderAdapter.update(turnOrderItems)
     }
+
+    private var glowingTurnOrderIcon: ImageView? = null
+    private var glowAnimation: ObjectAnimator? = null
+
+
+    private fun updateTurnOrderGlow() {
+        for (i in 0 until turnOrderRecyclerView.childCount) {
+            val turnOrderViewHolder = turnOrderRecyclerView.findViewHolderForAdapterPosition(i)
+            if (turnOrderViewHolder is TurnOrderAdapter.ViewHolder) {
+                val turnOrderIcon = turnOrderViewHolder.turnOrderIcon
+                val turnOrderItem = turnOrderViewHolder.adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                    ?.let { position -> turnOrderAdapter.turnOrderItems[position] }
+                if (turnOrderItem != null && turnOrderItem.id.startsWith("enemy") && turnOrderItem.id.substring(5).toInt() == enemyAdapter.enemies.indexOf(selectedEnemy)) {
+                    // Make the turn order icon glow
+                    glowAnimation?.cancel() // Cancel the previous animation if it's running
+                    glowingTurnOrderIcon = turnOrderIcon
+                    glowAnimation = ObjectAnimator.ofFloat(turnOrderIcon, "alpha", 0.5f, 1.0f)
+                    glowAnimation?.duration = 1000
+                    glowAnimation?.repeatCount = ObjectAnimator.INFINITE
+                    glowAnimation?.repeatMode = ObjectAnimator.REVERSE
+                    glowAnimation?.start()
+                }
+            }
+        }
+    }
+
+
 
 
 

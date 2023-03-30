@@ -162,6 +162,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                 chosenSkill = abilityOneSkill
                 generateTurnOrder(chosenSkill, enemyList) // Add this line
                 setAbilityButtonsEnabled(false)
+                playerTurnOrderItem?.isVisible = true
                 attackFrames = abilityOneSkill.attackFrames
                 launchAttackTurns()
             } else {
@@ -395,7 +396,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         // Create a list of TurnOrderItem objects
         val turnOrderItems = turnOrder.map { order ->
             if (order == "character") {
-                TurnOrderItem(order, R.drawable.sword3030, characterSpeed) // Replace with the player's drawable resource
+                TurnOrderItem(order, R.drawable.sword3030, characterSpeed,isVisible = false) // Replace with the player's drawable resource
             } else {
                 val enemyIndex = order.substring(5).toInt()
                 TurnOrderItem(order, R.drawable.sword3030, enemySpeeds[enemyIndex]) // Replace with the common enemy's drawable resource
@@ -410,15 +411,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     }
 
 
-    private fun applyGlowEffect(targetIcon: ImageView) {
-        val glowColor = Color.rgb(255, 255, 0) // Yellow glow color
-        val colorFilter: ColorFilter = PorterDuffColorFilter(glowColor, PorterDuff.Mode.SRC_ATOP)
-        targetIcon.colorFilter = colorFilter
-    }
-
-    private fun clearGlowEffect(targetIcon: ImageView) {
-        targetIcon.colorFilter = null
-    }
 
 
 

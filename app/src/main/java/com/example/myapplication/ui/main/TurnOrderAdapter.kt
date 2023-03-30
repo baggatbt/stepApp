@@ -12,7 +12,8 @@ import com.example.myapplication.R
 data class TurnOrderItem(
     val id: String,
     val imageResource: Int,
-    val speed: Int
+    val speed: Int,
+    var isVisible: Boolean = true // Add this line
 )
 
 
@@ -35,7 +36,7 @@ class TurnOrderAdapter(var turnOrderItems: List<TurnOrderItem>) : RecyclerView.A
         Log.d("TurnOrderAdapter", "Binding item at position $position with id ${currentItem.id}")
         holder.turnOrderIcon.setImageResource(currentItem.imageResource)
         holder.turnOrderSpeed.text = currentItem.speed.toString()
-        holder.turnOrderIcon.visibility = View.VISIBLE // Make sure the icon is visible
+        holder.turnOrderIcon.visibility = if (currentItem.isVisible) View.VISIBLE else View.INVISIBLE // Update this line
     }
 
 

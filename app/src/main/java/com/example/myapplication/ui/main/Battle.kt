@@ -8,10 +8,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -19,10 +22,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.*
 import kotlinx.coroutines.*
 import java.util.*
+import android.widget.ImageView
 import java.util.concurrent.CountDownLatch
 
 
-class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener) {
+class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
     companion object {
         var expGained = 0
         var goldGained = 0
@@ -43,7 +47,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     lateinit var rootView: View
 
     lateinit var playerHealthBar: ProgressBar
-    lateinit var turn_order_bar: ProgressBar
     lateinit var enemyImageIcon : ImageView
     lateinit var chosenSkill: Skills
     lateinit var abilityOneSkill: Skills
@@ -61,10 +64,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     lateinit var monsterTurnIcon10: ImageView
     lateinit var attackFrames: IntArray
     lateinit var enemyRecyclerView: RecyclerView
+    lateinit var turnOrderRecyclerView: RecyclerView
     lateinit var enemyAdapter: EnemyAdapter
-    private lateinit var turnOrderIcon1: ImageView
-    private lateinit var turnOrderIcon2: ImageView
-    private lateinit var turnOrderIcon3: ImageView
+
 
 
 
@@ -93,8 +95,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
 
+
     //Intializing
-    fun start(player: Player, enemies: List<Enemy>, context: Context): Skills {
+    fun start(player: Player, enemies: List<Enemy>, context: Context) {
         this.player = player
         player.currentHealth = player.maxHealth
 
@@ -103,16 +106,13 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         abilityOneSkill = Skills(AbilityType.SLASH)
         abilityTwoSkill = Skills(AbilityType.HEAVYSLASH)
 
-        turnOrderIcon1 = (context as Activity).findViewById(R.id.turnOrderIcon1)
-        turnOrderIcon2 = (context as Activity).findViewById(R.id.turnOrderIcon2)
-        turnOrderIcon3 = (context as Activity).findViewById(R.id.turnOrderIcon3)
-
         enemyList.clear()
         enemyList.addAll(enemies)
 
         this.context = context
 
         // Find views
+        turnOrderRecyclerView = (context as Activity).findViewById(R.id.turnOrderRecyclerView)
         attackAnimation = (context as Activity).findViewById(R.id.basicKnight)
         basicAttackButton = (context as Activity).findViewById(R.id.basicAttackButton)
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
@@ -133,6 +133,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         playerHealthBar.max = player.maxHealth
         playerHealthBar.progress = player.currentHealth
         chosenSkill = abilityOneSkill
+
 
 
         // Add RecyclerView and adapter references
@@ -159,7 +160,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             if (selectedEnemy != null) {
                 println("Ability 1 button clicked")
                 chosenSkill = abilityOneSkill
-                generatePlayerTurnOrderIcons(abilityOneSkill)
+                generateTurnOrder(chosenSkill, enemyList) // Add this line
                 setAbilityButtonsEnabled(false)
                 attackFrames = abilityOneSkill.attackFrames
                 launchAttackTurns()
@@ -168,23 +169,24 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             }
         }
 
-
         abilityTwoButton.setOnClickListener {
             setAbilityButtonsEnabled(false)
             chosenSkill = abilityTwoSkill
-            generatePlayerTurnOrderIcons(abilityTwoSkill)
+            generateTurnOrder(chosenSkill, enemyList) // Add this line
             rootView.setOnClickListener {
                 timingWindowOpen = true
-                executeCharacterTurn(context,abilityTwoSkill)
+                executeCharacterTurn(context, abilityTwoSkill)
                 Handler(Looper.getMainLooper()).postDelayed({
                     setAbilityButtonsEnabled(true)
                     battleLoop()
                 }, nextTurnDelay)
             }
         }
-        return chosenSkill // Return the chosen skill
-        battleLoop()
+
+
     }
+
+
 
 
 
@@ -200,8 +202,8 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
         // Regenerate turnOrder list before starting the next round
         generateTurnOrder(chosenSkill, enemyList)
-        generatePlayerTurnOrderIcons(chosenSkill)
 
+        listener.updateTurnOrder() // Call the updateTurnOrder() method in BattleActivity/ Reset the current turn index
         setAbilityButtonsEnabled(true)
     }
 
@@ -221,41 +223,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     }
 
 
-
-
-    /* private fun handleTimingWindow(chosenSkill: Skills) {
-         if (attackInProgress) {
-             println("window open")
-             currentTime = System.currentTimeMillis()
-             val skillStartWindow = chosenSkill.startWindow
-             val skillEndWindow = chosenSkill.endWindow
-
-             println("last tap time in handleTiming window $lastTapTime")
-
-             val timeSinceLastTap = currentTime - lastTapTime
-             println("current time in handle timing" + currentTime)
-             println("time since last tap in handle timing $timeSinceLastTap")
-             val correctTiming = timeSinceLastTap in skillStartWindow..skillEndWindow
-             println("time since last tap in handle timing $timeSinceLastTap")
-             if (correctTiming){
-                 println("Success Effect Applied!")
-                 timingWindowOpen = false
-                 tapAttempt = false
-
-             } else {
-                 println("Timing failed")
-                 timingWindowOpen = false
-                 tapAttempt = false
-
-             }
-         }
-
-     }
-     /
-     */
-
-
-    var tapAttempt = false
     var battleEnded = false // Add this line at the class level
 
     private fun launchAttackTurns() {
@@ -390,32 +357,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         }
     }
 
-
-
-
-
-
-
-
-    //TODO: create player icon for turn order bar and finish this function
-    private fun generatePlayerTurnOrderIcons(chosenSkill: Skills): List<TurnOrderItem> {
-        val characterSpeed = chosenSkill.speed
-        return listOf(TurnOrderItem("character", R.drawable.sword3030, characterSpeed))
-    }
-
-
-    private fun clearTurnOrderIcons() {
-        turnOrderIcon1.setImageResource(0)
-        turnOrderIcon2.setImageResource(0)
-        turnOrderIcon3.setImageResource(0)
-
-
+    interface TurnOrderUpdateCallback {
+        fun onTurnOrderUpdated(turnOrderItems: List<TurnOrderItem>)
     }
 
     private val remainingTurnOrders = mutableListOf<Int>()
-
-
-
 
     private fun generateTurnOrder(chosenSkill: Skills, enemies: List<Enemy>) {
         remainingTurnOrders.clear()
@@ -432,7 +378,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         // Add each enemy to the turn order list and keep track of their speeds
         for (i in enemies.indices) {
             val enemy = enemies[i]
-            turnOrderIcon1
             val enemySpeed = if (enemy.attacksToChargeSpecial == 0) {
                 enemy.specialAttackSpeed
             } else {
@@ -446,7 +391,35 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         turnOrder.sortBy {
             if (it == "character") characterSpeed else enemySpeeds[it.substring(5).toInt()]
         }
+
+        // Create a list of TurnOrderItem objects
+        val turnOrderItems = turnOrder.map { order ->
+            if (order == "character") {
+                TurnOrderItem(order, R.drawable.sword3030, characterSpeed) // Replace with the player's drawable resource
+            } else {
+                val enemyIndex = order.substring(5).toInt()
+                TurnOrderItem(order, R.drawable.sword3030, enemySpeeds[enemyIndex]) // Replace with the common enemy's drawable resource
+            }
+        }
+        Log.d("Battle", "Updating turn order list: $turnOrderItems")
+
+        // Update the RecyclerView's adapter with the new data
+        val turnOrderAdapter = (turnOrderRecyclerView.adapter as TurnOrderAdapter)
+        turnOrderUpdateCallback.onTurnOrderUpdated(turnOrderItems)
+        turnOrderAdapter.update(turnOrderItems)
     }
+
+
+    private fun applyGlowEffect(targetIcon: ImageView) {
+        val glowColor = Color.rgb(255, 255, 0) // Yellow glow color
+        val colorFilter: ColorFilter = PorterDuffColorFilter(glowColor, PorterDuff.Mode.SRC_ATOP)
+        targetIcon.colorFilter = colorFilter
+    }
+
+    private fun clearGlowEffect(targetIcon: ImageView) {
+        targetIcon.colorFilter = null
+    }
+
 
 
     var numTurnsTaken = 0 // Initialize a variable to keep track of the number of turns taken

@@ -35,9 +35,19 @@ class TurnOrderAdapter(var turnOrderItems: List<TurnOrderItem>) : RecyclerView.A
         Log.d("TurnOrderAdapter", "Binding item at position $position with id ${currentItem.id}")
         holder.turnOrderIcon.setImageResource(currentItem.imageResource)
         holder.turnOrderSpeed.text = currentItem.speed.toString()
+        holder.turnOrderIcon.visibility = View.VISIBLE // Make sure the icon is visible
     }
+
 
     override fun getItemCount(): Int {
         return turnOrderItems.size
     }
+
+    fun update(newTurnOrderItems: List<TurnOrderItem>) {
+        turnOrderItems = newTurnOrderItems
+        notifyDataSetChanged()
+    }
+
+
+
 }

@@ -27,7 +27,7 @@ import com.example.myapplication.ui.main.Enemy
 import kotlin.random.Random
 
 
-class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnemyClickListener {
+class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnemyClickListener,TurnOrderUpdateListener,Battle.TurnOrderUpdateCallback {
 
     private lateinit var abilityOneButton: Button
     private lateinit var basicAttackButton: Button
@@ -72,6 +72,7 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
     }
 
 
+
     // Called when the health of an enemy changes
     override fun onEnemyHealthChanged(enemy: Enemy) {
         // Update the RecyclerView to show the new health values
@@ -89,6 +90,8 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         turnOrderRecyclerView = findViewById(R.id.turnOrderRecyclerView)
         turnOrderAdapter = TurnOrderAdapter(listOf())
         turnOrderRecyclerView.adapter = turnOrderAdapter
+
+
 
         // Initialize and set up the ability buttons and basic attack button
         val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)
@@ -117,10 +120,9 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
 
 
         // Initialize the battle and start it with the first enemy in the list
-        battle = Battle(this)
-         battle.start(player, enemyAdapter.enemies, this) // Get the chosen skill
-
-
+        battle = Battle(this, this,this)
+        battle.start(player, enemyAdapter.enemies, this) // Get the chosen skill
+        updateTurnOrder()
 
     }
 
@@ -157,4 +159,35 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         }
         return enemyList
     }
+
+    override fun onTurnOrderUpdated(turnOrderItems: List<TurnOrderItem>) {
+        val turnOrderAdapter = (turnOrderRecyclerView.adapter as TurnOrderAdapter)
+        turnOrderAdapter.update(turnOrderItems)
+    }
+
+
+    override fun updateTurnOrder() {
+        val turnOrderItems = battle.turnOrder.map { identifier ->
+            val imageResource = if (identifier == "character") {
+                R.drawable.sword3030 // Replace with the player's drawable resource
+            } else {
+                R.drawable.sword3030 // Replace with the common enemy's drawable resource
+            }
+            val speed = if (identifier == "character") {
+                player.speed // Replace with the player's speed property
+            } else {
+                val enemyIndex = identifier.substring(5).toInt()
+                enemyAdapter.enemies[enemyIndex].speed // Replace with the enemy's speed property
+            }
+            TurnOrderItem(
+                id = identifier,
+                imageResource = imageResource,
+                speed = speed
+            )
+        }
+        turnOrderAdapter.update(turnOrderItems)
+    }
+
+
+
 }

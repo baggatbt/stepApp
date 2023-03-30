@@ -8,7 +8,6 @@
     android:background="@drawable/battlebackground"
     tools:context=".BattleActivity">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/enemiesRecyclerView"
         android:layout_width="wrap_content"
@@ -17,19 +16,24 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/turn_order_bar"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/turnOrderRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
+        android:layout_margin="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/basicKnight"
@@ -43,45 +47,6 @@
         app:srcCompat="@drawable/basicknight"
         app:tint="@null" />
 
-
-    <LinearLayout
-        android:id="@+id/turnOrderBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Add ImageViews for each turn order position -->
-        <ImageView
-            android:id="@+id/turnOrderIcon1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sword3030"
-            android:visibility="invisible"
-            android:layout_margin="4dp"/>
-
-        <ImageView
-            android:id="@+id/turnOrderIcon2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sword3030"
-            android:visibility="invisible"
-            android:layout_margin="4dp"/>
-
-        <ImageView
-            android:id="@+id/turnOrderIcon3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sword3030"
-            android:visibility="invisible"
-            android:layout_margin="4dp"/>
-
-
-    </LinearLayout>
-
     <ImageView
         android:id="@+id/tapTimeImageView"
         android:layout_width="0dp"
@@ -89,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/turn_order_bar" />
+        />
 
     <ImageView
         android:id="@+id/enemyImage6"

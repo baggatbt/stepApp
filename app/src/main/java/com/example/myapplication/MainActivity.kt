@@ -14,6 +14,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.jobClasses.Warrior.Companion.warrior
 import com.example.myapplication.ui.main.*
 
 
@@ -42,16 +43,23 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     // Current steps are calculated by taking the difference of total steps
     // and previous steps
-    companion object{
+    // MainActivity.kt
+
+    companion object {
         var currentSteps = 0
-        var loadout = Loadout(skill1 = Skills(AbilityType.SLASH), skill2 = Skills(AbilityType.HEAVYSLASH), skill3 = Skills(AbilityType.SLASH))
-        var player = Player(level = 1, attack = 10, defense = 5, playerJob = "Warrior", gold = 0, loadout = loadout,
+        var initialLoadout = Player.generateLoadoutForClass("Warrior")
+        var player = Player(
+            name = "Player",
+            speed = 1,
+            health = 10,
+            level = 1,
+            attack = 10,
+            defense = 5,
+            playerClass = warrior,
+            gold = 0,
             experience = 0,
-            speed = 1,health = 10, name = "Player"
+            loadout = initialLoadout
         )
-
-
-
     }
 
 

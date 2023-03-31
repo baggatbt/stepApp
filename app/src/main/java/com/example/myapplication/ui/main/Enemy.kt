@@ -17,10 +17,11 @@ enum class EnemyType(
     val speed: Int,
     val specialAttackSpeed: Int,
     val attacksToChargeSpecial: Int,
-    val abilities: List<EnemyAbility>
+    val abilities: List<EnemyAbility>,
+    val drawableId: Int
 ) {
-    GOBLIN(1, "Goblin", 1, 1, 0, 200, 5, 3, 1, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE)),
-    SLIME(2, "Slime", 1, 1, 0, 200, 5, 3, 4, 2, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH))
+    GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1),
+    SLIME(2, "Slime", 1, 2, 0, 6, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2)
 }
 
 class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed, type.health) {
@@ -34,14 +35,21 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
     val abilities = type.abilities
     val specialAttackSpeed = type.specialAttackSpeed
     var attacksToChargeSpecial = type.attacksToChargeSpecial
+    var drawableId = type.drawableId
+
+    fun getImageResource(): Int {
+        return when (drawableId) {
+            1 -> R.drawable.goblin
+            2 -> R.drawable.idle_slime
+            else -> throw IllegalArgumentException("Invalid drawableId: $drawableId")
+        }
+    }
 
     fun attack() {
         // Implement the logic for the enemy's attack here
     }
 
-    fun takeDamage(damage: Int) {
-        health -= damage
-    }
+
 }
 
 
@@ -49,11 +57,11 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
 //isSpecial denotes whether or not the ability is the enemies special attack, usable when charged.
 enum class EnemyAbility(var damage: Int, var speed: Int, var staminaCost: Int, var isSpecial: Boolean) {
     //Goblin
-    SWIPE(0,1,3, true),
-    TACKLE(0,4,3,false),
+    SWIPE(4,1,3, true),
+    TACKLE(2,4,3,false),
     //Slime
-    SLAP(0,9,3,true),
-    SQUISH(0,1,5,false)
+    SLAP(2,5,3,false),
+    SQUISH(5,9,5,true)
 }
 
 class EnemySkills(private val type: EnemyAbility) {

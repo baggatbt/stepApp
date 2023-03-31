@@ -1,27 +1,4 @@
-To implement:
--Inventory system:
-1.Needs to keep track of weapons/equipment
-
--Weapon system:
-1.Player can swap weapons
-2.Weapons will need to be able to have types that function differently IE: Sword, Axe, Staff, Bow etc
-
--Class System:
-1.Each class comes with its own properties/abilities/combat style
-
-To explore:
-
--An activity that allows you to start a timer for X minutes, during that time get as many steps as you can
-OR get to a target, IE: 1000 steps in 5 mins(like going on a run/walk) Gives rewards. Would have to be limited in attempts.
-
--Learning skills like FFT- gain exp in job ur using or learn them from weapons? players can equip X points worth of skills?
-
--enemies will charge as they attack, filling a progress bar, each one having a unique attack (with effects?) on full charge.
-
--Does combat need stamina usage?
-
--Skills unlocking with realworld achievements. IE: Rogue class unlocks an ability when you get 10000 steps in 10 minutes.
-
+BUG: Enemies are being attacked twice per ability?
 
 
 

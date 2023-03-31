@@ -1,42 +1,17 @@
 package com.example.myapplication.ui.main
 
-import android.app.Activity
-import android.media.Image
-import android.widget.ImageView
-import com.example.myapplication.R
 
 
+abstract class Skills(val name: String,
+                     val damage: Int,
+                     val speed: Int,
+                     val staminaCost: Int,
+                     val attackFrames: IntArray,
+                     val timingWindowStartFrame: Int,
+                     val timingWindowEndFrame: Int) {
 
-enum class AbilityType(var damage: Int, var speed: Int, var staminaCost: Int, var startWindow: Long, var endWindow: Int) {
-    SLASH(2,2,3,250,500),
-    HEAVYSLASH(5,6,5,350,500)
+    abstract fun use(target: GameEntity): Unit
 }
-
-class Skills(private val type: AbilityType) {
-    var speed: Int = type.speed
-    var damage: Int = type.damage
-    var staminaCost: Int = type.staminaCost
-    var startWindow: Long = type.startWindow
-    var endWindow: Int = type.endWindow
-
-
-    //Takes an optional parameter
-    fun use(enemy: Enemy? = null, player: Player? = null) {
-            when (type) {
-                AbilityType.SLASH -> {
-                    enemy?.takeDamage(AbilityType.SLASH.damage)
-                }
-                AbilityType.HEAVYSLASH -> {
-                    //Logic for the heavy slash
-                    enemy?.takeDamage(AbilityType.HEAVYSLASH.damage)
-                }
-            }
-        }
-
-    }
-
-
-
 
 
 

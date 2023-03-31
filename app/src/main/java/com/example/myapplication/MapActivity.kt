@@ -19,7 +19,7 @@ class MapActivity : AppCompatActivity(){
     }
 
     fun switchToQuests(view: View?) {
-        val intent = Intent(this@MapActivity, TownOneActivity::class.java)
+        val intent = Intent(this@MapActivity, MapOneActivity::class.java)
         startActivity(intent)
 
     }

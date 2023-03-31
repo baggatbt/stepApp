@@ -39,7 +39,7 @@
         android:layout_width="41dp"
         android:layout_height="21dp"
         android:layout_marginTop="32dp"
-        android:text="Town"
+        android:text="Area 1"
         app:layout_constraintEnd_toEndOf="@+id/Town1Btn"
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="@+id/Town1Btn"

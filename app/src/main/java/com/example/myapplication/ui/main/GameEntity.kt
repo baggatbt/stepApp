@@ -13,6 +13,13 @@ open class GameEntity(val name: String, var speed: Int, var maxHealth: Int) {
             currentHealth = 0
         }
     }
+
+    fun heal(healingAmount: Int) {
+        currentHealth += healingAmount
+        if (currentHealth > maxHealth) {
+            currentHealth = maxHealth
+        }
+    }
 }
 
 

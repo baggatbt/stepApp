@@ -3,27 +3,24 @@ package com.example.myapplication.ui.main
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.*
 import kotlinx.coroutines.*
 import java.util.*
 import android.widget.ImageView
-import java.util.concurrent.CountDownLatch
+import com.example.myapplication.jobSkills.HeavySlash
+import com.example.myapplication.jobSkills.Slash
 
 
 class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
@@ -101,10 +98,12 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         this.player = player
         player.currentHealth = player.maxHealth
 
+
         //TODO: Implement setPlayerSkills()
         // Set player skills
-        abilityOneSkill = Skills(AbilityType.SLASH)
-        abilityTwoSkill = Skills(AbilityType.HEAVYSLASH)
+        abilityOneSkill = Slash()
+        abilityTwoSkill = HeavySlash()
+
 
         enemyList.clear()
         enemyList.addAll(enemies)

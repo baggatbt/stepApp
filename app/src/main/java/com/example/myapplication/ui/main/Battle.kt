@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.CountDownTimer
@@ -76,6 +78,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     //Slash animation variables
     private lateinit var attackAnimation: ImageView
     private lateinit var attackButton: Button
+    private lateinit var sharedPreferences: SharedPreferences
 
     private var currentFrame = 0
 
@@ -88,6 +91,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
     var attackInProgress = false
     var selectedEnemy: Enemy? = null
+    var totalExpReward = 0
+    var totalGoldReward = 0
+
 
 
 
@@ -97,6 +103,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     fun start(player: Player, enemies: List<Enemy>, context: Context) {
         this.player = player
         player.currentHealth = player.maxHealth
+        sharedPreferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
 
 
         //TODO: Implement setPlayerSkills()
@@ -107,6 +114,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
         enemyList.clear()
         enemyList.addAll(enemies)
+        // Calculate the total gold and exp rewards
+        totalGoldReward = enemyList.sumOf { it.goldReward }
+        totalExpReward = enemyList.sumOf { it.experienceReward }
+        println("Total gold reward: $totalGoldReward")
+        println("Total exp reward: $totalExpReward")
 
         this.context = context
 
@@ -418,31 +430,32 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         checkVictoryAndDefeat(rootView)
     }
 
+    // Function to check if all enemies are defeated and end the battle if necessary
     private fun checkVictoryAndDefeat(rootView: View): Boolean {
         val victoryActivity = VictoryActivity()
         var isVictory = false
 
         // Check if all enemies are defeated
         if (enemyList.all { it.currentHealth <= 0 }) {
-            //  battlePlayerTextView.text = "${battlePlayerTextView.text}\nYou have defeated the ${enemy.enemyName}!"
 
+            // Update the player's experience and gold
+            player.experience += totalExpReward
+            player.gold += totalGoldReward
+            sharedPreferences.edit().putInt("playerExp", player.experience).apply()
+            sharedPreferences.edit().putInt("playerGold", player.gold).apply()
 
-            //Updates player exp and gold
-            val totalExpReward = enemyList.sumBy { it.experienceReward }
-            val totalGoldReward = enemyList.sumBy { it.goldReward }
-            MainActivity.player.experience += totalExpReward
-            MainActivity.player.gold += totalGoldReward
-
-            // Passing values to companion object so that it can be passed to victory activity
+            // Pass the rewards to the victory activity
             expGained = totalExpReward
             goldGained = totalGoldReward
-
-            //Sends exp gained to victory screen for display
             victoryActivity.expGained = totalExpReward
+            victoryActivity.goldGained = totalGoldReward
+
+            // At the end of the battle, save the updated experience value to SharedPreferences
+
 
             // Use View.postDelayed to delay the transition to the rewards screen
             rootView.postDelayed({
-                //Moves to the rewards screen
+                // Move to the rewards screen
                 val victoryIntent = Intent(context, VictoryActivity::class.java)
                 context.startActivity(victoryIntent)
             }, 2000) // Delay for 2 seconds (2000 milliseconds)
@@ -464,6 +477,10 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         // Return the isVictory flag
         return isVictory
     }
+
+
+
+
 
     //ANIMATION FUNCTIONS
     private fun animateKnight() {

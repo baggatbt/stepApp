@@ -162,7 +162,6 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                 chosenSkill = abilityOneSkill
                 generateTurnOrder(chosenSkill, enemyList) // Add this line
                 setAbilityButtonsEnabled(false)
-                playerTurnOrderItem?.isVisible = true
                 attackFrames = abilityOneSkill.attackFrames
                 launchAttackTurns()
             } else {

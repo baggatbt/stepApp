@@ -39,6 +39,13 @@ class TurnOrderAdapter(var turnOrderItems: List<TurnOrderItem>) : RecyclerView.A
         holder.turnOrderIcon.visibility = if (currentItem.isVisible) View.VISIBLE else View.INVISIBLE // Update this line
     }
 
+    fun updateItemVisibility(id: String, isVisible: Boolean) {
+        val index = turnOrderItems.indexOfFirst { it.id == id }
+        if (index != -1) {
+            turnOrderItems[index].isVisible = isVisible
+            notifyItemChanged(index)
+        }
+    }
 
     override fun getItemCount(): Int {
         return turnOrderItems.size
@@ -52,3 +59,4 @@ class TurnOrderAdapter(var turnOrderItems: List<TurnOrderItem>) : RecyclerView.A
 
 
 }
+

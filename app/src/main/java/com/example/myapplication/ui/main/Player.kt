@@ -6,22 +6,17 @@ data class Loadout(
         var skill3: Skills
 )
 
-class Player(name: String, speed: Int, health: Int,
-             var level: Int,
-             var attack: Int,
-             var defense: Int,
-             var playerJob: String,
-             var gold: Int,
-             var experience: Int = 0,
-             var loadout: Loadout) : GameEntity(name, speed, health) {
+open class Player(name: String, speed: Int, health: Int,
+                  var level: Int,
+                  var attack: Int,
+                  var defense: Int,
+                  var playerJob: String,
+                  var gold: Int,
+                  var experience: Int = 0,
+                  var loadout: Loadout) : GameEntity(name, speed, health) {
 
-    fun performAbility() {
-        // Implement the logic for the player's abilities here
-    }
 
-    fun parry() {
-        // Implement the logic for parrying an enemy attack here
-    }
+
 }
 
 

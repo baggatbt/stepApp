@@ -1,8 +1,8 @@
 package com.example.myapplication
 
-import BattlePoint
-import PointOfInterest
-import QuestPoint
+import com.example.myapplication.maps.BattlePoint
+import com.example.myapplication.maps.PointOfInterest
+import com.example.myapplication.maps.QuestPoint
 import android.content.Context
 import android.content.Intent
 import android.graphics.PointF
@@ -35,17 +35,23 @@ class MapOneActivity : AppCompatActivity() {
         setContentView(R.layout.activity_townone)
         mapView = findViewById(R.id.map_view)
 
-        mapView.pointsOfInterest = listOf(
+// Initialize the points of interest list
+        val pointsOfInterest = listOf(
             BattlePoint(
                 battleId = 1,
                 location = PointF(300f, 600f)
             ),
             QuestPoint(
                 location = PointF(800f, 400f),
-                quest = Quest("First Quest", 10, experienceGained = 100, goldGained = 1)
-            )
+                quest = Quest("First Quest", 10, experienceGained = 100, goldGained = 1),
+                1)
         )
 
+
+// Pass the points of interest list to the CustomMapView
+        mapView.pointsOfInterest = pointsOfInterest
+
+// Set the point click listener
         mapView.setOnPointClickListener { point ->
             onPointClicked(point)
         }

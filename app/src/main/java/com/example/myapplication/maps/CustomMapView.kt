@@ -1,8 +1,5 @@
 package com.example.myapplication.maps
 
-import BattlePoint
-import PointOfInterest
-import QuestPoint
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -25,11 +22,7 @@ class CustomMapView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    var pointsOfInterest: List<PointOfInterest> = listOf(
-        BattlePoint(PointF(100f, 200f), battleId = 1),
-        QuestPoint(PointF(300f, 400f), quest = Quest("First Quest", 10, experienceGained = 3, goldGained = 1))
-    )
-
+    var pointsOfInterest: List<PointOfInterest> = listOf()
 
 
     private var offsetX: Float = 0f
@@ -101,7 +94,11 @@ class CustomMapView @JvmOverloads constructor(
 
     fun List<PointOfInterest>.findClickedPoint(x: Float, y: Float, offsetX: Float, offsetY: Float, radius: Float): PointOfInterest? {
         return this.firstOrNull { point ->
-            distance(x, y, point.location.x + offsetX, point.location.y + offsetY) <= radius
+            val isLocked = point.requires.any { requiredId ->
+                this.find { it is PointOfInterest && it.visited && it is BattlePoint && it.battleId == requiredId } == null
+                        && this.find { it is PointOfInterest && it.visited && it is QuestPoint && it.questId == requiredId } == null
+            }
+            !isLocked && distance(x, y, point.location.x + offsetX, point.location.y + offsetY) <= radius
         }
     }
 

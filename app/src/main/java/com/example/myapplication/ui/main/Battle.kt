@@ -1,8 +1,6 @@
 package com.example.myapplication.ui.main
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
+import android.animation.*
 import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -291,10 +289,10 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         attackInProgress = true // Set the attackInProgress flag to true
         println("Time executeCharacter started, ${System.currentTimeMillis()}")
 
-        animateKnight()
-        // Takes in the array containing the frames of the selected ability, as well as the window the correct timing will be in
-        startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame)
-
+        animateKnight(moveDistance = 300f) { // Increase the moveDistance value to make the knight move closer to the enemy
+            // onAnimationEnd callback - start the attack animation after the knight has moved to the monster
+            startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame)
+        }
         val targetEnemy = selectedEnemy!!
         var skillUsed = chosenSkill
         skillUsed.use(targetEnemy)
@@ -483,9 +481,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
     //ANIMATION FUNCTIONS
-    private fun animateKnight() {
+    private fun animateKnight(moveDistance: Float, onAnimationEnd: () -> Unit) {
         // Create an ObjectAnimator to animate the x position of the basicKnight image
-        val animator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x + 50f)
+        val animator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x + moveDistance)
         animator.duration = 200
         animator.start()
 
@@ -493,56 +491,54 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                val reverseAnimator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x - 50f)
-                reverseAnimator.duration = 300
-                reverseAnimator.start()
+                onAnimationEnd() // Call the onAnimationEnd callback
+
+                // Delay the return of the knight
+                basicKnight.postDelayed({
+                    val reverseAnimator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x - moveDistance)
+                    reverseAnimator.duration = 300
+                    reverseAnimator.start()
+                }, 2000) // Delay for 2 seconds (2000 milliseconds) or adjust to your desired delay time
             }
         })
     }
 
-    /*
-    private fun animateGoblin() {
-        // Create an ObjectAnimator to animate the x position of the basicKnight image
-        val animator = ObjectAnimator.ofFloat(goblinPicture, "x", goblinPicture.x, goblinPicture.x -50f)
-        animator.duration = 200
-        animator.start()
 
-        // Add a listener to the animator to reverse the animation when it's finished
-        animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                val reverseAnimator = ObjectAnimator.ofFloat(goblinPicture, "x", goblinPicture.x, goblinPicture.x + 50f)
-                reverseAnimator.duration = 300
-                reverseAnimator.start()
+
+
+
+    private fun animateTimingCircle(attackDuration: Long, timingWindowStartFrame: Int, timingWindowEndFrame: Int, frameInterval: Long) {
+        val timingWindowStartTime = timingWindowStartFrame * frameInterval
+        val timingWindowEndTime = timingWindowEndFrame * frameInterval
+        val timingWindowDuration = timingWindowEndTime - timingWindowStartTime
+
+        val timingCircleView = rootView.findViewById<TimingCircleView>(R.id.timingCircleView)
+
+        timingCircleView.postDelayed({
+            val animator = ValueAnimator.ofFloat(timingCircleView.width.toFloat() / 2, 0f).apply {
+                duration = timingWindowDuration
+                addUpdateListener {
+                    val radius = it.animatedValue as Float
+                    timingCircleView.setRadius(radius)
+                }
             }
-        })
+            animator.start()
+        }, timingWindowStartTime)
     }
 
-    private fun animateSlime() {
-        // Create an ObjectAnimator to animate the x position of the basicKnight image
-        val animator = ObjectAnimator.ofFloat(slimePicture, "x", slimePicture.x, slimePicture.x -50f)
-        animator.duration = 200
-        animator.start()
 
-        // Add a listener to the animator to reverse the animation when it's finished
-        animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                val reverseAnimator = ObjectAnimator.ofFloat(slimePicture, "x", slimePicture.x, slimePicture.x + 50f)
-                reverseAnimator.duration = 300
-                reverseAnimator.start()
-            }
-        })
-    }
-
-     */
 
     private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int) {
         //Calculate how long the duration of the animation needs to be
-        val frameInterval = 50L
-        val totalDuration = attackFrames.size * frameInterval
+            // Calculate how long the duration of the animation needs to be
+            val frameInterval = 100L
+            val totalDuration = attackFrames.size * frameInterval
 
-        attackTimer = object : CountDownTimer(totalDuration, frameInterval) {
+            // Call the animateTimingCircle function with the totalDuration, timingWindowStartFrame, and timingWindowEndFrame
+            animateTimingCircle(totalDuration, timingWindowStartFrame, timingWindowEndFrame, frameInterval)
+
+
+            attackTimer = object : CountDownTimer(totalDuration, frameInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 // Update the animation frame
                 currentFrame++

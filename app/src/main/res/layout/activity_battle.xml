@@ -18,6 +18,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.example.myapplication.ui.main.TimingCircleView
+        android:id="@+id/timingCircleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/turnOrderRecyclerView"

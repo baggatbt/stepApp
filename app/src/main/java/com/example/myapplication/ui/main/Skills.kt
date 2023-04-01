@@ -14,20 +14,3 @@ abstract class Skills(val name: String,
 }
 
 
-
-
-
-
-
-
-/**
- * To create a new skill you can:
-
-val slashSkill = Skills(AbilityType.SLASH)
-val blockCard = Skills(AbilityType.BLOCK)
-
-Then, to use a card's ability, you can simply call the use() method:
-
-slashSkill.use()
-blockSkill.use()
- */

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
@@ -162,6 +163,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             if (timingWindowOpen) {
                 // The player touched the screen between frame 2 and 3
                 println("Touched during timing window")
+                playSwordSlashSound() //TODO GET A SOUND
             }
         }
 
@@ -566,6 +568,15 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         }
         attackTimer?.start()
     }
+
+    private fun playSwordSlashSound() {
+        val mediaPlayer = MediaPlayer.create(context, R.raw.sword_slash)
+        mediaPlayer.start()
+        mediaPlayer.setOnCompletionListener {
+            it.release()
+        }
+    }
+
 }
 
 

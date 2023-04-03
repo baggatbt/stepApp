@@ -163,7 +163,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             if (timingWindowOpen) {
                 // The player touched the screen between frame 2 and 3
                 println("Touched during timing window")
-                playSwordSlashSound() //TODO GET A SOUND
+            //    playSwordSlashSound() //TODO GET A SOUND
             }
         }
 
@@ -291,6 +291,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         attackInProgress = true // Set the attackInProgress flag to true
         println("Time executeCharacter started, ${System.currentTimeMillis()}")
 
+       // startWalkingAnimation(walkingFrames, 5000) TODO: create walking frames
+
+
         animateKnight(moveDistance = 300f) { // Increase the moveDistance value to make the knight move closer to the enemy
             // onAnimationEnd callback - start the attack animation after the knight has moved to the monster
             startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame)
@@ -322,6 +325,47 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         currentTurnIndex++
         battleLoop() // Call battleLoop() after the player's attack
     }
+
+
+
+    private fun startWalkingAnimation(walkingFrames: IntArray, loopDuration: Long) {
+        // Calculate how long the duration of the animation needs to be
+        val frameInterval = 50L
+
+        val walkTimer = object : CountDownTimer(Long.MAX_VALUE, frameInterval) {
+            var currentFrame = 0
+
+            override fun onTick(millisUntilFinished: Long) {
+                // Update the animation frame
+                currentFrame++
+                if (currentFrame >= walkingFrames.size) {
+                    currentFrame = 0 // reset to the first frame
+                }
+
+                basicKnight.setImageResource(walkingFrames[currentFrame])
+            }
+
+            override fun onFinish() {
+                // This should not be called, as we set the duration to Long.MAX_VALUE
+            }
+        }
+        walkTimer.start()
+
+        // Set up another timer to stop the walkTimer after loopDuration
+        val stopTimer = object : CountDownTimer(loopDuration, loopDuration) {
+            override fun onTick(millisUntilFinished: Long) {
+                // No action required
+            }
+
+            override fun onFinish() {
+                walkTimer.cancel()
+                currentFrame = 0 // Reset to the first frame
+                basicKnight.setImageResource(walkingFrames[currentFrame]) // Set the animation to the first frame
+            }
+        }
+        stopTimer.start()
+    }
+
 
 
 
@@ -568,7 +612,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         }
         attackTimer?.start()
     }
-
+/*
     private fun playSwordSlashSound() {
         val mediaPlayer = MediaPlayer.create(context, R.raw.sword_slash)
         mediaPlayer.start()
@@ -576,8 +620,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             it.release()
         }
     }
-
+*/
 }
+
 
 
 

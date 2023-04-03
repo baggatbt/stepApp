@@ -64,6 +64,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     lateinit var enemyRecyclerView: RecyclerView
     lateinit var turnOrderRecyclerView: RecyclerView
     lateinit var enemyAdapter: EnemyAdapter
+    lateinit var currentFrameView: TextView
 
 
 
@@ -123,6 +124,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
         // Find views
         turnOrderRecyclerView = (context as Activity).findViewById(R.id.turnOrderRecyclerView)
+        currentFrameView = (context as Activity).findViewById(R.id.currentFrameDebug)
         attackAnimation = (context as Activity).findViewById(R.id.basicKnight)
         basicAttackButton = (context as Activity).findViewById(R.id.basicAttackButton)
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
@@ -591,10 +593,12 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                 if (currentFrame >= attackFrames.size) {
                     currentFrame = 0 // reset to the first frame
                 }
+                currentFrameView.setText(currentFrame.toString())
 
                 // Check if the animation is between the timing window start and end frames
                 if (currentFrame in timingWindowStartFrame..timingWindowEndFrame) {
                     timingWindowOpen = true
+
                     timingFlash()
                 } else {
                     timingWindowOpen = false

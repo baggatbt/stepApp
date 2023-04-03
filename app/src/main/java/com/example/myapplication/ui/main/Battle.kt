@@ -532,7 +532,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     private fun animateKnight(moveDistance: Float, onAnimationEnd: () -> Unit) {
         // Create an ObjectAnimator to animate the x position of the basicKnight image
         val animator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x + moveDistance)
-        animator.duration = 200
+        animator.duration = 500
         animator.start()
 
         // Add a listener to the animator to reverse the animation when it's finished

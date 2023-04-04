@@ -65,7 +65,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     lateinit var turnOrderRecyclerView: RecyclerView
     lateinit var enemyAdapter: EnemyAdapter
     lateinit var currentFrameView: TextView
-
+    lateinit var mediaPlayer : MediaPlayer
 
 
 
@@ -145,6 +145,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         playerHealthBar.max = player.maxHealth
         playerHealthBar.progress = player.currentHealth
         chosenSkill = abilityOneSkill
+        val mediaPlayer = createMediaPlayer(context)
 
 
 
@@ -166,6 +167,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                 // The player touched the screen between frame 2 and 3
                 println("Touched during timing window")
             //    playSwordSlashSound() //TODO GET A SOUND
+
             }
         }
 
@@ -180,6 +182,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             } else {
                 Toast.makeText(context, "Please select an enemy to attack.", Toast.LENGTH_SHORT).show()
             }
+
+            mediaPlayer.start()
+            println("Sound played")
         }
 
         abilityTwoButton.setOnClickListener {
@@ -577,16 +582,14 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
     private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int) {
-        //Calculate how long the duration of the animation needs to be
-            // Calculate how long the duration of the animation needs to be
-            val frameInterval = 100L
-            val totalDuration = attackFrames.size * frameInterval
+        // Calculate how long the duration of the animation needs to be
+        val frameInterval = 100L
+        val totalDuration = attackFrames.size * frameInterval
 
-            // Call the animateTimingCircle function with the totalDuration, timingWindowStartFrame, and timingWindowEndFrame
-            animateTimingCircle(totalDuration, timingWindowStartFrame, timingWindowEndFrame, frameInterval)
+        // Call the animateTimingCircle function with the totalDuration, timingWindowStartFrame, and timingWindowEndFrame
+        animateTimingCircle(totalDuration, timingWindowStartFrame, timingWindowEndFrame, frameInterval)
 
-
-            attackTimer = object : CountDownTimer(totalDuration, frameInterval) {
+        attackTimer = object : CountDownTimer(totalDuration, frameInterval) {
             override fun onTick(millisUntilFinished: Long) {
                 // Update the animation frame
                 currentFrame++
@@ -615,16 +618,23 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             }
         }
         attackTimer?.start()
-    }
-/*
-    private fun playSwordSlashSound() {
-        val mediaPlayer = MediaPlayer.create(context, R.raw.sword_slash)
+
+        // Start playing the sound
+        val mediaPlayer = createMediaPlayer(context)
         mediaPlayer.start()
+        println("Sound played")
+    }
+
+
+    private fun createMediaPlayer(context: Context): MediaPlayer {
+        val mediaPlayer = MediaPlayer.create(context, R.raw.swordslash)
         mediaPlayer.setOnCompletionListener {
+            it.reset()
             it.release()
         }
+        return mediaPlayer
     }
-*/
+
 }
 
 

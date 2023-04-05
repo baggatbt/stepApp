@@ -39,6 +39,7 @@ class MapOneActivity : AppCompatActivity() {
         val pointsOfInterest = listOf(
             BattlePoint(
                 battleId = 1,
+                enemies = listOf("goblin", "slime"),
                 location = PointF(300f, 600f)
             ),
             QuestPoint(

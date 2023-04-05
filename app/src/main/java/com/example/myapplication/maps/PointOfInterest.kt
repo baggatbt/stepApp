@@ -8,7 +8,7 @@ abstract class PointOfInterest(val location: PointF, var visited: Boolean = fals
 }
 
 
-class BattlePoint(location: PointF, val battleId: Int, requires: List<Int> = emptyList()) : PointOfInterest(location, false, requires) {
+class BattlePoint(location: PointF, val battleId: Int, val enemies: List<String>, requires: List<Int> = emptyList()) : PointOfInterest(location, false, requires) {
     override fun onClick(): Boolean {
         // Handle click event for the battle point
         return true

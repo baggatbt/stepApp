@@ -183,8 +183,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                 Toast.makeText(context, "Please select an enemy to attack.", Toast.LENGTH_SHORT).show()
             }
 
+            /*
             mediaPlayer.start()
             println("Sound played")
+
+             */
         }
 
         abilityTwoButton.setOnClickListener {

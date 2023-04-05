@@ -20,6 +20,11 @@ import com.example.myapplication.MainActivity
 import android.widget.Toast
 import com.example.myapplication.ui.main.EnemyType
 import com.example.myapplication.ui.main.Enemy
+import android.view.GestureDetector
+import android.view.MotionEvent
+import androidx.core.view.GestureDetectorCompat
+import androidx.appcompat.app.AlertDialog
+
 
 
 
@@ -35,6 +40,7 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
     private lateinit var enemiesRecyclerView: RecyclerView
     private lateinit var turnOrderAdapter: TurnOrderAdapter
     private lateinit var turnOrderRecyclerView: RecyclerView
+
 
     lateinit var battle: Battle
     var player = MainActivity.player
@@ -99,8 +105,6 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         turnOrderAdapter = TurnOrderAdapter(listOf())
         turnOrderRecyclerView.adapter = turnOrderAdapter
 
-
-
         // Initialize and set up the ability buttons and basic attack button
         val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)
         val basicAttackLayout = LayoutInflater.from(this).inflate(R.layout.basicattackbutton, null)
@@ -133,6 +137,18 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
         updateTurnOrder()
 
     }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setTitle("Quit battle")
+            .setMessage("Are you sure you want to quit the battle?")
+            .setPositiveButton("Yes") { _, _ ->
+                finish()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
 
     // Sets up the enemies RecyclerView
     // Sets up the enemies RecyclerView

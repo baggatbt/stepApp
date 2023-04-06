@@ -301,7 +301,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         attackInProgress = true // Set the attackInProgress flag to true
         println("Time executeCharacter started, ${System.currentTimeMillis()}")
 
-       // startWalkingAnimation(walkingFrames, 5000) TODO: create walking frames
+       startWalkingAnimation(walkingFrames, 5000)
 
 
         animateKnight(moveDistance = 300f) { // Increase the moveDistance value to make the knight move closer to the enemy
@@ -336,7 +336,7 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         battleLoop() // Call battleLoop() after the player's attack
     }
 
-
+   var walkingFrames = intArrayOf(R.drawable.knight2walk, R.drawable.knight2walk2, R.drawable.knight2walk3, R.drawable.knight2walk4)
 
     private fun startWalkingAnimation(walkingFrames: IntArray, loopDuration: Long) {
         // Calculate how long the duration of the animation needs to be

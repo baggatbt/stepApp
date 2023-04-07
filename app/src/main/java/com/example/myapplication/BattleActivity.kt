@@ -2,26 +2,21 @@ package com.example.myapplication
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
 import android.text.Layout
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.view.*
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ui.main.*
 import com.example.myapplication.MainActivity
-import android.widget.Toast
 import com.example.myapplication.ui.main.EnemyType
 import com.example.myapplication.ui.main.Enemy
-import android.view.GestureDetector
-import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import androidx.appcompat.app.AlertDialog
 
@@ -32,7 +27,7 @@ import androidx.appcompat.app.AlertDialog
 import kotlin.random.Random
 
 
-class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnemyClickListener,TurnOrderUpdateListener,Battle.TurnOrderUpdateCallback {
+class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemyHealthChangedListener, OnEnemyClickListener,TurnOrderUpdateListener,Battle.TurnOrderUpdateCallback {
 
     private lateinit var abilityOneButton: Button
     private lateinit var basicAttackButton: Button
@@ -45,6 +40,10 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
     lateinit var battle: Battle
     var player = MainActivity.player
     private var selectedEnemy: Enemy? = null
+
+    override fun onDamageDealt(damage: Int, enemyImageView: ImageView) {
+        showDamageBubble(damage, enemyImageView)
+    }
 
     private fun updateSelectedEnemyUI() {
         // Update the UI to show the selected enemy
@@ -132,7 +131,7 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
 
 
         // Initialize the battle and start it with the first enemy in the list
-        battle = Battle(this, this,this)
+        battle = Battle(this, this,this,this)
         battle.start(player, enemyAdapter.enemies, this) // Get the chosen skill
         updateTurnOrder()
 
@@ -239,7 +238,58 @@ class BattleActivity : AppCompatActivity(), OnEnemyHealthChangedListener, OnEnem
     }
 
 
+    private fun showDamageBubble(damage: Int, enemyImageView: ImageView) {
+        val rootView = findViewById<ViewGroup>(R.id.root)
+        val layoutInflater = LayoutInflater.from(this)
+
+        // Inflate the damage bubble layout
+        val damageBubble = layoutInflater.inflate(R.layout.damage_bubble, rootView, false)
+        val damageText = damageBubble.findViewById<TextView>(R.id.damage_text)
+        damageText.text = damage.toString()
+
+        // Add the damage bubble to the root view
+        rootView.addView(damageBubble)
+
+        // Position the damage bubble over the enemy
+        val enemyLocation = IntArray(2)
+        enemyImageView.getLocationOnScreen(enemyLocation)
+        damageBubble.x = enemyLocation[0].toFloat() + (enemyImageView.width / 2 - damageBubble.width / 2) - 250
+        damageBubble.y = enemyLocation[1].toFloat() + (enemyImageView.height / 2) - (damageBubble.height / 2) - 100
 
 
+        // Animate the damage bubble
+        val translateY = ObjectAnimator.ofFloat(damageBubble, "translationY", 0f, -50f)
+        val fadeOut = ObjectAnimator.ofFloat(damageBubble, "alpha", 1f, 0f)
+
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(translateY, fadeOut)
+        animatorSet.duration = 1000
+
+        animatorSet.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                // Remove the damage bubble from the root view after the animation
+                rootView.removeView(damageBubble)
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationRepeat(animation: Animator?) {}
+        })
+
+        // Add a delay to the damage bubble animation to match the hit connection timing
+        damageBubble.postDelayed({
+            animatorSet.start()
+        }, 300)
+
+        // Remove the damage bubble view after 2 seconds
+        damageBubble.postDelayed({
+            rootView.removeView(damageBubble)
+        }, 2000)
 
 }
+}
+
+
+

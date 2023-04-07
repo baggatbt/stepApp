@@ -24,7 +24,7 @@ import com.example.myapplication.jobSkills.HeavySlash
 import com.example.myapplication.jobSkills.Slash
 
 
-class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
+class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
     companion object {
         var expGained = 0
         var goldGained = 0
@@ -291,6 +291,9 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
 
+    interface DamageBubbleCallback {
+        fun onDamageDealt(damage: Int, enemyImageView: ImageView)
+    }
 
 
     private fun executeCharacterTurn(context: Context, skill: Skills) {
@@ -321,12 +324,16 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             }
         }
 
-        // ... (The rest of the function remains the same)
 
 
+// Right after dealing damage, call the onDamageDealt function
         val targetEnemy = selectedEnemy!!
-        var skillUsed = chosenSkill
+        val skillUsed = chosenSkill
         skillUsed.use(targetEnemy)
+        val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
+        // Call the onDamageDealt method when the character deals damage
+        damageBubbleCallback.onDamageDealt(skillUsed.damage, enemyImageView)
+
         println("after skillUsed.use(enemy) in executeCharacterTurn")
 
         // Enemy takes damage and health bar is updated
@@ -709,6 +716,10 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         }
         return mediaPlayer
     }
+
+
+
+
 
 }
 

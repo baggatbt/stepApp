@@ -7,7 +7,7 @@ open class GameEntity(val name: String, var speed: Int, var maxHealth: Int) {
 
     fun isAlive() = currentHealth > 0
 
-    fun takeDamage(damage: Int) {
+    open fun takeDamage(damage: Int) {
         currentHealth -= damage
         if (currentHealth < 0) {
             currentHealth = 0

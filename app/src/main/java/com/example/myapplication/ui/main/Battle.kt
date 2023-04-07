@@ -83,6 +83,8 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
     private var currentFrame = 0
 
     private var attackTimer: CountDownTimer? = null
+    private var walkTimer: CountDownTimer? = null
+
     private var lastTapTime = 0L
     var abilityOneExecuted = false
     var abilityTwoExecuted = false
@@ -301,13 +303,27 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         attackInProgress = true // Set the attackInProgress flag to true
         println("Time executeCharacter started, ${System.currentTimeMillis()}")
 
-       startWalkingAnimation(walkingFrames, 5000)
+        // Start the walking animation
+        startWalkingAnimation(walkingFrames, 500)
 
-
-        animateKnight(moveDistance = 300f) { // Increase the moveDistance value to make the knight move closer to the enemy
-            // onAnimationEnd callback - start the attack animation after the knight has moved to the monster
-            startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame)
+        // Knight walks towards the enemy
+        animateKnight(moveDistance = 300f) {
+            // onAnimationEnd callback - stop the walking animation and start the attack animation
+            stopWalkingAnimation()
+            startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame) {
+                // onAnimationEnd callback - knight walks back to the original position
+                startWalkingAnimation(walkingFrames, 500) // Start the walking animation again before moving back
+                animateKnight(moveDistance = -300f) {
+                    // onAnimationEnd callback - stop the walking animation
+                    stopWalkingAnimation()
+                    attackInProgress = false // Set the attackInProgress flag to false
+                }
+            }
         }
+
+        // ... (The rest of the function remains the same)
+
+
         val targetEnemy = selectedEnemy!!
         var skillUsed = chosenSkill
         skillUsed.use(targetEnemy)
@@ -333,14 +349,14 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
             return
         }
         currentTurnIndex++
-        battleLoop() // Call battleLoop() after the player's attack
+        battleLoop()
     }
 
    var walkingFrames = intArrayOf(R.drawable.knight2walk, R.drawable.knight2walk2, R.drawable.knight2walk3, R.drawable.knight2walk4)
 
     private fun startWalkingAnimation(walkingFrames: IntArray, loopDuration: Long) {
         // Calculate how long the duration of the animation needs to be
-        val frameInterval = 50L
+        val frameInterval = 100L
 
         val walkTimer = object : CountDownTimer(Long.MAX_VALUE, frameInterval) {
             var currentFrame = 0
@@ -376,14 +392,15 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
         stopTimer.start()
     }
 
-
-
-
+    private fun stopWalkingAnimation() {
+        walkTimer?.cancel()
+        currentFrame = 0 // Reset to the first frame
+        basicKnight.setImageResource(walkingFrames[currentFrame]) // Set the animation to the first frame
+    }
 
 
     private fun executeEnemyTurn(enemy: Enemy, enemyAbility: EnemyAbility) {
         remainingTurnOrders.removeAt(0)
-
 
         if (enemy.currentHealth <= 0) {
             // Update the RecyclerView
@@ -399,28 +416,80 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
             val damageDealt = attack.damage
 
-            // Apply the damage to the player
-            player.takeDamage(damageDealt)
-            playerHealthBar.progress -= damageDealt
-            checkVictoryAndDefeat(rootView)
+            // Find the enemy ImageView
+            val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
 
-            // Decrement the number of turns until the special attack can be used
-            if (enemy.attacksToChargeSpecial > 0) {
-                enemy.attacksToChargeSpecial--
-                println("attacks to charge special ${enemy.attacksToChargeSpecial}")
-            }
+            // Calculate the distance the enemy should move towards the player
+            val moveDistance = 200f // Adjust this value as needed
 
-            // Print the results of the turn
-            if  (enemy.attacksToChargeSpecial == 0) {
-                println("${enemy.name} used ${attack.name}!")
-            } else {
-                println("${enemy.name} attacked with its non-special ability!")
-            }
-            if (enemy.currentHealth <= 0) {
-                goblinPicture.visibility = View.GONE
-            }
+            // Create an ObjectAnimator to animate the enemy's translation
+            val enemyMoveAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", 0f, moveDistance)
+            enemyMoveAnimator.duration = 500 // Set the duration of the animation (in milliseconds)
+
+            // Set up a listener for the animation to start parry window and apply damage after the animation is complete
+            enemyMoveAnimator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator?) {
+                    // No action required
+                }
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    // Open the parry window and apply damage after the enemy has moved towards the player
+                    openParryWindowAndApplyDamage(damageDealt)
+                }
+
+                override fun onAnimationCancel(animation: Animator?) {
+                    // No action required
+                }
+
+                override fun onAnimationRepeat(animation: Animator?) {
+                    // No action required
+                }
+            })
+
+            // Start the enemy move animation
+            enemyMoveAnimator.start()
         }
     }
+
+    private fun openParryWindowAndApplyDamage(damageDealt: Int) {
+        // Prepare for parry window
+        val parryWindowDuration = 2000L // Replace with the desired parry window duration
+        basicKnight.setOnClickListener {
+            player.isParrying = true
+            println("Player attempted to parry!")
+        }
+
+        // Open the parry window
+        println("Parry window is open.")
+        val parryWindowTimer = object : CountDownTimer(parryWindowDuration, parryWindowDuration) {
+            override fun onTick(millisUntilFinished: Long) {
+                // No action required
+            }
+
+            override fun onFinish() {
+                // Close the parry window
+                println("Parry window is closed.")
+                basicKnight.setOnClickListener(null)
+                // Apply the damage to the player
+                player.takeDamage(damageDealt)
+                if (player.isParrying) {
+                    println("Parry succeeded! Damage reduced.")
+                } else {
+                    println("Parry failed! Full damage taken.")
+                }
+                playerHealthBar.progress -= damageDealt
+                player.isParrying = false // Reset the parrying status
+                checkVictoryAndDefeat(rootView)
+            }
+        }
+        parryWindowTimer.start()
+    }
+
+
+
+
+
+
 
     interface TurnOrderUpdateCallback {
         fun onTurnOrderUpdated(turnOrderItems: List<TurnOrderItem>)
@@ -549,15 +618,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                 super.onAnimationEnd(animation)
                 onAnimationEnd() // Call the onAnimationEnd callback
 
-                // Delay the return of the knight
-                basicKnight.postDelayed({
-                    val reverseAnimator = ObjectAnimator.ofFloat(basicKnight, "x", basicKnight.x, basicKnight.x - moveDistance)
-                    reverseAnimator.duration = 300
-                    reverseAnimator.start()
-                }, 2000) // Delay for 2 seconds (2000 milliseconds) or adjust to your desired delay time
+
             }
         })
     }
+
 
 
 
@@ -584,9 +649,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
 
 
 
-    private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int) {
-        // Calculate how long the duration of the animation needs to be
-        val frameInterval = 100L
+    private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int, onAnimationEnd: () -> Unit)   // Calculate how long the duration of the animation needs to be
+    {
+
+
+    val frameInterval = 200L
         val totalDuration = attackFrames.size * frameInterval
 
         // Call the animateTimingCircle function with the totalDuration, timingWindowStartFrame, and timingWindowEndFrame
@@ -618,6 +685,11 @@ class Battle(private val onEnemyHealthChangedListener: OnEnemyHealthChangedListe
                 timingWindowOpen = false
                 currentFrame = 0 // Reset to the first frame
                 attackAnimation.setImageResource(attackFrames[currentFrame]) // Set the animation to the first frame
+
+                // Add a delay to wait for the attack animation to complete
+                attackAnimation.postDelayed({
+                    onAnimationEnd() // Call the onAnimationEnd callback
+                }, totalDuration)
             }
         }
         attackTimer?.start()

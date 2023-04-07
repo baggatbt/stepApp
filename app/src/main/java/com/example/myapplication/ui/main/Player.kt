@@ -2,6 +2,7 @@ package com.example.myapplication.ui.main
 
 import com.example.myapplication.jobSkills.HeavySlash
 import com.example.myapplication.jobSkills.Slash
+import kotlin.math.max
 
 data class Loadout(
         var skill1: Skills,
@@ -29,11 +30,21 @@ open class Player(
     var experience: Int = 0,
     var loadout: Loadout
 ) : GameEntity(name, speed, health) {
+    var isParrying = false
 
     fun updateClass(newClass: PlayerClass) {
         playerClass = newClass
         loadout = generateLoadoutForClass(newClass.name)
     }
+
+    override fun takeDamage(damage: Int) {
+        val actualDamage = if (isParrying) (damage / 2) else damage // Replace 2 with the desired damage reduction factor
+        currentHealth = max(0, currentHealth - actualDamage)
+        if (isParrying){
+            println("PARRIED SON")
+        }
+    }
+
 
 
     companion object {

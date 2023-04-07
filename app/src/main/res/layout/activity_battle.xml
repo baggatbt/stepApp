@@ -49,7 +49,7 @@
         android:contentDescription="TODO"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/basicknight"
+        app:srcCompat="@drawable/knight2walk"
         app:tint="@null" />
 
 

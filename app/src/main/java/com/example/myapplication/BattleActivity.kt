@@ -253,9 +253,8 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
         // Position the damage bubble over the enemy
         val enemyLocation = IntArray(2)
         enemyImageView.getLocationOnScreen(enemyLocation)
-        damageBubble.x = enemyLocation[0].toFloat() + (enemyImageView.width / 2 - damageBubble.width / 2) - 250
+        damageBubble.x = enemyLocation[0].toFloat() + (enemyImageView.width / 2 - damageBubble.width ) - 250
         damageBubble.y = enemyLocation[1].toFloat() + (enemyImageView.height / 2) - (damageBubble.height / 2) - 100
-
 
         // Animate the damage bubble
         val translateY = ObjectAnimator.ofFloat(damageBubble, "translationY", 0f, -50f)
@@ -278,18 +277,11 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
             override fun onAnimationRepeat(animation: Animator?) {}
         })
 
-        // Add a delay to the damage bubble animation to match the hit connection timing
-        damageBubble.postDelayed({
-            animatorSet.start()
-        }, 300)
-
-        // Remove the damage bubble view after 2 seconds
-        damageBubble.postDelayed({
-            rootView.removeView(damageBubble)
-        }, 2000)
+        animatorSet.start()
+    }
 
 }
-}
+
 
 
 

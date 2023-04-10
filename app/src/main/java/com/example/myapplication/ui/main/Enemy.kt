@@ -5,6 +5,12 @@ import android.media.Image
 import com.example.myapplication.R
 import kotlin.random.Random
 
+data class EnemyAttackAnimation(
+    val attackFrames: IntArray,
+    val timingWindowStartFrame: Int,
+    val timingWindowEndFrame: Int
+)
+
 enum class EnemyType(
     val enemyID: Int,
     val enemyName: String,
@@ -18,11 +24,20 @@ enum class EnemyType(
     val specialAttackSpeed: Int,
     val attacksToChargeSpecial: Int,
     val abilities: List<EnemyAbility>,
-    val drawableId: Int
-) {
-    GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1),
-    SLIME(2, "Slime", 1, 2, 0, 6, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2)
+    val drawableId: Int,
+    val attackAnimation: EnemyAttackAnimation // Add this line
+)   {
+    GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1,EnemyAttackAnimation(
+        attackFrames = intArrayOf(R.drawable.goblin, R.drawable.goblin),
+        timingWindowStartFrame = 2,
+        timingWindowEndFrame = 3),
+    ),
+    SLIME(2, "Slime", 1, 2, 0, 6, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2,EnemyAttackAnimation(
+        attackFrames = intArrayOf(R.drawable.idle_slime, R.drawable.slime_motion1,R.drawable.slime_motion2,R.drawable.slime_motion3), //TODO: These need actual animation frames
+        timingWindowStartFrame = 2,
+        timingWindowEndFrame = 3))
 }
+
 
 class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed, type.health) {
 
@@ -36,6 +51,7 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
     val specialAttackSpeed = type.specialAttackSpeed
     var attacksToChargeSpecial = type.attacksToChargeSpecial
     var drawableId = type.drawableId
+    val attackAnimation = type.attackAnimation // Add this line
 
     fun getImageResource(): Int {
         return when (drawableId) {
@@ -48,20 +64,16 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
     fun attack() {
         // Implement the logic for the enemy's attack here
     }
-
-
 }
-
-
 
 //isSpecial denotes whether or not the ability is the enemies special attack, usable when charged.
 enum class EnemyAbility(var damage: Int, var speed: Int, var staminaCost: Int, var isSpecial: Boolean) {
     //Goblin
-    SWIPE(4,1,3, true),
-    TACKLE(2,4,3,false),
+    SWIPE(2, 4, 3, true),
+    TACKLE(2, 4, 3, false),
     //Slime
-    SLAP(2,5,3,false),
-    SQUISH(5,9,5,true)
+    SLAP(2, 5, 3, false), //TODO: For now both abilities are same for reducing art work
+    SQUISH(2, 5, 3, true)
 }
 
 class EnemySkills(private val type: EnemyAbility) {
@@ -87,9 +99,8 @@ class EnemySkills(private val type: EnemyAbility) {
             }
             EnemyAbility.SQUISH -> {
 
-               // do damage
+                // do damage
             }
         }
     }
 }
-

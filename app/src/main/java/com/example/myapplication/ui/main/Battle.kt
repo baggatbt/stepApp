@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.os.Handler
@@ -20,8 +22,11 @@ import com.example.myapplication.*
 import kotlinx.coroutines.*
 import java.util.*
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.example.myapplication.jobSkills.HeavySlash
 import com.example.myapplication.jobSkills.Slash
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
@@ -131,16 +136,6 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         basicAttackButton = (context as Activity).findViewById(R.id.basicAttackButton)
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
         abilityTwoButton = (context as Activity).findViewById(R.id.ability_card_2)
-        monsterTurnIcon = (context as Activity).findViewById<ImageView>(R.id.enemyImage1)
-        monsterTurnIcon2 = (context as Activity).findViewById<ImageView>(R.id.enemyImage2)
-        monsterTurnIcon3 = (context as Activity).findViewById<ImageView>(R.id.enemyImage3)
-        monsterTurnIcon4 = (context as Activity).findViewById<ImageView>(R.id.enemyImage4)
-        monsterTurnIcon5 = (context as Activity).findViewById<ImageView>(R.id.enemyImage5)
-        monsterTurnIcon6 = (context as Activity).findViewById<ImageView>(R.id.enemyImage6)
-        monsterTurnIcon7 = (context as Activity).findViewById<ImageView>(R.id.enemyImage7)
-        monsterTurnIcon8 = (context as Activity).findViewById<ImageView>(R.id.enemyImage8)
-        monsterTurnIcon9 = (context as Activity).findViewById<ImageView>(R.id.enemyImage9)
-        monsterTurnIcon10 = (context as Activity).findViewById<ImageView>(R.id.enemyImage10)
         basicKnight = (context as Activity).findViewById(R.id.basicKnight)
         rootView = (context as Activity).findViewById<View>(R.id.root)
         playerHealthBar = (context as Activity).findViewById(R.id.playerHealthBar)
@@ -252,10 +247,14 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         setAbilityButtonsEnabled(false)
         println("launch attack turns called")
         println(turnOrder)
+        val delayBetweenAttacks = 2000L // Adjust this value as needed
 
         for ((index, turn) in turnOrder.withIndex()) {
             CoroutineScope(Dispatchers.Main).launch {
-                delay((index + 1) * 1000L)
+                val currentDelay = (index + 1) * 1000L
+                val extraDelay = if (turn != "character") delayBetweenAttacks else 0L
+                delay(currentDelay + extraDelay)
+
                 if (!battleEnded) {
                     if (turn == "character") {
                         executeCharacterTurn(context, chosenSkill)
@@ -321,30 +320,9 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     stopWalkingAnimation()
                     attackInProgress = false // Set the attackInProgress flag to false
                 }
+
             }
         }
-
-
-
-// Right after dealing damage, call the onDamageDealt function
-        val targetEnemy = selectedEnemy!!
-        val skillUsed = chosenSkill
-        skillUsed.use(targetEnemy)
-        val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
-        // Call the onDamageDealt method when the character deals damage
-        damageBubbleCallback.onDamageDealt(skillUsed.damage, enemyImageView)
-
-        println("after skillUsed.use(enemy) in executeCharacterTurn")
-
-        // Enemy takes damage and health bar is updated
-        onEnemyHealthChangedListener.onEnemyHealthChanged(targetEnemy)
-
-        if (targetEnemy.currentHealth <= 0) {
-            // Update the RecyclerView
-            enemyAdapter.notifyItemRemoved(enemyList.indexOf(targetEnemy))
-            enemyList.remove(targetEnemy)
-        }
-
 
         if (player.currentHealth <= 0) {
             return
@@ -427,21 +405,46 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
 
             // Calculate the distance the enemy should move towards the player
-            val moveDistance = 200f // Adjust this value as needed
+            val moveDistance = -calculateDistance(enemyImageView, basicKnight) + basicKnight.width / 2
+
+
 
             // Create an ObjectAnimator to animate the enemy's translation
-            val enemyMoveAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", 0f, moveDistance)
-            enemyMoveAnimator.duration = 500 // Set the duration of the animation (in milliseconds)
+            var enemyMoveAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", 0f, moveDistance)
+            enemyMoveAnimator.duration = 2000 // Set the duration of the animation (in milliseconds)
 
             // Set up a listener for the animation to start parry window and apply damage after the animation is complete
             enemyMoveAnimator.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator?) {
-                    // No action required
+
+                    // Create an AnimationDrawable object for the attack animation
+                    val attackAnimation = AnimationDrawable()
+                    attackAnimation.isOneShot = true
+                    enemy.attackAnimation.attackFrames.forEach { frame ->
+                        val drawable = ContextCompat.getDrawable(rootView.context, frame)
+                        if (drawable is BitmapDrawable) {
+                            attackAnimation.addFrame(drawable, 500)
+                        } else {
+                            throw IllegalArgumentException("Invalid frame drawable: $frame")
+                        }
+                    }
+
+                    // Set and start the attack animation
+                    enemyImageView.setImageDrawable(attackAnimation)
+                    attackAnimation.start()
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
                     // Open the parry window and apply damage after the enemy has moved towards the player
                     openParryWindowAndApplyDamage(damageDealt)
+
+                    // Animate the enemy back to its original position after the attack animation is complete
+                    enemyMoveAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", moveDistance, 0f)
+                    enemyMoveAnimator.duration = 500 // Set the duration of the animation (in milliseconds)
+                    enemyMoveAnimator.start()
+
+                    // Reset the enemy image to the idle state
+                    enemyImageView.setImageResource(enemy.getImageResource())
                 }
 
                 override fun onAnimationCancel(animation: Animator?) {
@@ -457,6 +460,9 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             enemyMoveAnimator.start()
         }
     }
+
+
+
 
     private fun openParryWindowAndApplyDamage(damageDealt: Int) {
         // Prepare for parry window
@@ -656,17 +662,17 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
 
-    private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int, onAnimationEnd: () -> Unit)   // Calculate how long the duration of the animation needs to be
-    {
-
-
-    val frameInterval = 200L
+    private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int, onAnimationEnd: () -> Unit) {
+        // Calculate how long the duration of the animation needs to be
+        val frameInterval = 200L
         val totalDuration = attackFrames.size * frameInterval
 
         // Call the animateTimingCircle function with the totalDuration, timingWindowStartFrame, and timingWindowEndFrame
         animateTimingCircle(totalDuration, timingWindowStartFrame, timingWindowEndFrame, frameInterval)
 
         attackTimer = object : CountDownTimer(totalDuration, frameInterval) {
+            var damageApplied = false
+
             override fun onTick(millisUntilFinished: Long) {
                 // Update the animation frame
                 currentFrame++
@@ -680,6 +686,30 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     timingWindowOpen = true
 
                     timingFlash()
+
+                    // Apply damage when the timing window starts, and ensure it's applied only once
+                    if (!damageApplied) {
+                        damageApplied = true
+
+                        // Put the damage dealing code here
+                        val targetEnemy = selectedEnemy!!
+                        val skillUsed = chosenSkill
+                        skillUsed.use(targetEnemy)
+                        val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
+                        // Call the onDamageDealt method when the character deals damage
+                        damageBubbleCallback.onDamageDealt(skillUsed.damage, enemyImageView)
+
+                        println("after skillUsed.use(enemy) in executeCharacterTurn")
+
+                        // Enemy takes damage and health bar is updated
+                        onEnemyHealthChangedListener.onEnemyHealthChanged(targetEnemy)
+
+                        if (targetEnemy.currentHealth <= 0) {
+                            // Update the RecyclerView
+                            enemyAdapter.notifyItemRemoved(enemyList.indexOf(targetEnemy))
+                            enemyList.remove(targetEnemy)
+                        }
+                    }
                 } else {
                     timingWindowOpen = false
                 }
@@ -708,6 +738,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     }
 
 
+
     private fun createMediaPlayer(context: Context): MediaPlayer {
         val mediaPlayer = MediaPlayer.create(context, R.raw.swordslash)
         mediaPlayer.setOnCompletionListener {
@@ -716,6 +747,20 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         }
         return mediaPlayer
     }
+
+
+    //Gets the distance between top right of player image, and top left of enemy image
+    fun calculateDistance(imageView1: ImageView, imageView2: ImageView): Float {
+        val x1 = imageView1.x + imageView1.width // Add the width of the player ImageView to its x-coordinate
+        val y1 = imageView1.y
+        val x2 = imageView2.x
+        val y2 = imageView2.y
+
+        return sqrt((x2 - x1).pow(2) + (y2 - y1).pow(2))
+    }
+
+
+
 
 
 

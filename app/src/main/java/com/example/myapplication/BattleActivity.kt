@@ -97,6 +97,7 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_battle)
 
+
         // Set up the RecyclerView containing the list of enemies
         setupEnemiesRecyclerView()
 
@@ -149,21 +150,26 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
     }
 
 
-    // Sets up the enemies RecyclerView
-    // Sets up the enemies RecyclerView
+
     private fun setupEnemiesRecyclerView() {
         enemiesRecyclerView = findViewById(R.id.enemiesRecyclerView)
-        enemiesRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        val enemies =
-            generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies
+        // Modify these lines to align items to the right
+        val enemiesLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+        enemiesLayoutManager.stackFromEnd = true
+        enemiesRecyclerView.layoutManager = enemiesLayoutManager
+
+        val enemies = generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies
 
         val adapter = EnemyAdapter(enemies, this)
         enemiesRecyclerView.adapter = adapter
 
         enemyAdapter = adapter
     }
+
+
+
+
 
     override fun onEnemyClick(enemy: Enemy) {
         selectedEnemy = enemy

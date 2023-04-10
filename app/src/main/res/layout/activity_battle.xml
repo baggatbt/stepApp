@@ -5,24 +5,32 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/battlebackground"
+    android:background="@drawable/temp_battle_background"
     tools:context=".BattleActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/enemiesRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="262dp"
+        android:layout_height="279dp"
+        android:layout_marginTop="178dp"
+        android:layout_marginBottom="187dp"
         android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
     <com.example.myapplication.ui.main.TimingCircleView
         android:id="@+id/timingCircleView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/turnOrderRecyclerView"
@@ -40,31 +48,31 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+
     <ImageView
         android:id="@+id/basicKnight"
-        android:layout_width="115dp"
-        android:layout_height="141dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="96dp"
+        android:layout_width="109dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="272dp"
         android:contentDescription="TODO"
+        app:elevation="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/knight2walk"
         app:tint="@null" />
 
-
-
     <TextView
         android:id="@+id/currentFrameDebug"
         android:layout_width="138dp"
         android:layout_height="96dp"
-        android:layout_marginTop="256dp"
-        android:layout_marginBottom="307dp"
+        android:layout_marginBottom="472dp"
         android:text="test"
         android:textSize="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="119dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.216"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/tapTimeImageView"
@@ -74,139 +82,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/enemyImage6"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage7"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage1"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="412dp"
-        android:layout_marginEnd="30dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage3"
-        app:layout_constraintHorizontal_bias="0.146"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage10"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:layout_marginEnd="55dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage9"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage8"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage9"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage7"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage3"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage4"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage5"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage6"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage2"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:layout_marginEnd="292dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage4"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage5"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage3"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage9"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage10"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage8"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
-    <ImageView
-        android:id="@+id/enemyImage7"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="412dp"
-        android:src="@drawable/sword3030"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/enemyImage8"
-        app:layout_constraintStart_toEndOf="@+id/enemyImage6"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sword3030" />
-
 
     <ProgressBar
         android:id="@+id/playerHealthBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="100dp"
         android:layout_height="20dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="236dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="428dp"
         android:progressDrawable="@drawable/custom_progress_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

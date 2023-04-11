@@ -405,8 +405,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
 
             // Calculate the distance the enemy should move towards the player
-            val moveDistance = -calculateDistance(enemyImageView, basicKnight) + basicKnight.width / 2
-
+            val overlapFactor = 0.7F // Change this value between 0 and 1 to control how much the sprites should overlap
+            val moveDistance = calculateDistance(enemyImageView, basicKnight) - (enemyImageView.width * overlapFactor)
 
 
             // Create an ObjectAnimator to animate the enemy's translation
@@ -750,14 +750,21 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
     //Gets the distance between top right of player image, and top left of enemy image
-    fun calculateDistance(imageView1: ImageView, imageView2: ImageView): Float {
-        val x1 = imageView1.x + imageView1.width // Add the width of the player ImageView to its x-coordinate
-        val y1 = imageView1.y
-        val x2 = imageView2.x
-        val y2 = imageView2.y
+    fun calculateDistance(playerImageView: ImageView, enemyImageView: ImageView): Float {
+        val playerWidth = playerImageView.width
+        val enemyWidth = enemyImageView.width
 
-        return sqrt((x2 - x1).pow(2) + (y2 - y1).pow(2))
+        val enemyWidthFactor = 0.5 // Change this value between 0 and 1 to control the portion of enemy width to consider
+        val adjustedEnemyWidth = enemyWidth * enemyWidthFactor
+
+        // Set an attack distance as a percentage of the sum of player and adjusted enemy widths
+        val attackDistancePercentage = 0.1 // Change this value between 0 and 1 to control the attack distance
+        val attackDistance = ((playerWidth + adjustedEnemyWidth) * attackDistancePercentage).toFloat()
+
+        return attackDistance
     }
+
+
 
 
 

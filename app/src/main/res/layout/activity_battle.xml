@@ -10,8 +10,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/enemiesRecyclerView"
-        android:layout_width="262dp"
-        android:layout_height="279dp"
+        android:layout_width="399dp"
+        android:layout_height="276dp"
         android:layout_marginTop="178dp"
         android:layout_marginBottom="187dp"
         android:orientation="vertical"

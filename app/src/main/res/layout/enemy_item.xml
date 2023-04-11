@@ -8,14 +8,15 @@
 
     <ImageView
         android:id="@+id/enemyImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:adjustViewBounds="true"
+        android:layout_width="212dp"
+        android:layout_height="111dp"
+        android:scaleType="fitEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/idle_slime" />
+
+
 
     <ProgressBar
         android:id="@+id/enemyHealthBar"

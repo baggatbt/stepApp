@@ -19,9 +19,7 @@ import com.example.myapplication.ui.main.EnemyType
 import com.example.myapplication.ui.main.Enemy
 import androidx.core.view.GestureDetectorCompat
 import androidx.appcompat.app.AlertDialog
-
-
-
+import androidx.recyclerview.widget.GridLayoutManager
 
 
 import kotlin.random.Random
@@ -154,9 +152,8 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
     private fun setupEnemiesRecyclerView() {
         enemiesRecyclerView = findViewById(R.id.enemiesRecyclerView)
 
-        // Modify these lines to align items to the right
-        val enemiesLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
-        enemiesLayoutManager.stackFromEnd = true
+        // Set the GridLayoutManager with 1 column
+        val enemiesLayoutManager = GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
         enemiesRecyclerView.layoutManager = enemiesLayoutManager
 
         val enemies = generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies

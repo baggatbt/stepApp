@@ -11,13 +11,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/enemiesRecyclerView"
         android:layout_width="399dp"
-        android:layout_height="276dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="178dp"
         android:layout_marginBottom="187dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 
 

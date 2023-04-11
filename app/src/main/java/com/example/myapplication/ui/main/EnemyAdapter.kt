@@ -26,10 +26,6 @@ class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: O
         }
     }
 
-
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnemyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.enemy_item, parent, false)
         return EnemyViewHolder(view)

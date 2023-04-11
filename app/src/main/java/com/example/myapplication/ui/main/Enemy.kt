@@ -1,6 +1,11 @@
 package com.example.myapplication.ui.main
 
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.Image
 import com.example.myapplication.R
 import kotlin.random.Random
@@ -26,7 +31,9 @@ enum class EnemyType(
     val abilities: List<EnemyAbility>,
     val drawableId: Int,
     val attackAnimation: EnemyAttackAnimation // Add this line
+
 )   {
+
     GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1,EnemyAttackAnimation(
         attackFrames = intArrayOf(R.drawable.goblin, R.drawable.goblin),
         timingWindowStartFrame = 2,
@@ -38,6 +45,19 @@ enum class EnemyType(
         timingWindowEndFrame = 3))
 }
 
+fun getSpriteSheetFrames(context: Context, resourceId: Int, frameWidth: Int, frameHeight: Int, frameCount: Int): List<Drawable> {
+    val frames = mutableListOf<Drawable>()
+    val spriteSheet = BitmapFactory.decodeResource(context.resources, resourceId)
+
+    for (i in 0 until frameCount) {
+        val x = i * frameWidth
+        val frameBitmap = Bitmap.createBitmap(spriteSheet, x, 0, frameWidth, frameHeight)
+        val frameDrawable = BitmapDrawable(context.resources, frameBitmap)
+        frames.add(frameDrawable)
+    }
+
+    return frames
+}
 
 class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed, type.health) {
 

@@ -49,8 +49,8 @@ class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: O
 
     private fun getDrawableIdForEnemyType(drawableId: Int): Int {
         return when (drawableId) {
-            1 -> R.drawable.goblin
-            2 -> R.drawable.idle_slime
+            1 -> R.drawable.slime_motion1
+            2 -> R.drawable.slime_motion1
             else -> throw IllegalArgumentException("Invalid drawableId: $drawableId")
         }
     }

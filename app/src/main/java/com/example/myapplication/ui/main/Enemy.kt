@@ -11,10 +11,12 @@ import com.example.myapplication.R
 import kotlin.random.Random
 
 data class EnemyAttackAnimation(
-    val attackFrames: IntArray,
+    val moveFrames: IntArray,
+    val attackFrames: IntArray, // Add this line
     val timingWindowStartFrame: Int,
     val timingWindowEndFrame: Int
 )
+
 
 enum class EnemyType(
     val enemyID: Int,
@@ -30,19 +32,24 @@ enum class EnemyType(
     val attacksToChargeSpecial: Int,
     val abilities: List<EnemyAbility>,
     val drawableId: Int,
-    val attackAnimation: EnemyAttackAnimation // Add this line
+    val moveAnimation: EnemyAttackAnimation
 
 )   {
 
+
     GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1,EnemyAttackAnimation(
-        attackFrames = intArrayOf(R.drawable.goblin, R.drawable.goblin),
+        moveFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1,R.drawable.slime_motion1),
+        attackFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1), // TODO: Add actual attack frame resources
         timingWindowStartFrame = 2,
         timingWindowEndFrame = 3),
     ),
     SLIME(2, "Slime", 1, 2, 0, 6, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2,EnemyAttackAnimation(
-        attackFrames = intArrayOf(R.drawable.idle_slime, R.drawable.slime_motion1,R.drawable.slime_motion2,R.drawable.slime_motion3), //TODO: These need actual animation frames
+        moveFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1,R.drawable.slime_motion1),
+        attackFrames = intArrayOf(R.drawable.slime_attack_1,R.drawable.slime_attack_2,R.drawable.slime_attack_3), // Add actual attack frame resources
         timingWindowStartFrame = 2,
         timingWindowEndFrame = 3))
+
+
 }
 
 fun getSpriteSheetFrames(context: Context, resourceId: Int, frameWidth: Int, frameHeight: Int, frameCount: Int): List<Drawable> {
@@ -71,7 +78,9 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
     val specialAttackSpeed = type.specialAttackSpeed
     var attacksToChargeSpecial = type.attacksToChargeSpecial
     var drawableId = type.drawableId
-    val attackAnimation = type.attackAnimation // Add this line
+    val moveAnimation = type.moveAnimation //
+    val attackFrames = type.moveAnimation.attackFrames // Update this line
+
 
     fun getImageResource(): Int {
         return when (drawableId) {

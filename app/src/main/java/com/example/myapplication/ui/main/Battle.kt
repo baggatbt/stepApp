@@ -405,7 +405,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
 
             // Calculate the distance the enemy should move towards the player
-            val overlapFactor = 0.7F // Change this value between 0 and 1 to control how much the sprites should overlap
+            val overlapFactor = 0.8F // Change this value between 0 and 1 to control how much the sprites should overlap
             val moveDistance = calculateDistance(enemyImageView, basicKnight) - (enemyImageView.width * overlapFactor)
 
 
@@ -417,28 +417,33 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             enemyMoveAnimator.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator?) {
 
-                    // Create an AnimationDrawable object for the attack animation
-                    val attackAnimation = AnimationDrawable()
-                    attackAnimation.isOneShot = true
-                    enemy.attackAnimation.attackFrames.forEach { frame ->
+                    // Create an AnimationDrawable object for the walking animation
+                    val moveAnimation = AnimationDrawable()
+                    moveAnimation.isOneShot = true
+                    enemy.moveAnimation.moveFrames.forEachIndexed { index, frame ->
                         val drawable = ContextCompat.getDrawable(rootView.context, frame)
                         if (drawable is BitmapDrawable) {
-                            attackAnimation.addFrame(drawable, 500)
+                            val duration = if (index == 2) {
+                                2000 // Set the custom delay for the third frame (index 2)
+                            } else {
+                                500 // Set the regular duration for other frames
+                            }
+                            moveAnimation.addFrame(drawable, duration)
                         } else {
                             throw IllegalArgumentException("Invalid frame drawable: $frame")
                         }
                     }
 
-                    // Set and start the attack animation
-                    enemyImageView.setImageDrawable(attackAnimation)
-                    attackAnimation.start()
+// Set and start the move animation
+                    enemyImageView.setImageDrawable(moveAnimation)
+                    moveAnimation.start()
                 }
 
-                override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator?) {
                     // Open the parry window and apply damage after the enemy has moved towards the player
                     openParryWindowAndApplyDamage(damageDealt)
 
-                    // Animate the enemy back to its original position after the attack animation is complete
+                    // Animate the enemy back to its original position after the attack is complete
                     enemyMoveAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", moveDistance, 0f)
                     enemyMoveAnimator.duration = 500 // Set the duration of the animation (in milliseconds)
                     enemyMoveAnimator.start()

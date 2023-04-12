@@ -45,26 +45,15 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     lateinit var context: Context
     lateinit var basicKnight : ImageView
 
-    lateinit var goblinPicture : ImageView
-    lateinit var slimePicture : ImageView
+
     lateinit var rootView: View
 
     lateinit var playerHealthBar: ProgressBar
-    lateinit var enemyImageIcon : ImageView
     lateinit var chosenSkill: Skills
     lateinit var abilityOneSkill: Skills
     lateinit var abilityTwoSkill: Skills
 
-    lateinit var monsterTurnIcon: ImageView
-    lateinit var monsterTurnIcon2: ImageView
-    lateinit var monsterTurnIcon3: ImageView
-    lateinit var monsterTurnIcon4: ImageView
-    lateinit var monsterTurnIcon5: ImageView
-    lateinit var monsterTurnIcon6: ImageView
-    lateinit var monsterTurnIcon7: ImageView
-    lateinit var monsterTurnIcon8: ImageView
-    lateinit var monsterTurnIcon9: ImageView
-    lateinit var monsterTurnIcon10: ImageView
+
     lateinit var attackFrames: IntArray
     lateinit var enemyRecyclerView: RecyclerView
     lateinit var turnOrderRecyclerView: RecyclerView
@@ -75,7 +64,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
 
-    var enemyCanAttackFlag = false
+
     var runnable: Runnable = Runnable {}
     val enemyList = mutableListOf<Enemy>()
     var turnOrder = mutableListOf<String>()

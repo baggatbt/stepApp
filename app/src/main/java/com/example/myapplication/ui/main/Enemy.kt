@@ -35,7 +35,7 @@ enum class EnemyType(
 )   {
 
     GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1,EnemyAttackAnimation(
-        attackFrames = intArrayOf(R.drawable.goblin, R.drawable.goblin),
+        attackFrames = intArrayOf(R.drawable.idle_slime, R.drawable.slime_motion1,R.drawable.slime_motion2,R.drawable.slime_motion3),
         timingWindowStartFrame = 2,
         timingWindowEndFrame = 3),
     ),
@@ -88,6 +88,7 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
 
 //isSpecial denotes whether or not the ability is the enemies special attack, usable when charged.
 enum class EnemyAbility(var damage: Int, var speed: Int, var staminaCost: Int, var isSpecial: Boolean) {
+
     //Goblin
     SWIPE(2, 4, 3, true),
     TACKLE(2, 4, 3, false),

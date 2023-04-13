@@ -64,7 +64,7 @@ fun getSpriteSheetFrames(context: Context, resourceId: Int, frameWidth: Int, fra
     }
 
     return frames
-}
+}//
 
 class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed, type.health) {
 

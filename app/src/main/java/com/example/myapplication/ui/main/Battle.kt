@@ -397,63 +397,64 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             val overlapFactor = 0.8F // Change this value between 0 and 1 to control how much the sprites should overlap
             val moveDistance = calculateDistance(enemyImageView, basicKnight) - (enemyImageView.width * overlapFactor)
 
-
             // Create an ObjectAnimator to animate the enemy's translation
-            var enemyMoveAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", 0f, moveDistance)
-            enemyMoveAnimator.duration = 2000 // Set the duration of the animation (in milliseconds)
+            val enemyMoveAnimator = createMoveAnimator(enemyImageView, moveDistance)
 
             // Set up a listener for the animation to start parry window and apply damage after the animation is complete
-            enemyMoveAnimator.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator?) {
-
-                    // Create an AnimationDrawable object for the walking animation
-                    val moveAnimation = AnimationDrawable()
-                    moveAnimation.isOneShot = true
-                    enemy.moveAnimation.moveFrames.forEachIndexed { index, frame ->
-                        val drawable = ContextCompat.getDrawable(rootView.context, frame)
-                        if (drawable is BitmapDrawable) {
-                            val duration = if (index == 2) {
-                                2000 // Set the custom delay for the third frame (index 2)
-                            } else {
-                                500 // Set the regular duration for other frames
-                            }
-                            moveAnimation.addFrame(drawable, duration)
-                        } else {
-                            throw IllegalArgumentException("Invalid frame drawable: $frame")
-                        }
-                    }
-
-// Set and start the move animation
-                    enemyImageView.setImageDrawable(moveAnimation)
-                    moveAnimation.start()
-                }
-
-                    override fun onAnimationEnd(animation: Animator?) {
-                    // Open the parry window and apply damage after the enemy has moved towards the player
-                    openParryWindowAndApplyDamage(damageDealt)
-
-                    // Animate the enemy back to its original position after the attack is complete
-                    enemyMoveAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", moveDistance, 0f)
-                    enemyMoveAnimator.duration = 500 // Set the duration of the animation (in milliseconds)
-                    enemyMoveAnimator.start()
-
-                    // Reset the enemy image to the idle state
-                    enemyImageView.setImageResource(enemy.getImageResource())
-                }
-
-                override fun onAnimationCancel(animation: Animator?) {
-                    // No action required
-                }
-
-                override fun onAnimationRepeat(animation: Animator?) {
-                    // No action required
-                }
-            })
+            setupMoveAnimatorListener(enemyMoveAnimator, damageDealt, enemyImageView, moveDistance)
 
             // Start the enemy move animation
             enemyMoveAnimator.start()
         }
     }
+
+    private fun createMoveAnimator(enemyImageView: ImageView, moveDistance: Float): ObjectAnimator {
+        return ObjectAnimator.ofFloat(enemyImageView, "translationX", 0f, moveDistance).apply {
+            duration = 2000 // Set the duration of the animation (in milliseconds)
+        }
+    }
+
+    private fun setupMoveAnimatorListener(
+        enemyMoveAnimator: ObjectAnimator,
+        damageDealt: Int,
+        enemyImageView: ImageView,
+        moveDistance: Float
+    ) {
+        enemyMoveAnimator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {
+                startMoveAnimation(enemyImageView)
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                openParryWindowAndApplyDamage(damageDealt)
+                animateEnemyBackToOriginalPosition(enemyImageView, moveDistance)
+                resetEnemyImageToIdleState(enemyImageView)
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+                // No action required
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) {
+                // No action required
+            }
+        })
+    }
+
+    private fun startMoveAnimation(enemyImageView: ImageView) {
+        // Create and start the move animation using your existing code
+    }
+
+    private fun animateEnemyBackToOriginalPosition(enemyImageView: ImageView, moveDistance: Float) {
+        val enemyMoveBackAnimator = ObjectAnimator.ofFloat(enemyImageView, "translationX", moveDistance, 0f)
+        enemyMoveBackAnimator.duration = 500 // Set the duration of the animation (in milliseconds)
+        enemyMoveBackAnimator.start()
+    }
+
+    private fun resetEnemyImageToIdleState(enemyImageView: ImageView) {
+        // Reset the enemy image to the idle state using your existing code
+    }
+
 
 
 

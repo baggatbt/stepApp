@@ -105,7 +105,6 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
 
         // Initialize and set up the ability buttons and basic attack button
         val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)
-        val basicAttackLayout = LayoutInflater.from(this).inflate(R.layout.basicattackbutton, null)
         val bottomLayout = findViewById<ConstraintLayout>(R.id.root)
 
         // Add constraints to position the ability cards at the bottom of the root layout
@@ -120,13 +119,13 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
         params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
         params2.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
         abilityCardsLayout.layoutParams = params
-        basicAttackLayout.layoutParams = params2
+
 
         bottomLayout.addView(abilityCardsLayout)
-        bottomLayout.addView(basicAttackLayout)
+
 
         abilityOneButton = abilityCardsLayout.findViewById(R.id.ability_card_1)
-        basicAttackButton = basicAttackLayout.findViewById(R.id.basicAttackButton)
+
 
 
         // Initialize the battle and start it with the first enemy in the list

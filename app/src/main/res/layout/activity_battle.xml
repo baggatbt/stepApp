@@ -17,21 +17,13 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
-    <com.example.myapplication.ui.main.TimingCircleView
-        android:id="@+id/timingCircleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
+
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/turnOrderRecyclerView"
@@ -61,7 +53,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/knight2walk"
-        app:tint="@null" />
+        app:tint="@null"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
 
     <TextView
         android:id="@+id/currentFrameDebug"
@@ -74,6 +69,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.216"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/currentFrameDebugEnemy"
+        android:layout_width="138dp"
+        android:layout_height="96dp"
+        android:layout_marginTop="176dp"
+        android:layout_marginEnd="28dp"
+        android:text="test"
+        android:textSize="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/tapTimeImageView"

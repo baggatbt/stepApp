@@ -101,8 +101,8 @@ enum class EnemyAbility(var damage: Int, var speed: Int, var staminaCost: Int, v
     SWIPE(2, 4, 3, true),
     TACKLE(2, 4, 3, false),
     //Slime
-    SLAP(2, 5, 3, false), //TODO: For now both abilities are same for reducing art work
-    SQUISH(2, 5, 3, true)
+    SLAP(1, 5, 3, false), //TODO: For now both abilities are same for reducing art work
+    SQUISH(1, 5, 3, true)
 }
 
 class EnemySkills(private val type: EnemyAbility) {

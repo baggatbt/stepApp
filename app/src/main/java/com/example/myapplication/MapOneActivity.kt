@@ -13,17 +13,21 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.*
-import com.example.myapplication.MainActivity.Companion.currentSteps
 import com.example.myapplication.MainActivity.Companion.player
 import com.example.myapplication.maps.CustomMapView
+import com.example.myapplication.ui.main.MyApplication
 import com.example.myapplication.ui.main.Quest
+import com.example.myapplication.ui.main.StepsManager
 
 class MapOneActivity : AppCompatActivity() {
+
+    lateinit var stepsManager: StepsManager
+    var currentSteps = 0
+
 
     companion object {
         const val BATTLE_REQUEST_CODE = 1001
     }
-
 
     private lateinit var mapView: CustomMapView
     // ...
@@ -31,6 +35,12 @@ class MapOneActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize stepsManager and currentSteps here
+        stepsManager = (applicationContext as MyApplication).stepsManager
+        currentSteps = stepsManager.steps
+
+
 
         setContentView(R.layout.activity_townone)
         mapView = findViewById(R.id.map_view)
@@ -57,7 +67,6 @@ class MapOneActivity : AppCompatActivity() {
             onPointClicked(point)
         }
     }
-
 
     private fun onPointClicked(point: PointOfInterest) {
         when (point) {

@@ -10,7 +10,6 @@
         android:name="android.permission.BODY_SENSORS"
         android:required="true" />
 
-
     <application
         android:name=".ui.main.MyApplication"
         android:allowBackup="true"

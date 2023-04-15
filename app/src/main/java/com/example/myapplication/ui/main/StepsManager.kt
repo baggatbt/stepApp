@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.util.Log
 import android.widget.Toast
 
 interface StepListener {
@@ -19,6 +20,7 @@ class StepsManager(private val context: Context) : SensorEventListener {
     var totalSteps = 0f
     var previousTotalSteps = 0f
     private var stepListener: StepListener? = null
+    private var initialStepCount: Float = 0f
 
 
     var steps: Int
@@ -35,7 +37,10 @@ class StepsManager(private val context: Context) : SensorEventListener {
 
     init {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        initialStepCount = sharedPreferences.getFloat("initialStepCount", 0f)
     }
+
+
 
     fun onResume() {
         running = true
@@ -47,6 +52,7 @@ class StepsManager(private val context: Context) : SensorEventListener {
             // Rate suitable for the user interface
             sensorManager?.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_GAME)
             previousTotalSteps = totalSteps - steps // Add this line
+            Log.d("StepsManager", "onResume - stepSensor registered")
         }
     }
 
@@ -54,7 +60,14 @@ class StepsManager(private val context: Context) : SensorEventListener {
     fun onPause() {
         running = false
         sensorManager?.unregisterListener(this)
+        val editor = sharedPreferences.edit()
+        editor.putFloat("initialStepCount", initialStepCount)
+        editor.apply()
+        Log.d("StepsManager", "onPause - stepSensor unregistered")
     }
+
+
+
 
     fun setStepListener(listener: (Int) -> Unit) {
         stepListener = object : StepListener {
@@ -67,12 +80,16 @@ class StepsManager(private val context: Context) : SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null && event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
+            if (initialStepCount == 0f) {
+                initialStepCount = event.values[0]
+            }
             totalSteps = event.values[0]
-            steps = (totalSteps - previousTotalSteps).toInt()
-            stepListener?.onStep(steps) // Add this line
-            println("Steps: $steps")
+            steps = (totalSteps - initialStepCount).toInt()
+            stepListener?.onStep(steps)
+            Log.d("StepsManager", "onSensorChanged: Steps: $steps")
         }
     }
+
 
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {

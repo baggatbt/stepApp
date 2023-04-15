@@ -159,6 +159,13 @@ private fun startQuest(questPoint: QuestPoint) {
         saveData()
     }
 
+    fun backToMain(view: View?) {
+        val intent = Intent(this@MapOneActivity, MainActivity::class.java)
+        startActivity(intent)
+        MainActivity.currentSteps = currentSteps
+
+    }
+
 
 
 

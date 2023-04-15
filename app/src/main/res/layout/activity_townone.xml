@@ -16,9 +16,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!-- Add other views (e.g., buttons) here -->
 
     </FrameLayout>
+
+    <Button
+        android:id="@id/backToMainBtn"
+        android:layout_width="65dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="602dp"
+        android:onClick="backToMain"
+        android:text="Back"
+        android:textSize="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -50,20 +51,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        stepsManager = StepsManager(this)
+        loadData()
+        updateUI()
+
         stepsManager.setStepListener { steps ->
             onSensorChanged(steps)
         }
-
-
-        stepsManager = StepsManager(this)
-        loadData() // Add this line
-
-        stepsManager.setStepListener { steps ->
-            currentSteps = steps
-            updateUI()
-        }
-        updateUI() // Add this line
     }
+
+
+
 
     private fun updateUI() {
         val stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
@@ -83,8 +81,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     fun showMenu(view: View) {
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.menu_main, popup.menu)
@@ -95,22 +91,24 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         stepsManager.onResume()
-        stepsManager.setStepListener { steps ->
-            updateUI()
-        }
     }
+
+
 
     override fun onPause() {
         super.onPause()
+        saveData()
         stepsManager.onPause()
     }
 
 
-    fun saveData() {
+
+    private fun saveData() {
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putInt("key1", currentSteps)
+        editor.putInt("currentSteps", currentSteps)
         editor.putFloat("previousTotalSteps", stepsManager.previousTotalSteps)
+        editor.putFloat("totalSteps", stepsManager.totalSteps)
         editor.putInt("playerLevel", player.level)
         editor.putInt("playerExp", player.experience)
         editor.putInt("playerGold", player.gold)
@@ -118,13 +116,11 @@ class MainActivity : AppCompatActivity() {
         println("saved")
     }
 
-
-
     private fun loadData() {
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        currentSteps = sharedPreferences.getInt("key1", -1)
-        if (currentSteps == -1) currentSteps = 0
-        stepsManager.previousTotalSteps = sharedPreferences.getFloat("previousTotalSteps", stepsManager.totalSteps - currentSteps)
+        currentSteps = sharedPreferences.getInt("currentSteps", 0)
+        stepsManager.previousTotalSteps = sharedPreferences.getFloat("previousTotalSteps", 0f)
+        stepsManager.totalSteps = sharedPreferences.getFloat("totalSteps", 0f)
         player.level = sharedPreferences.getInt("playerLevel", 1)
         player.experience = sharedPreferences.getInt("playerExp", 0)
         player.gold = sharedPreferences.getInt("playerGold", 0)
@@ -132,13 +128,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-    //Saves step data on closing the app
-    override fun onStop() {
-        super.onStop()
-        saveData()
-    }
 
     fun switchToMap(item: MenuItem) {
         val intent = Intent(this@MainActivity, MapActivity::class.java)

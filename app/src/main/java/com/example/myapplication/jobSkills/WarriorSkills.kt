@@ -5,8 +5,8 @@ import com.example.myapplication.ui.main.GameEntity
 import com.example.myapplication.ui.main.Skills
 
 class Slash : Skills("Slash", 2, 2, 3,
-    intArrayOf(R.drawable.basicslash1, R.drawable.basicslash2, R.drawable.basicslash3, R.drawable.basicslash4),
-    1, 4) {
+    intArrayOf(R.drawable.adventurer_attack00,R.drawable.adventurer_attack01,R.drawable.adventurer_attack03,R.drawable.adventurer_attack04,R.drawable.adventurer_attack05),
+    0, 5) {
 
     override fun use(target: GameEntity) {
         target.takeDamage(damage)

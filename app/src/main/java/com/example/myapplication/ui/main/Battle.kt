@@ -95,12 +95,6 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     var parrySuccess = false
 
 
-
-
-
-
-
-
     //Intializing
     fun start(player: Player, enemies: List<Enemy>, context: Context) {
         this.player = player
@@ -139,7 +133,6 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         playerHealthBar.progress = player.currentHealth
         chosenSkill = abilityOneSkill
         val mediaPlayer = createMediaPlayer(context)
-
 
 
 
@@ -220,8 +213,18 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
     }
 
+    private fun performNextAttack() {
+        if (timingSuccess) {
+            // Reset the timingSuccess flag
+            timingSuccess = false
 
-
+            // Perform the same attack again
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(nextTurnDelay)
+                executeCharacterTurn(context, abilityOneSkill)
+            }
+        }
+    }
 
 
     private var currentTurnIndex = 0 // keep track of whose turn it is currently
@@ -322,16 +325,16 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         println("Time executeCharacter started, ${System.currentTimeMillis()}")
 
         // Start the walking animation
-        startWalkingAnimation(walkingFrames, 500)
+        startWalkingAnimation(walkingFrames, 600)
 
         // Knight walks towards the enemy
-        animateKnight(moveDistance = 300f) {
+        animateKnight(moveDistance = 500f) {
             // onAnimationEnd callback - stop the walking animation and start the attack animation
             stopWalkingAnimation()
             startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame) {
                 // onAnimationEnd callback - knight walks back to the original position
                 startWalkingAnimation(walkingFrames, 500) // Start the walking animation again before moving back
-                animateKnight(moveDistance = -300f) {
+                animateKnight(moveDistance = -500f) {
                     // onAnimationEnd callback - stop the walking animation
                     stopWalkingAnimation()
                     attackInProgress = false // Set the attackInProgress flag to false
@@ -352,7 +355,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         battleLoop()
     }
 
-   var walkingFrames = intArrayOf(R.drawable.knight2walk, R.drawable.knight2walk2, R.drawable.knight2walk3, R.drawable.knight2walk4)
+   var walkingFrames = intArrayOf(R.drawable.adventurer_run00,R.drawable.adventurer_run01,R.drawable.adventurer_run02,R.drawable.adventurer_run03,R.drawable.adventurer_run04,R.drawable.adventurer_run05)
 
     private fun startWalkingAnimation(walkingFrames: IntArray, loopDuration: Long) {
         // Calculate how long the duration of the animation needs to be
@@ -386,7 +389,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             override fun onFinish() {
                 walkTimer.cancel()
                 currentFrame = 0 // Reset to the first frame
-                basicKnight.setImageResource(walkingFrames[currentFrame]) // Set the animation to the first frame
+
             }
         }
         stopTimer.start()
@@ -394,8 +397,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
     private fun stopWalkingAnimation() {
         walkTimer?.cancel()
-        currentFrame = 0 // Reset to the first frame
-        basicKnight.setImageResource(walkingFrames[currentFrame]) // Set the animation to the first frame
+
+        basicKnight.setImageResource(R.drawable.basicknight) // Set the animation to the first frame
     }
 
 
@@ -752,6 +755,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage + 1) // TODO: Change to + enemySkillBonusDamage
                     damageDealt = chosenSkill.damage + 1
                     timingSuccess = false
+                    performNextAttack()
                 }
                 else {
                     println("TIMING FAILURE")

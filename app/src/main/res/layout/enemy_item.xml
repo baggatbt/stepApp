@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/enemyImageView"
-        android:layout_width="212dp"
-        android:layout_height="111dp"
+        android:layout_width="106dp"
+        android:layout_height="70dp"
         android:scaleType="fitEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/sword3030"
+        android:src="@drawable/target_indicator00"
         android:translationZ="10dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@id/enemyImageView"

@@ -1,5 +1,16 @@
 Auto-grinding
-Allow the player to spend steps to regain rewards from a previous beaten battle, aka hunts in knighthood
+Allow the player to spend steps to regain rewards from a previous beaten battle, similiar to hunts in knighthood
+
+Auto battle mode idea- timing events are auto success and battle plays itself, but will do less damage to compensate. useful for replaying stages for exp
+
+
+TODO:
+if first hit success, go to 2nd, if success, go 3rd. Any misses ends the chain.
+Multiple abilities with different timings
+
+
+Non priority improvements:
+Change frame animations to an animation.xml file to save space
 
 
 

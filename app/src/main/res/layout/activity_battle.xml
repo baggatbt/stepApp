@@ -14,15 +14,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="178dp"
         android:layout_marginBottom="187dp"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:clickable="true"
-        android:focusable="false"
-        android:focusableInTouchMode="false"/>
-
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -44,19 +42,20 @@
 
     <ImageView
         android:id="@+id/basicKnight"
-        android:layout_width="109dp"
-        android:layout_height="140dp"
+        android:layout_width="154dp"
+        android:layout_height="175dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginTop="244dp"
+        android:clickable="false"
         android:contentDescription="TODO"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:scaleType="fitCenter"
         app:elevation="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/knight2walk"
-        app:tint="@null"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"/>
+        app:srcCompat="@drawable/basicknight"
+        app:tint="@null" />
 
     <TextView
         android:id="@+id/currentFrameDebug"
@@ -95,13 +94,11 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="100dp"
         android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="428dp"
+        android:layout_marginTop="8dp"
         android:progressDrawable="@drawable/custom_progress_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
-        />
+        app:layout_constraintStart_toStartOf="@+id/basicKnight"
+        app:layout_constraintEnd_toEndOf="@+id/basicKnight"
+        app:layout_constraintTop_toBottomOf="@id/basicKnight" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

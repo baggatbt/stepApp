@@ -1,10 +1,8 @@
 package com.example.myapplication
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
+import android.animation.*
 import android.content.Context
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.text.Layout
 import android.view.*
@@ -19,6 +17,7 @@ import com.example.myapplication.ui.main.EnemyType
 import com.example.myapplication.ui.main.Enemy
 import androidx.core.view.GestureDetectorCompat
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 
 
@@ -33,6 +32,8 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
     private lateinit var enemiesRecyclerView: RecyclerView
     private lateinit var turnOrderAdapter: TurnOrderAdapter
     private lateinit var turnOrderRecyclerView: RecyclerView
+    private lateinit var targetIndicatorAnimation: AnimationDrawable
+
 
 
     lateinit var battle: Battle
@@ -42,6 +43,14 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
     override fun onDamageDealt(damage: Int, enemyImageView: ImageView) {
         showDamageBubble(damage, enemyImageView)
     }
+
+    private fun getTargetIndicatorAnimation(): AnimationDrawable {
+        val animationDrawable = ContextCompat.getDrawable(this, R.drawable.target_indicator_animation) as AnimationDrawable
+        animationDrawable.setEnterFadeDuration(500)
+        animationDrawable.setExitFadeDuration(500)
+        return animationDrawable
+    }
+
 
     private fun updateSelectedEnemyUI() {
         // Update the UI to show the selected enemy
@@ -64,6 +73,13 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
                     val targetY = enemyImageView.y + (targetHeight - targetedEnemyIcon.height) / 2f
                     targetedEnemyIcon.setX(targetX)
                     targetedEnemyIcon.setY(targetY)
+
+                    // Start a new target indicator rotation animation
+                    val rotationAnimator = ObjectAnimator.ofFloat(targetedEnemyIcon, "rotation", 0f, 360f)
+                    rotationAnimator.duration = 4000 // Set the duration of the animation to 4 seconds
+                    rotationAnimator.repeatCount = ValueAnimator.INFINITE
+                    rotationAnimator.repeatMode = ValueAnimator.RESTART
+                    rotationAnimator.start()
                 } else {
                     enemyImageView.background = null
                     enemyImageView.translationZ = 0f
@@ -81,6 +97,8 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
 
         updateTurnOrderGlow()
     }
+
+
 
 
 
@@ -102,6 +120,9 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
         turnOrderRecyclerView = findViewById(R.id.turnOrderRecyclerView)
         turnOrderAdapter = TurnOrderAdapter(listOf())
         turnOrderRecyclerView.adapter = turnOrderAdapter
+
+        // Initialize the target indicator animation
+        targetIndicatorAnimation = ContextCompat.getDrawable(this, R.drawable.target_indicator_animation) as AnimationDrawable
 
         // Initialize and set up the ability buttons and basic attack button
         val abilityCardsLayout = LayoutInflater.from(this).inflate(R.layout.ability_cards, null)

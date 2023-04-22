@@ -214,16 +214,15 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     }
 
     private fun performNextAttack() {
-        if (timingSuccess) {
-            // Reset the timingSuccess flag
-            timingSuccess = false
 
             // Perform the same attack again
             CoroutineScope(Dispatchers.Main).launch {
                 delay(nextTurnDelay)
-                executeCharacterTurn(context, abilityOneSkill)
+                startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame) {
+                    attackInProgress = false
+                }
             }
-        }
+
     }
 
 
@@ -753,7 +752,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 if (timingSuccess){
                     println("TIMING SUCCESS")
                     applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage + 1) // TODO: Change to + enemySkillBonusDamage
-                    damageDealt = chosenSkill.damage + 1
+                    damageDealt = chosenSkill.damage
                     timingSuccess = false
                     performNextAttack()
                 }

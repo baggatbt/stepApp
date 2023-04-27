@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/temp_battle_background"
+    android:background="@drawable/battlebackground_grass"
     tools:context=".BattleActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -73,8 +73,8 @@
         android:id="@+id/currentFrameDebugEnemy"
         android:layout_width="138dp"
         android:layout_height="96dp"
-        android:layout_marginTop="176dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="32dp"
         android:text="test"
         android:textSize="50dp"
         app:layout_constraintEnd_toEndOf="parent"

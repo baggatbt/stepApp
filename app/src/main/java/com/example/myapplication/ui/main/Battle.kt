@@ -100,6 +100,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     var timingSuccess = false
     var parryWindowOpen = false
     var parrySuccess = false
+    var currentChainFrame = 0
 
 
     //Intializing
@@ -140,6 +141,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         playerHealthBar.progress = player.currentHealth
         chosenSkill = abilityOneSkill
         val mediaPlayer = createMediaPlayer(context)
+
 
 
 
@@ -190,7 +192,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 chosenSkill = abilityOneSkill
                 generateTurnOrder(chosenSkill, enemyList) // Add this line
                 setAbilityButtonsEnabled(false)
-                attackFrames = abilityOneSkill.attackFrames
+                attackFrames = abilityOneSkill.attackFrameSequences[0]
                 attackCount = 3 // Set the attack count to 1 for single attack
                 CoroutineScope(Dispatchers.Main).launch {
                     launchAttackTurns()
@@ -220,17 +222,21 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
     }
 
-    private fun continueAttackChain() { //TODo: make attackCount the chain from the chosen ability
-        if (timingSuccess && attackCount > 1) {
-            attackCount--
+    private fun continueAttackChain(chosenSkill: Skills, totalAttacksInChain: Int) { //TODo: make attackCount the chain from the chosen ability
 
-                startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame) {
+        if (timingSuccess && totalAttacksInChain > 1) {
+            currentChainFrame+= 1
+
+            var currentFrame = chosenSkill.attackFrameSequences[currentChainFrame]
+
+                startAttackAnimation(currentFrame, chosenSkill.timingWindowStartFrame, chosenSkill.timingWindowEndFrame) {
 
                 }
+            currentChainFrame = 0
 
         }
         timingSuccess = false //Set it back to false so that the next attack in the chain doesn't automatically succeed
-
+        currentChainFrame = 0 //Reset the frame back to 0
     }
 
 
@@ -400,7 +406,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage + 1) // TODO: Change to + enemySkillBonusDamage
                     damageDealt = chosenSkill.damage
                     timingSuccess = true
-                    continueAttackChain()
+                    continueAttackChain(chosenSkill,chosenSkill.attacksInChain)
                 }
                 else {
                     println("TIMING FAILURE")

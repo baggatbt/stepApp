@@ -25,11 +25,11 @@ class Slash : Skills(
             R.drawable.adventurer_attack2_05
         ),
         intArrayOf(
-            R.drawable.adventurer_attack2_00,
-            R.drawable.adventurer_attack2_01,
-            R.drawable.adventurer_attack2_03,
-            R.drawable.adventurer_attack2_04,
-            R.drawable.adventurer_attack2_05
+            R.drawable.adventurer_attack3_00,
+            R.drawable.adventurer_attack3_01,
+            R.drawable.adventurer_attack3_03,
+            R.drawable.adventurer_attack3_04,
+            R.drawable.adventurer_attack3_05
         )
 
     ),

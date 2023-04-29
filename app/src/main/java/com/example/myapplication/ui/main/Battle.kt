@@ -224,19 +224,21 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
     private fun continueAttackChain(chosenSkill: Skills, totalAttacksInChain: Int) { //TODo: make attackCount the chain from the chosen ability
 
-        if (timingSuccess && totalAttacksInChain > 1) {
+        if (timingSuccess && totalAttacksInChain > 0) {
             currentChainFrame+= 1
+            println("chainFrame  " + currentChainFrame)
 
             var currentFrame = chosenSkill.attackFrameSequences[currentChainFrame]
 
                 startAttackAnimation(currentFrame, chosenSkill.timingWindowStartFrame, chosenSkill.timingWindowEndFrame) {
 
                 }
-            currentChainFrame = 0
+            if (currentChainFrame == totalAttacksInChain) {
+                currentChainFrame = 0
+            }
 
         }
         timingSuccess = false //Set it back to false so that the next attack in the chain doesn't automatically succeed
-        currentChainFrame = 0 //Reset the frame back to 0
     }
 
 

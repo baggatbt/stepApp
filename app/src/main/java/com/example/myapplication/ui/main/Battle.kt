@@ -222,24 +222,31 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
     }
 
-    private fun continueAttackChain(chosenSkill: Skills, totalAttacksInChain: Int) { //TODo: make attackCount the chain from the chosen ability
+    private var successfulAttacks = 0
 
-        if (timingSuccess && totalAttacksInChain > 0) {
-            currentChainFrame+= 1
-            println("chainFrame  " + currentChainFrame)
+    private fun continueAttackChain(chosenSkill: Skills) {
+        if (successfulAttacks < chosenSkill.attacksInChain - 1) {
+            if (timingSuccess) {
+                currentChainFrame++
+                println("chainFrame  " + currentChainFrame)
 
-            var currentFrame = chosenSkill.attackFrameSequences[currentChainFrame]
+                val currentFrame = chosenSkill.attackFrameSequences[currentChainFrame]
 
                 startAttackAnimation(currentFrame, chosenSkill.timingWindowStartFrame, chosenSkill.timingWindowEndFrame) {
 
                 }
-            if (currentChainFrame == totalAttacksInChain) {
-                currentChainFrame = 0
+                if (currentChainFrame == attackCount - 1) {
+                    currentChainFrame = 0
+                }
+
+                successfulAttacks++ // Increment the successful attacks counter
             }
 
+            timingSuccess = false // Set it back to false so that the next attack in the chain doesn't automatically succeed
         }
-        timingSuccess = false //Set it back to false so that the next attack in the chain doesn't automatically succeed
     }
+
+
 
 
 
@@ -318,7 +325,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     }
 
                     if (player.currentHealth <= 0 || enemyList.all { it.currentHealth <= 0 }) {
-                        endBattle()
+
                         checkVictoryAndDefeat(rootView)
                     }
                 }
@@ -359,10 +366,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             return
         }
 
-        if (player.currentHealth <= 0 || enemyList.all { it.currentHealth <= 0 }) {
-            endBattle()
-            return
-        }
+
 
     }
 
@@ -405,14 +409,14 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             override fun onFinish() {
                 if (timingSuccess){
                     println("TIMING SUCCESS")
-                    applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage + 1) // TODO: Change to + enemySkillBonusDamage
-                    damageDealt = chosenSkill.damage
+                    applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage) // TODO: Change to + enemySkillBonusDamage
+                    damageDealt+= chosenSkill.damage
                     timingSuccess = true
-                    continueAttackChain(chosenSkill,chosenSkill.attacksInChain)
+                    continueAttackChain(chosenSkill)
                 }
                 else {
                     println("TIMING FAILURE")
-                    applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage)
+                    applyDamageToEnemy(selectedEnemy!!, damageDealt)
                     damageDealt = chosenSkill.damage
                     timingSuccess = false
                     attackInProgress = false
@@ -736,6 +740,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         if (enemyList.all { it.currentHealth <= 0 }) {
 
             // Update the player's experience and gold
+            basicKnight.setImageResource(R.drawable.basicknight)
             player.experience += totalExpReward
             player.gold += totalGoldReward
             sharedPreferences.edit().putInt("playerExp", player.experience).apply()
@@ -746,6 +751,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             goldGained = totalGoldReward
             victoryActivity.expGained = totalExpReward
             victoryActivity.goldGained = totalGoldReward
+
 
             // At the end of the battle, save the updated experience value to SharedPreferences
 

@@ -358,17 +358,17 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             stopWalkingAnimation()
             startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame) {
                 // onAnimationEnd callback - knight walks back to the original position
-
+                if (selectedEnemy!!.currentHealth <= 0 && !attackInProgress) {
+                    // Update the RecyclerView
+                    enemyAdapter.notifyItemRemoved(enemyList.indexOf(selectedEnemy!!))
+                    println("attack in progress" + attackInProgress)
+                    enemyList.remove(selectedEnemy!!)
+                }
             }
         }
 
-        if (player.currentHealth <= 0) {
-            return
-        }
-
-
-
     }
+
 
     private fun startAttackAnimation(attackFrames: IntArray, timingWindowStartFrame: Int, timingWindowEndFrame: Int, onAnimationEnd: () -> Unit) {
         // Calculate how long the duration of the animation needs to be
@@ -412,7 +412,9 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage) // TODO: Change to + enemySkillBonusDamage
                     damageDealt+= chosenSkill.damage
                     timingSuccess = true
-                    continueAttackChain(chosenSkill)
+                    if (selectedEnemy!!.currentHealth >= 0) {
+                        continueAttackChain(chosenSkill)
+                    }
                 }
                 else {
                     println("TIMING FAILURE")
@@ -427,15 +429,22 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     }
                 }
 
+                // Add a delay to wait for the attack animation to complete
+                attackAnimation.postDelayed({
+                    onAnimationEnd() // Call the onAnimationEnd callback
+
+                    // Check if the target enemy's health is 0 or less
+                    if (targetEnemy.currentHealth <= 0) {
+                        // Update the RecyclerView
+                        enemyAdapter.notifyItemRemoved(enemyList.indexOf(targetEnemy))
+                        enemyList.remove(targetEnemy)
+                    }
+                }, totalDuration)
+
                 damageBubbleCallback.onDamageDealt(damageDealt, enemyImageView)
                 // Handle the end of the animation if needed
                 timingWindowOpen = false
                 currentFrame = 0 // Reset to the first frame
-
-                // Add a delay to wait for the attack animation to complete
-                attackAnimation.postDelayed({
-                    onAnimationEnd() // Call the onAnimationEnd callback
-                }, totalDuration)
             }
         }
         attackTimer?.start()
@@ -727,9 +736,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
     var numTurnsTaken = 0 // Initialize a variable to keep track of the number of turns taken
 
-    private fun endBattle() {
-        checkVictoryAndDefeat(rootView)
-    }
+
 
     // Function to check if all enemies are defeated and end the battle if necessary
     private fun checkVictoryAndDefeat(rootView: View): Boolean {

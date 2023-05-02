@@ -46,25 +46,12 @@ enum class EnemyType(
     SLIME(2, "Slime", 1, 2, 0, 7, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2,EnemyAttackAnimation(
         moveFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1,R.drawable.slime_motion1),
         attackFrames = intArrayOf(R.drawable.slime_attack_1,R.drawable.slime_attack_2,R.drawable.slime_attack_3), // Add actual attack frame resources
-        timingWindowStartFrame = 2,
+        timingWindowStartFrame = 0,
         timingWindowEndFrame = 3))
 
 
 }
 
-fun getSpriteSheetFrames(context: Context, resourceId: Int, frameWidth: Int, frameHeight: Int, frameCount: Int): List<Drawable> {
-    val frames = mutableListOf<Drawable>()
-    val spriteSheet = BitmapFactory.decodeResource(context.resources, resourceId)
-
-    for (i in 0 until frameCount) {
-        val x = i * frameWidth
-        val frameBitmap = Bitmap.createBitmap(spriteSheet, x, 0, frameWidth, frameHeight)
-        val frameDrawable = BitmapDrawable(context.resources, frameBitmap)
-        frames.add(frameDrawable)
-    }
-
-    return frames
-}//
 
 class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed, type.health) {
 
@@ -96,14 +83,23 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
 }
 
 //isSpecial denotes whether or not the ability is the enemies special attack, usable when charged.
-enum class EnemyAbility(var damage: Int, var speed: Int, var staminaCost: Int, var isSpecial: Boolean) {
+//isSpecial denotes whether or not the ability is the enemies special attack, usable when charged.
+enum class EnemyAbility(
+    var damage: Int,
+    var speed: Int,
+    var staminaCost: Int,
+    var isSpecial: Boolean,
+    var parryWindowOpen: Int, // Add this line
+    var parryWindowClose: Int  // Add this line
+) {
     //Goblin
-    SWIPE(2, 4, 3, true),
-    TACKLE(2, 4, 3, false),
+    SWIPE(2, 4, 3, true, 2, 3),
+    TACKLE(2, 4, 3, false, 2, 3),
     //Slime
-    SLAP(1, 5, 3, false), //TODO: For now both abilities are same for reducing art work
-    SQUISH(1, 5, 3, true)
+    SLAP(1, 5, 3, false, 1, 4), //TODO: For now both abilities are same for reducing art work
+    SQUISH(1, 5, 3, true, 2, 3)
 }
+
 
 class EnemySkills(private val type: EnemyAbility) {
     var speed: Int = type.speed

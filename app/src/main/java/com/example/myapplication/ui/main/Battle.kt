@@ -34,7 +34,7 @@ private val turnMutex = Mutex()
 
 
 
-class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val onEnemyHealthChangedListener: OnEnemyHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
+class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val onHealthChangedListener: OnHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
     companion object {
         var expGained = 0
         var goldGained = 0
@@ -537,15 +537,14 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     val damageDealt = attack.damage
 
                     if (parrySuccess){
-
-                        var parryModifier = (damageDealt - 1)
-                        player.takeDamage(parryModifier)
+                        var parryModifier = (damageDealt - 2) //TODO: add a parry modifier to the player
+                        applyDamageToPlayer(player, parryModifier)
                         playerHealthBar.progress = player.currentHealth
                         parrySuccess = false
                         damageBubbleCallback.onDamageDealt(parryModifier, enemyImageView)
 
                     } else {
-                        player.takeDamage(damageDealt)
+                        applyDamageToPlayer(player, damageDealt)
                         println("Player health: ${player.currentHealth}")
 
                         parrySuccess = false
@@ -824,12 +823,15 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
 
-
+    private fun  applyDamageToPlayer(player: Player, damage: Int){
+        player.currentHealth -= damage
+        onHealthChangedListener.onPlayerHealthChanged(player)
+    }
 
 
     private fun applyDamageToEnemy(targetEnemy: Enemy, damage: Int) {
         targetEnemy.currentHealth -= damage
-        onEnemyHealthChangedListener.onEnemyHealthChanged(targetEnemy)
+        onHealthChangedListener.onEnemyHealthChanged(targetEnemy)
     }
 
 

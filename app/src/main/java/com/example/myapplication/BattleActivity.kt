@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import kotlin.random.Random
 
 
-class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemyHealthChangedListener, OnEnemyClickListener,TurnOrderUpdateListener,Battle.TurnOrderUpdateCallback {
+class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealthChangedListener, OnEnemyClickListener,TurnOrderUpdateListener,Battle.TurnOrderUpdateCallback {
 
     private lateinit var abilityOneButton: Button
     private lateinit var basicAttackButton: Button
@@ -33,6 +33,7 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
     private lateinit var turnOrderAdapter: TurnOrderAdapter
     private lateinit var turnOrderRecyclerView: RecyclerView
     private lateinit var targetIndicatorAnimation: AnimationDrawable
+    private lateinit var playerHealthBar: ProgressBar
 
 
 
@@ -98,8 +99,9 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
         updateTurnOrderGlow()
     }
 
-
-
+    override fun onPlayerHealthChanged(player: Player) {
+        playerHealthBar.progress = player.currentHealth
+    }
 
 
     // Called when the health of an enemy changes
@@ -109,10 +111,13 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnEnemy
     }
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_battle)
 
+        playerHealthBar = findViewById(R.id.playerHealthBar)
 
         // Set up the RecyclerView containing the list of enemies
         setupEnemiesRecyclerView()

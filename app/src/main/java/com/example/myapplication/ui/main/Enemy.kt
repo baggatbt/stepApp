@@ -43,7 +43,7 @@ enum class EnemyType(
         timingWindowStartFrame = 2,
         timingWindowEndFrame = 3),
     ),
-    SLIME(2, "Slime", 1, 2, 0, 50, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2,EnemyAttackAnimation(
+    SLIME(2, "Slime", 1, 2, 0, 7, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2,EnemyAttackAnimation(
         moveFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1,R.drawable.slime_motion1),
         attackFrames = intArrayOf(R.drawable.slime_attack_1,R.drawable.slime_attack_2,R.drawable.slime_attack_3), // Add actual attack frame resources
         timingWindowStartFrame = 2,

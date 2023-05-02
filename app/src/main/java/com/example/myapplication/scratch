@@ -4,9 +4,6 @@ Allow the player to spend steps to regain rewards from a previous beaten battle,
 Auto battle mode idea- timing events are auto success and battle plays itself, but will do less damage to compensate. useful for replaying stages for exp
 
 
-TODO:
-if first hit success, go to 2nd, if success, go 3rd. Any misses ends the chain.
-Multiple abilities with different timings
 
 
 Non priority improvements:

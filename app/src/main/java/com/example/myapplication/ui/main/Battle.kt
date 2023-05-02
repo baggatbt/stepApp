@@ -395,6 +395,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     timingWindowOpen = true
 
                     timingFlash()
+
                 }
                 if (targetEnemy.currentHealth <= 0) {
                     // Update the RecyclerView
@@ -418,8 +419,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 }
                 else {
                     println("TIMING FAILURE")
-                    applyDamageToEnemy(selectedEnemy!!, damageDealt)
                     damageDealt = chosenSkill.damage
+                    applyDamageToEnemy(selectedEnemy!!, damageDealt)
                     timingSuccess = false
                     attackInProgress = false
                     startWalkingAnimation(walkingFrames, 500)
@@ -439,6 +440,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                         enemyAdapter.notifyItemRemoved(enemyList.indexOf(targetEnemy))
                         enemyList.remove(targetEnemy)
                     }
+                    attackInProgress = true // Set the attackOver flag to true
+                    timingSuccess = false // Reset the timingSuccess flag
                 }, totalDuration)
 
                 damageBubbleCallback.onDamageDealt(damageDealt, enemyImageView)

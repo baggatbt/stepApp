@@ -101,6 +101,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     var parryWindowOpen = false
     var parrySuccess = false
     var currentChainFrame = 0
+    var parryAttempted = false
 
 
     //Intializing
@@ -446,6 +447,9 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 // Handle the end of the animation if needed
                 timingWindowOpen = false
                 currentFrame = 0 // Reset to the first frame
+
+                //Enable parry mode while its not the players turn
+                enableParry()
             }
         }
         attackTimer?.start()
@@ -563,6 +567,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         openParryWindow(enemy.moveAnimation.timingWindowStartFrame, enemy.moveAnimation.timingWindowEndFrame)
 
 
+
         val attackTimer = object : CountDownTimer(Long.MAX_VALUE, frameInterval) {
             var currentFrame = 0
 
@@ -633,6 +638,33 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     }
 
 
+    private fun enableParry(){
+        rootView.setOnClickListener {
+            if (!parryAttempted) {
+                player.isParrying = true
+                println("Player attempted to parry!")
+                parrySuccess = true // Set parrySuccess to true when the player attempts to parry
+                basicKnight.setImageResource(R.drawable.adventurer_attack03)
+
+                // Reset to basicknight.png after 0.25 seconds
+                basicKnight.postDelayed({
+                    basicKnight.setImageResource(R.drawable.basicknight)
+                }, 250)
+
+                // Set isParrying to false after 0.25 seconds
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed({
+                    player.isParrying = false
+                }, 100)
+
+                val handler1 = Handler(Looper.getMainLooper())
+                handler1.postDelayed({
+                    parryAttempted = false
+                }, 500)  //Control the cooldown of parry attempts.
+
+            }
+        }
+    }
     private fun openParryWindow(timingWindowStartFrame: Int, timingWindowEndFrame: Int) {
 
         // Prepare for parry window
@@ -644,18 +676,6 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             player.isParrying = true
             println("Player attempted to parry!")
             parrySuccess = true // Set parrySuccess to true when the player attempts to parry
-        }
-
-        rootView.setOnClickListener {
-            player.isParrying = true
-            println("Player attempted to parry!")
-            parrySuccess = true // Set parrySuccess to true when the player attempts to parry
-            basicKnight.setImageResource(R.drawable.adventurer_attack03)
-
-            // Reset to basicknight.png after 0.25 seconds
-            basicKnight.postDelayed({
-                basicKnight.setImageResource(R.drawable.basicknight)
-            }, 250)
         }
 
 
@@ -670,6 +690,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 // Close the parry window
                 println("Parry window is closed.")
                 basicKnight.setOnClickListener(null)
+                parryAttempted = false //reset parryAttempted
                 rootView.setOnClickListener(null)
                 if (player.isParrying) {
                     println("Parry succeeded! Damage reduced.")

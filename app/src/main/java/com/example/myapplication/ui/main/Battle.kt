@@ -540,23 +540,29 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                     }
                     val damageDealt = attack.damage
 
-                    if (parrySuccess){
-                        var parryModifier = (damageDealt - 2) //TODO: add a parry modifier to the player
-                        applyDamageToPlayer(player, parryModifier)
-                        playerHealthBar.progress = player.currentHealth
-                        parrySuccess = false
-                        damageBubbleCallback.onDamageDealt(parryModifier, enemyImageView)
-
-                    } else {
-                        applyDamageToPlayer(player, damageDealt)
-                        println("Player health: ${player.currentHealth}")
-
-                        parrySuccess = false
-                        damageBubbleCallback.onDamageDealt(damageDealt, enemyImageView)
-                    }
+                    applyParryDamageReduction(damageDealt, enemyImageView)
 
                 }
             }
+        }
+    }
+    private fun applyParryDamageReduction(damageDealt: Int, enemyImageView: ImageView){
+        if (parrySuccess){
+            var parryModifier = (damageDealt - 3 ) //TODO: add a parry modifier to the player
+            if (parryModifier < 0){
+                parryModifier = 0
+            }
+            applyDamageToPlayer(player, parryModifier)
+            playerHealthBar.progress = player.currentHealth
+            parrySuccess = false
+            damageBubbleCallback.onDamageDealt(parryModifier, enemyImageView)
+
+        } else {
+            applyDamageToPlayer(player, damageDealt)
+            println("Player health: ${player.currentHealth}")
+
+            parrySuccess = false
+            damageBubbleCallback.onDamageDealt(damageDealt, enemyImageView)
         }
     }
 
@@ -655,7 +661,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 val handler = Handler(Looper.getMainLooper())
                 handler.postDelayed({
                     player.isParrying = false
-                }, 100)
+                }, 250) //How long the parry is active
 
                 val handler1 = Handler(Looper.getMainLooper())
                 handler1.postDelayed({
@@ -672,18 +678,17 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         val parryWindowDuration = (timingWindowEndFrame - timingWindowStartFrame + 1) * frameInterval
         parrySuccess = false // Reset parrySuccess at the beginning of the parry window
 
-        basicKnight.setOnClickListener {
-            player.isParrying = true
-            println("Player attempted to parry!")
-            parrySuccess = true // Set parrySuccess to true when the player attempts to parry
-        }
-
 
         // Open the parry window
         println("Parry window is open.")
-        val parryWindowTimer = object : CountDownTimer(parryWindowDuration, parryWindowDuration) {
+        val parryWindowTimer = object : CountDownTimer(parryWindowDuration, 50) {
             override fun onTick(millisUntilFinished: Long) {
-                // No action required
+                if (player.isParrying) {
+                    println("Parry succeeded! Damage reduced.")
+                    parrySuccess = true
+                } else {
+                    parrySuccess = false
+                }
             }
 
             override fun onFinish() {
@@ -692,12 +697,11 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 basicKnight.setOnClickListener(null)
                 parryAttempted = false //reset parryAttempted
                 rootView.setOnClickListener(null)
-                if (player.isParrying) {
-                    println("Parry succeeded! Damage reduced.")
-                } else {
-                    println("Parry failed! Full damage taken.")
+                if (!parrySuccess){
+                    println("Parry failed! Damage not reduced.")
                 }
-                player.isParrying = false // Reset the parrying status
+
+
             }
         }
         parryWindowTimer.start()

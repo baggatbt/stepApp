@@ -96,7 +96,7 @@ enum class EnemyAbility(
     SWIPE(2, 4, 3, true, 2, 3),
     TACKLE(2, 4, 3, false, 2, 3),
     //Slime
-    SLAP(1, 5, 3, false, 2, 4), //TODO: For now both abilities are same for reducing art work
+    SLAP(1, 5, 3, false, 2, 2), //TODO: For now both abilities are same for reducing art work
     SQUISH(1, 5, 3, true, 2, 3)
 }
 

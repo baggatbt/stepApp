@@ -38,10 +38,12 @@ enum class EnemyType(
 
 
     GOBLIN(1, "Goblin", 1, 2, 0, 6, 5, 3, 3, 1, 2, listOf(EnemyAbility.SWIPE, EnemyAbility.TACKLE),1,EnemyAttackAnimation(
-        moveFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1,R.drawable.slime_motion1),
-        attackFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1), // TODO: Add actual attack frame resources
+        moveFrames = intArrayOf(R.drawable.goblin_running00,R.drawable.goblin_running01,R.drawable.goblin_attack02,
+        R.drawable.goblin_attack03, R.drawable.goblin_running04, R.drawable.goblin_running05, R.drawable.goblin_running06, R.drawable.goblin_running07),
+        attackFrames = intArrayOf(R.drawable.goblin_attack00,R.drawable.goblin_attack01,R.drawable.goblin_attack02, R.drawable.goblin_attack03, R.drawable.goblin_attack04
+        ,R.drawable.goblin_attack05, R.drawable.goblin_attack06, R.drawable.goblin_attack07), // TODO: Add actual attack frame resources
         timingWindowStartFrame = 2,
-        timingWindowEndFrame = 3),
+        timingWindowEndFrame = 6),
     ),
     SLIME(2, "Slime", 1, 2, 0, 7, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2,EnemyAttackAnimation(
         moveFrames = intArrayOf(R.drawable.slime_motion1,R.drawable.slime_motion1,R.drawable.slime_motion1),
@@ -71,7 +73,7 @@ class Enemy(private val type: EnemyType) : GameEntity(type.enemyName, type.speed
 
     fun getImageResource(): Int {
         return when (drawableId) {
-            1 -> R.drawable.goblin
+            1 -> R.drawable.goblin_attack00
             2 -> R.drawable.idle_slime
             else -> throw IllegalArgumentException("Invalid drawableId: $drawableId")
         }

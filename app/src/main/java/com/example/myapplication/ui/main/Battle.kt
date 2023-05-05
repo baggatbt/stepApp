@@ -569,12 +569,14 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
     private fun startEnemyAttackAnimation(enemyImageView: ImageView, enemy: Enemy, loopDuration: Long, onAnimationEnd: () -> Unit) {
-        val frameInterval = 500L
+        val frameInterval = 200L
+        println(attackFrames.size)
+        val totalDuration = enemy.attackFrames.size * frameInterval
         openParryWindow(enemy.moveAnimation.timingWindowStartFrame, enemy.moveAnimation.timingWindowEndFrame)
 
 
 
-        val attackTimer = object : CountDownTimer(Long.MAX_VALUE, frameInterval) {
+        val attackTimer = object : CountDownTimer(totalDuration, frameInterval) {
             var currentFrame = 0
 
             override fun onTick(millisUntilFinished: Long) {

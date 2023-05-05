@@ -3,6 +3,7 @@ package com.example.myapplication.ui.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
@@ -12,8 +13,7 @@ import com.example.myapplication.R
 class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: OnEnemyClickListener) :
     RecyclerView.Adapter<EnemyAdapter.EnemyViewHolder>() {
 
-    inner class EnemyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val enemyImageView: ImageView = itemView.findViewById(R.id.enemyImageView)
+    inner class EnemyViewHolder(itemView: View, val enemyImageView: ImageView) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val enemyHealthBar: ProgressBar = itemView.findViewById(R.id.enemyHealthBar)
         var enemy: Enemy? = null
 
@@ -28,8 +28,11 @@ class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: O
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnemyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.enemy_item, parent, false)
-        return EnemyViewHolder(view)
+        val enemyImageView = view.findViewById<ImageView>(R.id.enemyImageView)
+        return EnemyViewHolder(view, enemyImageView)
     }
+
+
 
     override fun onBindViewHolder(holder: EnemyViewHolder, position: Int) {
         val enemy = enemies[position]

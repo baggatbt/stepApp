@@ -6,7 +6,7 @@ import com.example.myapplication.ui.main.Skills
 
 class Slash : Skills(
     name = "Slash",
-    damage = 2,
+    damage = 1,
     speed = 2,
     attacksInChain = 3,
     attackFrameSequences = listOf(

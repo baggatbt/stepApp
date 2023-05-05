@@ -1,21 +1,16 @@
 package com.example.myapplication
 
 import android.animation.*
-import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
-import android.text.Layout
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ui.main.*
-import com.example.myapplication.MainActivity
 import com.example.myapplication.ui.main.EnemyType
 import com.example.myapplication.ui.main.Enemy
-import androidx.core.view.GestureDetectorCompat
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -34,6 +29,9 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
     private lateinit var turnOrderRecyclerView: RecyclerView
     private lateinit var targetIndicatorAnimation: AnimationDrawable
     private lateinit var playerHealthBar: ProgressBar
+    private lateinit var enemyRecyclerView: RecyclerView
+
+
 
 
 
@@ -126,6 +124,7 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
         turnOrderAdapter = TurnOrderAdapter(listOf())
         turnOrderRecyclerView.adapter = turnOrderAdapter
 
+
         // Initialize the target indicator animation
         targetIndicatorAnimation = ContextCompat.getDrawable(this, R.drawable.target_indicator_animation) as AnimationDrawable
 
@@ -202,14 +201,19 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
 
     // Generates a random list of enemies based on the number of enemies specified
     private fun generateEnemyList(): List<Enemy> {
-        val numberOfEnemies = 1
+        val numberOfEnemies = 2
         val enemyList = mutableListOf<Enemy>()
         for (i in 1..numberOfEnemies) {
-            val enemyType = EnemyType.values().random()
+            val enemyType = if (Random.nextBoolean()) {
+                EnemyType.SLIME
+            } else {
+                EnemyType.GOBLIN
+            }
             enemyList.add(Enemy(enemyType))
         }
         return enemyList
     }
+
 
     override fun onTurnOrderUpdated(turnOrderItems: List<TurnOrderItem>) {
         val turnOrderAdapter = (turnOrderRecyclerView.adapter as TurnOrderAdapter)

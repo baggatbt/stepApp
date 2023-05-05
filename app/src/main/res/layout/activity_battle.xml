@@ -57,6 +57,7 @@
         app:srcCompat="@drawable/basicknight"
         app:tint="@null" />
 
+    <!--
     <TextView
         android:id="@+id/currentFrameDebug"
         android:layout_width="138dp"
@@ -68,7 +69,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.216"
         app:layout_constraintStart_toStartOf="parent" />
+    -->
 
+    <!--
     <TextView
         android:id="@+id/currentFrameDebugEnemy"
         android:layout_width="138dp"
@@ -79,6 +82,7 @@
         android:textSize="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+        -->
 
     <ImageView
         android:id="@+id/tapTimeImageView"

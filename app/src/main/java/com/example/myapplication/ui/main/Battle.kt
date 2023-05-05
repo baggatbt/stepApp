@@ -3,13 +3,11 @@ package com.example.myapplication.ui.main
 import android.animation.*
 import android.app.Activity
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.AnimationDrawable
-import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.os.Handler
@@ -20,13 +18,10 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.*
 import kotlinx.coroutines.*
-import java.util.*
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.example.myapplication.jobSkills.HeavySlash
 import com.example.myapplication.jobSkills.Slash
-import kotlin.math.pow
-import kotlin.math.sqrt
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -63,8 +58,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     lateinit var enemyRecyclerView: RecyclerView
     lateinit var turnOrderRecyclerView: RecyclerView
     lateinit var enemyAdapter: EnemyAdapter
-    lateinit var currentFrameView: TextView
-    lateinit var currentFrameEnemyView: TextView
+//    lateinit var currentFrameView: TextView
+ //   lateinit var currentFrameEnemyView: TextView
     lateinit var mediaPlayer : MediaPlayer
 
 
@@ -129,8 +124,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
         // Find views
         turnOrderRecyclerView = (context as Activity).findViewById(R.id.turnOrderRecyclerView)
-        currentFrameView = (context as Activity).findViewById(R.id.currentFrameDebug)
-        currentFrameEnemyView = (context as Activity).findViewById(R.id.currentFrameDebugEnemy)
+     //only used for testing  currentFrameView = (context as Activity).findViewById(R.id.currentFrameDebug)
+      //  currentFrameEnemyView = (context as Activity).findViewById(R.id.currentFrameDebugEnemy)
         attackAnimation = (context as Activity).findViewById(R.id.basicKnight)
 
         abilityOneButton = (context as Activity).findViewById(R.id.ability_card_1)
@@ -295,6 +290,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         val delayBetweenAttacks = 2000L // Adjust this value as needed
 
         for ((index, turn) in turnOrder.withIndex()) {
+            println("Current Turn: $turn")
             turnMutex.withLock {
                 val currentDelay = (index + 1) * 1000L
                 val extraDelay = if (turn != "character") delayBetweenAttacks else 0L
@@ -311,7 +307,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                             enemy.abilities.first { !it.isSpecial }
                         }
                         if (!attackInProgress) {
-                            executeEnemyTurn(enemy, enemyAbility)
+                            executeEnemyTurn(index, enemyAbility)
                         }
                     }
                     numTurnsTaken++
@@ -360,11 +356,12 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             stopWalkingAnimation()
             startAttackAnimation(attackFrames, abilityOneSkill.timingWindowStartFrame, abilityOneSkill.timingWindowEndFrame) {
                 // onAnimationEnd callback - knight walks back to the original position
-                if (selectedEnemy!!.currentHealth <= 0 && !attackInProgress) {
+                if (selectedEnemy!!.currentHealth <= 0) {
                     // Update the RecyclerView
                     enemyAdapter.notifyItemRemoved(enemyList.indexOf(selectedEnemy!!))
-                    println("attack in progress" + attackInProgress)
                     enemyList.remove(selectedEnemy!!)
+                    selectedEnemy = null // Set selectedEnemy to null after it has been defeated
+
                 }
             }
         }
@@ -388,7 +385,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 if (currentFrame >= attackFrames.size) {
                     currentFrame = 0 // reset to the first frame
                 }
-                currentFrameView.setText(currentFrame.toString())
+              //  currentFrameView.setText(currentFrame.toString())
 
                 // Check if the animation is between the timing window start and end frames
                 if (currentFrame in timingWindowStartFrame..timingWindowEndFrame) {
@@ -508,7 +505,12 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     }
 
 
-    private fun executeEnemyTurn(enemy: Enemy, enemyAbility: EnemyAbility) {
+    private fun executeEnemyTurn(enemyIndex: Int, enemyAbility: EnemyAbility) {
+        if (enemyList.size <= enemyIndex) {
+            // Handle the case where the enemyList size is less than the index being accessed.
+            return
+        }
+        val enemy = enemyList[enemyIndex]
         remainingTurnOrders.removeAt(0)
 
 
@@ -524,7 +526,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
             val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
-            val overlapFactor = 0.8F
+            val overlapFactor = 2F
             val moveDistance = calculateDistance(enemyImageView, basicKnight) - (enemyImageView.width * overlapFactor)
 
             startEnemyWalkingAnimation(enemyImageView, enemy.moveAnimation.moveFrames, 150)
@@ -583,7 +585,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 if (currentFrame >= enemy.attackFrames.size) {
                     currentFrame = 0
                 }
-                currentFrameEnemyView.setText(currentFrame.toString())
+              //  currentFrameEnemyView.setText(currentFrame.toString())
 
                 enemyImageView.setImageResource(enemy.attackFrames[currentFrame])
                 currentFrame++
@@ -766,6 +768,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         val turnOrderAdapter = (turnOrderRecyclerView.adapter as TurnOrderAdapter)
         turnOrderUpdateCallback.onTurnOrderUpdated(turnOrderItems)
         turnOrderAdapter.update(turnOrderItems)
+
     }
 
 
@@ -877,7 +880,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         val playerWidth = playerImageView.width
         val enemyWidth = enemyImageView.width
 
-        val enemyWidthFactor = 0.5 // Change this value between 0 and 1 to control the portion of enemy width to consider
+        val enemyWidthFactor = 0.1 // Change this value between 0 and 1 to control the portion of enemy width to consider
         val adjustedEnemyWidth = enemyWidth * enemyWidthFactor
 
         // Set an attack distance as a percentage of the sum of player and adjusted enemy widths

@@ -42,7 +42,7 @@ enum class EnemyType(
         R.drawable.goblin_attack03, R.drawable.goblin_running04, R.drawable.goblin_running05, R.drawable.goblin_running06, R.drawable.goblin_running07),
         attackFrames = intArrayOf(R.drawable.goblin_attack00,R.drawable.goblin_attack01,R.drawable.goblin_attack02, R.drawable.goblin_attack03, R.drawable.goblin_attack04
         ,R.drawable.goblin_attack05, R.drawable.goblin_attack06, R.drawable.goblin_attack07), // TODO: Add actual attack frame resources
-        timingWindowStartFrame = 2,
+        timingWindowStartFrame = 5,
         timingWindowEndFrame = 6),
     ),
     SLIME(2, "Slime", 1, 2, 0, 7, 5, 3, 4, 9, 2, listOf(EnemyAbility.SLAP, EnemyAbility.SQUISH),2,EnemyAttackAnimation(

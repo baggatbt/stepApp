@@ -190,6 +190,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 generateTurnOrder(chosenSkill, enemyList) // Add this line
                 setAbilityButtonsEnabled(false)
                 attackFrames = abilityOneSkill.attackFrameSequences[0]
+                successfulAttacks = 0 //Reset the chain count
                 attackCount = 3 // Set the attack count to 1 for single attack
                 CoroutineScope(Dispatchers.Main).launch {
                     launchAttackTurns()
@@ -222,7 +223,11 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
     private var successfulAttacks = 0
 
     private fun continueAttackChain(chosenSkill: Skills) {
+        println("im being called to continue the attack chain")
+        println("timing success in attakc chain" + timingSuccess)
+        println("successful attacks" + successfulAttacks)
         if (successfulAttacks < chosenSkill.attacksInChain - 1) {
+            println("im being called to continue the attack chain" + timingSuccess)
             if (timingSuccess) {
                 currentChainFrame++
                 println("chainFrame  " + currentChainFrame)
@@ -232,14 +237,27 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 startAttackAnimation(currentFrame, chosenSkill.timingWindowStartFrame, chosenSkill.timingWindowEndFrame) {
 
                 }
-                if (currentChainFrame == attackCount - 1) {
+                if (currentChainFrame == attackCount ) {
                     currentChainFrame = 0
                 }
 
                 successfulAttacks++ // Increment the successful attacks counter
+                attackCount--
+            }
+            timingSuccess = false // Set it back to false so that the next attack in the chain doesn't automatically succeed
+        }
+        else {
+            currentChainFrame = 0
+            rootView.setOnClickListener(null)
+            timingSuccess = false
+            attackInProgress = false
+            startWalkingAnimation(walkingFrames, 500)
+            animateKnight(moveDistance = -500f) {
+                // onAnimationEnd callback - stop the walking animation
+                stopWalkingAnimation()
             }
 
-            timingSuccess = false // Set it back to false so that the next attack in the chain doesn't automatically succeed
+
         }
     }
 
@@ -375,6 +393,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         val totalDuration = attackFrames.size * frameInterval
         var damageDealt = 0
 
+
         val targetEnemy = selectedEnemy!!
         val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
 
@@ -404,6 +423,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             }
 
             override fun onFinish() {
+                println("attack count" + attackCount)
+                println("timing success in onFinish attack animation" + timingSuccess)
                 if (timingSuccess){
                     println("TIMING SUCCESS")
                     applyDamageToEnemy(selectedEnemy!!, chosenSkill.damage) // TODO: Change to + enemySkillBonusDamage
@@ -415,9 +436,12 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 }
                 else {
                     println("TIMING FAILURE")
+                    rootView.setOnClickListener(null)
                     damageDealt = chosenSkill.damage
                     applyDamageToEnemy(selectedEnemy!!, damageDealt)
                     timingSuccess = false
+                    attackCount = chosenSkill.attacksInChain
+                    successfulAttacks = 0
                     attackInProgress = false
                     startWalkingAnimation(walkingFrames, 500)
                     animateKnight(moveDistance = -500f) {
@@ -445,8 +469,9 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 timingWindowOpen = false
                 currentFrame = 0 // Reset to the first frame
 
-                //Enable parry mode while its not the players turn
-                enableParry()
+
+
+
             }
         }
         attackTimer?.start()
@@ -455,6 +480,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         val mediaPlayer = createMediaPlayer(context)
         mediaPlayer.start()
         println("Sound played")
+
     }
 
 
@@ -532,6 +558,9 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             startEnemyWalkingAnimation(enemyImageView, enemy.moveAnimation.moveFrames, 150)
             animateEnemy(moveDistance = moveDistance, enemyImageView) {
                 stopEnemyWalkingAnimation(enemyImageView)
+
+                //Enable parry mode while its not the players turn
+                enableParry()
                 startEnemyAttackAnimation(enemyImageView, enemy, 1500) {
                 // onAnimationEnd callback - enemy walks back to the original position
                     startEnemyWalkingAnimation(enemyImageView, enemy.moveAnimation.moveFrames, 150)

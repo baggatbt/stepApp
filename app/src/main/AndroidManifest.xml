@@ -22,7 +22,7 @@
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".MapOneActivity"
+            android:name=".AreaOneActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
@@ -58,6 +58,10 @@
             android:exported="true"/>
         <activity android:name=".ui.main.CombatActivity"
             android:exported="true"/>
+
+        <activity android:name="com.example.myapplication.maps.TownOneActivity"
+            android:exported="true"/>
+
     </application>
 
 </manifest>

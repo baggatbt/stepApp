@@ -54,7 +54,7 @@ class VictoryActivity: AppCompatActivity() {
     }
 
     fun backToQuestScreen(view: View) {
-        val intent = Intent(this@VictoryActivity, MapOneActivity::class.java)
+        val intent = Intent(this@VictoryActivity, AreaOneActivity::class.java)
         startActivity((intent))
     }
 }

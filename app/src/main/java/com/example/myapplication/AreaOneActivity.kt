@@ -1,8 +1,5 @@
 package com.example.myapplication
 
-import com.example.myapplication.maps.BattlePoint
-import com.example.myapplication.maps.PointOfInterest
-import com.example.myapplication.maps.QuestPoint
 import android.content.Context
 import android.content.Intent
 import android.graphics.PointF
@@ -14,23 +11,20 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.*
 import com.example.myapplication.MainActivity.Companion.player
-import com.example.myapplication.maps.CustomMapView
+import com.example.myapplication.maps.*
 import com.example.myapplication.ui.main.MyApplication
 import com.example.myapplication.ui.main.Quest
 import com.example.myapplication.ui.main.StepsManager
 
-class MapOneActivity : AppCompatActivity() {
-
+class AreaOneActivity : AppCompatActivity() {
     lateinit var stepsManager: StepsManager
     var currentSteps = 0
-
 
     companion object {
         const val BATTLE_REQUEST_CODE = 1001
     }
 
     private lateinit var mapView: CustomMapView
-    // ...
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,55 +34,39 @@ class MapOneActivity : AppCompatActivity() {
         stepsManager = (applicationContext as MyApplication).stepsManager
         currentSteps = stepsManager.steps
 
-
-
-        setContentView(R.layout.activity_townone)
+        setContentView(R.layout.activity_areaonemap)
         mapView = findViewById(R.id.map_view)
 
-// Initialize the points of interest list
+        // Initialize the points of interest list
         val pointsOfInterest = listOf(
             BattlePoint(
+                context = this,
                 battleId = 1,
                 enemies = listOf("goblin", "slime"),
                 location = PointF(300f, 600f)
             ),
             QuestPoint(
+                context = this,
                 location = PointF(800f, 400f),
                 quest = Quest("First Quest", 10, experienceGained = 100, goldGained = 1),
-                1)
+                1
+            ),
+            ActivityPoint(
+                context = this,
+                location = PointF(1000f, 1000f),
+                activityId = 1,
+                activityName = "Town One",
+            )
         )
 
-
-// Pass the points of interest list to the CustomMapView
+        // Pass the points of interest list to the CustomMapView
         mapView.pointsOfInterest = pointsOfInterest
 
-// Set the point click listener
+        // Set the point click listener
         mapView.setOnPointClickListener { point ->
-            onPointClicked(point)
+            point.onClick()
         }
     }
-
-    private fun onPointClicked(point: PointOfInterest) {
-        when (point) {
-            is BattlePoint -> startBattle(point)
-            is QuestPoint -> startQuest(point)
-            else -> throw IllegalStateException("Unsupported point type: ${point::class.java}")
-        }
-    }
-
-
-
-    fun backToMap(view: View?) {
-        val intent = Intent(this@MapOneActivity, MapActivity::class.java)
-        startActivity(intent)
-        MainActivity.currentSteps = currentSteps
-
-    }
-
-private fun startBattle(battlePoint: BattlePoint) {
-    val intent = Intent(this@MapOneActivity, BattleActivity::class.java)
-    startActivityForResult(intent, BATTLE_REQUEST_CODE)
-}
 
 
 private fun startQuest(questPoint: QuestPoint) {
@@ -160,7 +138,7 @@ private fun startQuest(questPoint: QuestPoint) {
     }
 
     fun backToMain(view: View?) {
-        val intent = Intent(this@MapOneActivity, MainActivity::class.java)
+        val intent = Intent(this@AreaOneActivity, MainActivity::class.java)
         startActivity(intent)
         MainActivity.currentSteps = currentSteps
 

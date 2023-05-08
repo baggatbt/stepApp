@@ -532,10 +532,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
     private fun executeEnemyTurn(enemyIndex: Int, enemyAbility: EnemyAbility) {
-        if (enemyList.size <= enemyIndex) {
-            // Handle the case where the enemyList size is less than the index being accessed.
-            return
-        }
+        println("enemy index" + enemyIndex)
+
         val enemy = enemyList[enemyIndex]
         remainingTurnOrders.removeAt(0)
 
@@ -550,7 +548,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 enemy.abilities.first { !it.isSpecial }
             }
 
-
+            //TODO: regardless of which enemy acts, only this imageview is being animated,
+            //TODO: need to find a way to animate the correct enemy
             val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
             val overlapFactor = 2F
             val moveDistance = calculateDistance(enemyImageView, basicKnight) - (enemyImageView.width * overlapFactor)

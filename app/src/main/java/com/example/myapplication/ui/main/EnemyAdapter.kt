@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 
 
-class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: OnEnemyClickListener) :
-    RecyclerView.Adapter<EnemyAdapter.EnemyViewHolder>() {
+class EnemyAdapter(
+    val enemies: List<Enemy>,
+    private val recyclerView: RecyclerView,
+    private val onEnemyClickListener: OnEnemyClickListener
+) : RecyclerView.Adapter<EnemyAdapter.EnemyViewHolder>() {
 
     inner class EnemyViewHolder(itemView: View, val enemyImageView: ImageView) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val enemyHealthBar: ProgressBar = itemView.findViewById(R.id.enemyHealthBar)
@@ -22,8 +25,9 @@ class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: O
         }
 
         override fun onClick(v: View?) {
-            enemy?.let { onEnemyClickListener.onEnemyClick(it) }
+            enemy?.let { onEnemyClickListener.onEnemyClick(it, enemyImageView) }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnemyViewHolder {
@@ -37,7 +41,7 @@ class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: O
     override fun onBindViewHolder(holder: EnemyViewHolder, position: Int) {
         val enemy = enemies[position]
         holder.itemView.setOnClickListener {
-            onEnemyClickListener.onEnemyClick(enemy)
+            onEnemyClickListener.onEnemyClick(enemy, holder.enemyImageView)
         }
 
         holder.enemy = enemy
@@ -45,6 +49,7 @@ class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: O
         holder.enemyHealthBar.max = enemy.maxHealth
         holder.enemyHealthBar.progress = enemy.currentHealth
     }
+
 
 
 
@@ -61,4 +66,11 @@ class EnemyAdapter(val enemies: List<Enemy>, private val onEnemyClickListener: O
     fun getEnemy(position: Int): Enemy {
         return enemies[position]
     }
+
+    fun getEnemyImageView(position: Int): ImageView {
+        return recyclerView.findViewHolderForAdapterPosition(position)?.itemView?.findViewById(R.id.enemyImageView)
+            ?: throw IllegalStateException("No ViewHolder found for the given position.")
+    }
+
+
 }

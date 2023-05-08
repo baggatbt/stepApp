@@ -29,7 +29,7 @@ private val turnMutex = Mutex()
 
 
 
-class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val onHealthChangedListener: OnHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback) {
+class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val onHealthChangedListener: OnHealthChangedListener, private val listener: TurnOrderUpdateListener,private val turnOrderUpdateCallback: TurnOrderUpdateCallback, private val enemyAdapter: EnemyAdapter) {
     companion object {
         var expGained = 0
         var goldGained = 0
@@ -55,9 +55,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
     lateinit var attackFrames: IntArray
-    lateinit var enemyRecyclerView: RecyclerView
     lateinit var turnOrderRecyclerView: RecyclerView
-    lateinit var enemyAdapter: EnemyAdapter
 //    lateinit var currentFrameView: TextView
  //   lateinit var currentFrameEnemyView: TextView
     lateinit var mediaPlayer : MediaPlayer
@@ -141,26 +139,8 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
 
-        // Add RecyclerView and adapter references
-        enemyRecyclerView = (context as Activity).findViewById(R.id.enemiesRecyclerView)
-        val activity = context as BattleActivity
-        enemyAdapter = EnemyAdapter(enemyList, activity) // Pass 'activity' as the click listener
-        enemyRecyclerView.adapter = enemyAdapter
-
-
-
-
-
         generateTurnOrder(chosenSkill,enemyList)
 
-        enemyRecyclerView.setOnClickListener {
-            if (timingWindowOpen) {
-                println("Touched during timing window")
-                timingSuccess = true
-                //    playSwordSlashSound() //TODO GET A SOUND
-
-            }
-        }
 
         basicKnight.setOnClickListener {
             if (timingWindowOpen) {
@@ -307,28 +287,36 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         println(turnOrder)
         val delayBetweenAttacks = 2000L // Adjust this value as needed
 
-        for ((index, turn) in turnOrder.withIndex()) {
+        val localTurnOrder = turnOrder.toMutableList()
+
+
+        while (localTurnOrder.isNotEmpty()) {
+            val turn = localTurnOrder[0]
             println("Current Turn: $turn")
             turnMutex.withLock {
-                val currentDelay = (index + 1) * 1000L
                 val extraDelay = if (turn != "character") delayBetweenAttacks else 0L
-                delay(currentDelay + extraDelay)
+                delay(1000L + extraDelay)
 
                 if (!checkVictoryAndDefeat(rootView)) {
                     if (turn == "character") {
                         executeCharacterTurn(context, chosenSkill)
                     } else {
-                        val enemy = enemyList[turn.substring(5).toInt()]
+                        val enemyIndex = turn.substring(5).toInt()
+                        val enemy = enemyList[enemyIndex]
                         val enemyAbility = if (enemy.attacksToChargeSpecial == 0) {
                             enemy.abilities.find { it.isSpecial } ?: error("No special ability found")
                         } else {
                             enemy.abilities.first { !it.isSpecial }
                         }
                         if (!attackInProgress) {
-                            executeEnemyTurn(index, enemyAbility)
+                            executeEnemyTurn(enemyIndex, enemyAbility)
                         }
                     }
                     numTurnsTaken++
+
+                    // Update the turn order here
+                    localTurnOrder.removeAt(0)
+                    localTurnOrder.add(turn)
 
                     if (numTurnsTaken == turnOrder.size) {
                         if (checkVictoryAndDefeat(rootView) == false) {
@@ -337,17 +325,20 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
                             abilityOneExecuted = false
                             battleLoop()
+                            return
                         }
                     }
 
                     if (player.currentHealth <= 0 || enemyList.all { it.currentHealth <= 0 }) {
-
                         checkVictoryAndDefeat(rootView)
                     }
                 }
             }
         }
     }
+
+
+
 
 
     interface DamageBubbleCallback {
@@ -532,11 +523,10 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
 
 
     private fun executeEnemyTurn(enemyIndex: Int, enemyAbility: EnemyAbility) {
-        println("enemy index" + enemyIndex)
+        println("enemy index: $enemyIndex")
 
         val enemy = enemyList[enemyIndex]
         remainingTurnOrders.removeAt(0)
-
 
         if (enemy.currentHealth <= 0) {
             enemyAdapter.notifyItemRemoved(enemyList.indexOf(enemy))
@@ -548,9 +538,7 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
                 enemy.abilities.first { !it.isSpecial }
             }
 
-            //TODO: regardless of which enemy acts, only this imageview is being animated,
-            //TODO: need to find a way to animate the correct enemy
-            val enemyImageView = rootView.findViewById<ImageView>(R.id.enemyImageView)
+            val enemyImageView = enemyAdapter.getEnemyImageView(enemyIndex)
             val overlapFactor = 2F
             val moveDistance = calculateDistance(enemyImageView, basicKnight) - (enemyImageView.width * overlapFactor)
 
@@ -558,24 +546,21 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
             animateEnemy(moveDistance = moveDistance, enemyImageView) {
                 stopEnemyWalkingAnimation(enemyImageView)
 
-                //Enable parry mode while its not the players turn
                 enableParry()
                 startEnemyAttackAnimation(enemyImageView, enemy, 1500) {
-                // onAnimationEnd callback - enemy walks back to the original position
                     startEnemyWalkingAnimation(enemyImageView, enemy.moveAnimation.moveFrames, 150)
                     animateEnemy(moveDistance = -moveDistance, enemyImageView) {
                         stopEnemyWalkingAnimation(enemyImageView)
-
-
+                        val damageDealt = attack.damage
+                        applyParryDamageReduction(damageDealt, enemyImageView)
                     }
-                    val damageDealt = attack.damage
-
-                    applyParryDamageReduction(damageDealt, enemyImageView)
-
                 }
             }
         }
     }
+
+
+
     private fun applyParryDamageReduction(damageDealt: Int, enemyImageView: ImageView){
         if (parrySuccess){
             var parryModifier = (damageDealt - 3 ) //TODO: add a parry modifier to the player
@@ -738,13 +723,6 @@ class Battle(private val damageBubbleCallback: DamageBubbleCallback,private val 
         }
         parryWindowTimer.start()
     }
-
-
-
-
-
-
-
 
     interface TurnOrderUpdateCallback {
         fun onTurnOrderUpdated(turnOrderItems: List<TurnOrderItem>)

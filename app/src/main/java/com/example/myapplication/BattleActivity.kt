@@ -51,16 +51,15 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
     }
 
 
-    private fun updateSelectedEnemyUI() {
+    private fun updateSelectedEnemyUI(enemyImageView: ImageView) {
         // Update the UI to show the selected enemy
         for (i in 0 until enemiesRecyclerView.childCount) {
             val enemyViewHolder = enemiesRecyclerView.findViewHolderForAdapterPosition(i)
             if (enemyViewHolder is EnemyAdapter.EnemyViewHolder) {
-                val enemyImageView =
-                    enemyViewHolder.itemView.findViewById<ImageView>(R.id.enemyImageView)
-                val targetedEnemyIcon =
-                    enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon)
                 if (selectedEnemy == enemyViewHolder.enemy) {
+                    val targetedEnemyIcon =
+                        enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon)
+
                     enemyImageView.translationZ = 10f
                     targetedEnemyIcon.translationZ = 11f
                     targetedEnemyIcon.visibility = View.VISIBLE
@@ -82,8 +81,7 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
                 } else {
                     enemyImageView.background = null
                     enemyImageView.translationZ = 0f
-                    targetedEnemyIcon.translationZ = 0f
-                    targetedEnemyIcon.visibility = View.INVISIBLE
+                    enemyViewHolder.itemView.findViewById<ImageView>(R.id.targetedEnemyIcon).visibility = View.INVISIBLE
                 }
             }
         }
@@ -96,6 +94,7 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
 
         updateTurnOrderGlow()
     }
+
 
     override fun onPlayerHealthChanged(player: Player) {
         playerHealthBar.progress = player.currentHealth
@@ -154,7 +153,7 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
 
 
         // Initialize the battle and start it with the first enemy in the list
-        battle = Battle(this, this,this,this)
+        battle = Battle(this, this,this,this,enemyAdapter)
         battle.start(player, enemyAdapter.enemies, this) // Get the chosen skill
         updateTurnOrder()
 
@@ -182,7 +181,7 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
 
         val enemies = generateEnemyList() // Use the generateEnemyList() function to create a list of random enemies
 
-        val adapter = EnemyAdapter(enemies, this)
+        val adapter = EnemyAdapter(enemies, enemiesRecyclerView, this)
         enemiesRecyclerView.adapter = adapter
 
         enemyAdapter = adapter
@@ -191,12 +190,12 @@ class BattleActivity : AppCompatActivity(), Battle.DamageBubbleCallback, OnHealt
 
 
 
-
-    override fun onEnemyClick(enemy: Enemy) {
+    override fun onEnemyClick(enemy: Enemy, enemyImageView: ImageView) {
         selectedEnemy = enemy
         battle.selectedEnemy = enemy // Update the selected enemy in the Battle instance
-        updateSelectedEnemyUI()
+        updateSelectedEnemyUI(enemyImageView)
     }
+
 
 
     // Generates a random list of enemies based on the number of enemies specified
